@@ -7,6 +7,7 @@ import { BoutiqueImage } from './BoutiqueImage';
 import { FitAssistant } from './FitAssistant';
 import { ProductReviews } from './ProductReviews';
 import { SimilarProducts } from './SimilarProducts';
+import { VirtualTryOnModal } from './VirtualTryOnModal';
 
 interface QuickViewModalProps {
   product: Product;
@@ -57,6 +58,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   };
 
   const [openSection, setOpenSection] = useState<string | null>('senses');
+  const [isTryOnOpen, setIsTryOnOpen] = useState(false);
 
   const toggleSection = (section: string) => {
     setOpenSection(openSection === section ? null : section);
@@ -152,109 +154,140 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               </div>
             </div>
 
+            import {VirtualTryOnModal} from './VirtualTryOnModal';
+
+            // ... (inside component)
+
+            const [isTryOnOpen, setIsTryOnOpen] = useState(false);
+
+            // ... (inside JSX)
+
             {/* 2. Sizing */}
             <div className="space-y-6">
               <div className="flex justify-between items-baseline border-b border-black/5 pb-2">
                 <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500">Select Size</span>
-                <button
-                  onClick={() => setIsFitAssistantOpen(true)}
-                  className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#8ca67a] hover:underline underline-offset-4"
-                >
-                  Size Guide
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {product.variants?.map(variant => (
+                <div className="flex gap-6">
                   <button
-                    key={variant.id}
-                    onClick={() => variant.available && setSelectedVariant(variant)}
-                    disabled={!variant.available}
-                    className={`min-w-[4rem] h-12 px-4 border text-[11px] font-medium transition-all duration-300 flex items-center justify-center ${!variant.available ? 'opacity-30 cursor-not-allowed line-through bg-zinc-50 border-zinc-100' : selectedVariant?.id === variant.id ? 'bg-black text-white border-black' : 'border-zinc-200 hover:border-black text-black bg-transparent'}`}
+                    onClick={() => setIsTryOnOpen(true)}
+                    className="text-[10px] uppercase tracking-[0.2em] font-bold text-black hover:opacity-60 flex items-center gap-2"
                   >
-                    {variant.title}
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Virtual Try-On
                   </button>
-                )) || <span className="text-sm text-zinc-400 px-2 italic">Universal Fit</span>}
+                  <button
+                    onClick={() => setIsFitAssistantOpen(true)}
+                    className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#8ca67a] hover:underline underline-offset-4"
+                  >
+                    Size Guide
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* 3. Accordion Details */}
-            <div className="space-y-0 border-t border-black/10">
-              {/* The Senses (Description) */}
-              <div className="border-b border-black/10">
+// ... (at end of component)
+
+              {isTryOnOpen && (
+                <VirtualTryOnModal
+                  product={product}
+                  onClose={() => setIsTryOnOpen(false)}
+                />
+              )}
+            </div>
+            );
+};
+            <div className="flex flex-wrap gap-2">
+              {product.variants?.map(variant => (
                 <button
-                  onClick={() => toggleSection('senses')}
-                  className="w-full py-6 flex justify-between items-center text-left group"
+                  key={variant.id}
+                  onClick={() => variant.available && setSelectedVariant(variant)}
+                  disabled={!variant.available}
+                  className={`min-w-[4rem] h-12 px-4 border text-[11px] font-medium transition-all duration-300 flex items-center justify-center ${!variant.available ? 'opacity-30 cursor-not-allowed line-through bg-zinc-50 border-zinc-100' : selectedVariant?.id === variant.id ? 'bg-black text-white border-black' : 'border-zinc-200 hover:border-black text-black bg-transparent'}`}
                 >
-                  <span className="text-[11px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">The Senses & Composition</span>
-                  <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'senses' ? 'rotate-45' : ''}`}>+</span>
+                  {variant.title}
                 </button>
-                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'senses' ? 'max-h-[500px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
-                  <div
-                    className="text-sm font-serif leading-[1.8] text-zinc-600 font-light"
-                    dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-                  />
-                  <div className="mt-4 pt-4 border-t border-dashed border-zinc-200 grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Material</p>
-                      <p className="text-xs">{product.composition || "Premium Blend"}</p>
-                    </div>
-                    <div>
-                      <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Origin</p>
-                      <p className="text-xs">{product.origin || "Italy"}</p>
-                    </div>
+              )) || <span className="text-sm text-zinc-400 px-2 italic">Universal Fit</span>}
+            </div>
+          </div>
+
+          {/* 3. Accordion Details */}
+          <div className="space-y-0 border-t border-black/10">
+            {/* The Senses (Description) */}
+            <div className="border-b border-black/10">
+              <button
+                onClick={() => toggleSection('senses')}
+                className="w-full py-6 flex justify-between items-center text-left group"
+              >
+                <span className="text-[11px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">The Senses & Composition</span>
+                <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'senses' ? 'rotate-45' : ''}`}>+</span>
+              </button>
+              <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'senses' ? 'max-h-[500px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
+                <div
+                  className="text-sm font-serif leading-[1.8] text-zinc-600 font-light"
+                  dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                />
+                <div className="mt-4 pt-4 border-t border-dashed border-zinc-200 grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Material</p>
+                    <p className="text-xs">{product.composition || "Premium Blend"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Origin</p>
+                    <p className="text-xs">{product.origin || "Italy"}</p>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Shipping & Returns */}
-              <div className="border-b border-black/10">
-                <button
-                  onClick={() => toggleSection('shipping')}
-                  className="w-full py-6 flex justify-between items-center text-left group"
-                >
-                  <span className="text-[11px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">Shipping & Returns</span>
-                  <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'shipping' ? 'rotate-45' : ''}`}>+</span>
-                </button>
-                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'shipping' ? 'max-h-[300px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
-                  <p className="text-sm font-light text-zinc-600 leading-relaxed">
-                    Complimentary {product.shippingTier || "Standard"} shipping on all orders over $500.
-                    Returns are accepted within 14 days of delivery for a full refund or exchange, provided items are unworn and tags are attached.
-                  </p>
-                </div>
+            {/* Shipping & Returns */}
+            <div className="border-b border-black/10">
+              <button
+                onClick={() => toggleSection('shipping')}
+                className="w-full py-6 flex justify-between items-center text-left group"
+              >
+                <span className="text-[11px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">Shipping & Returns</span>
+                <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'shipping' ? 'rotate-45' : ''}`}>+</span>
+              </button>
+              <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'shipping' ? 'max-h-[300px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
+                <p className="text-sm font-light text-zinc-600 leading-relaxed">
+                  Complimentary {product.shippingTier || "Standard"} shipping on all orders over $500.
+                  Returns are accepted within 14 days of delivery for a full refund or exchange, provided items are unworn and tags are attached.
+                </p>
               </div>
             </div>
-
-            {/* 4. Cross Sells */}
-            <div className="pt-8">
-              <SimilarProducts
-                currentProductId={product.id}
-                products={allProducts}
-                currency={currency}
-              />
-            </div>
           </div>
 
-          {/* Sticky Actions Footer */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 bg-white/95 backdrop-blur border-t border-black/5 z-20">
-            <button
-              onClick={() => selectedVariant ? onAddToCart(product, selectedVariant) : null}
-              disabled={!selectedVariant}
-              className="w-full bg-black text-white py-5 text-[11px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
-            >
-              <span>{selectedVariant ? `Add to Bag - ${currency}${product.price}` : 'Select Size'}</span>
-              {selectedVariant && <span className="w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>}
-            </button>
+          {/* 4. Cross Sells */}
+          <div className="pt-8">
+            <SimilarProducts
+              currentProductId={product.id}
+              products={allProducts}
+              currency={currency}
+            />
           </div>
         </div>
-      </div>
 
-      {isFitAssistantOpen && (
-        <FitAssistant
-          product={product}
-          onClose={() => setIsFitAssistantOpen(false)}
-          onApplySize={handleApplySize}
-        />
-      )}
+        {/* Sticky Actions Footer */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 bg-white/95 backdrop-blur border-t border-black/5 z-20">
+          <button
+            onClick={() => selectedVariant ? onAddToCart(product, selectedVariant) : null}
+            disabled={!selectedVariant}
+            className="w-full bg-black text-white py-5 text-[11px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
+          >
+            <span>{selectedVariant ? `Add to Bag - ${currency}${product.price}` : 'Select Size'}</span>
+            {selectedVariant && <span className="w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>}
+          </button>
+        </div>
+      </div>
     </div>
+
+      {
+    isFitAssistantOpen && (
+      <FitAssistant
+        product={product}
+        onClose={() => setIsFitAssistantOpen(false)}
+        onApplySize={handleApplySize}
+      />
+    )
+  }
+    </div >
   );
 };
