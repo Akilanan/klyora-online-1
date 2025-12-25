@@ -1,19 +1,20 @@
 
 import React from 'react';
-import { MOCK_PRODUCTS } from '../constants';
 import { BoutiqueImage } from './BoutiqueImage';
 
 interface SimilarProductsProps {
   currentProductId: string;
-  relatedIds?: string[];
+  products: any[]; // Using any[] to match catalog structure easily, or proper Product type
 }
 
-export const SimilarProducts: React.FC<SimilarProductsProps> = ({ currentProductId, relatedIds = [] }) => {
-  // Find related products from catalog
-  const suggested = MOCK_PRODUCTS.filter(p => 
-    relatedIds.includes(p.id) || 
-    (p.id !== currentProductId && p.category === MOCK_PRODUCTS.find(x => x.id === currentProductId)?.category)
-  ).slice(0, 4);
+export const SimilarProducts: React.FC<SimilarProductsProps> = ({ currentProductId, products }) => {
+  // Find current product to get category
+  const currentProduct = products.find(p => p.id === currentProductId);
+
+  // Find related products: Same category, excluding current product
+  const suggested = products
+    .filter(p => p.id !== currentProductId && p.category === currentProduct?.category)
+    .slice(0, 4);
 
   if (suggested.length === 0) return null;
 
@@ -28,9 +29,9 @@ export const SimilarProducts: React.FC<SimilarProductsProps> = ({ currentProduct
         {suggested.map((item) => (
           <div key={item.id} className="group cursor-pointer space-y-4">
             <div className="relative aspect-[3/4] overflow-hidden bg-zinc-100">
-              <BoutiqueImage 
-                src={item.image} 
-                alt={item.name} 
+              <BoutiqueImage
+                src={item.image}
+                alt={item.name}
                 aspectRatio="aspect-auto h-full w-full"
                 className="group-hover:scale-110 transition-transform duration-[2s]"
               />

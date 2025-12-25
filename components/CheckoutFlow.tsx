@@ -5,9 +5,10 @@ interface CheckoutFlowProps {
   onComplete: () => void;
   onBack: () => void;
   total?: number;
+  currency?: string;
 }
 
-export const CheckoutFlow: React.FC<CheckoutFlowProps> = ({ onComplete, onBack, total = 0 }) => {
+export const CheckoutFlow: React.FC<CheckoutFlowProps> = ({ onComplete, onBack, total = 0, currency = '$' }) => {
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -34,7 +35,7 @@ export const CheckoutFlow: React.FC<CheckoutFlowProps> = ({ onComplete, onBack, 
         <p className="text-zinc-400 text-[10px] uppercase tracking-[0.6em] mb-16 max-w-sm leading-relaxed font-bold">
           Your Klyora collection is being curated for white-glove delivery. A tracking dossier has been dispatched to your email.
         </p>
-        <button 
+        <button
           onClick={onComplete}
           className="px-24 py-7 bg-white text-black font-bold uppercase tracking-[0.5em] text-[10px] hover:bg-zinc-200 transition-all shadow-2xl"
         >
@@ -52,24 +53,24 @@ export const CheckoutFlow: React.FC<CheckoutFlowProps> = ({ onComplete, onBack, 
             <span className="w-12 h-[1px] bg-white transition-all group-hover:w-16"></span> Exit Checkout
           </button>
           <span className="text-[10px] uppercase tracking-[0.8em] text-zinc-500 font-bold block mb-10">Klyora Protocol</span>
-          <h2 className="font-serif text-6xl tracking-tighter mb-20 leading-tight">Order <br/> Summary</h2>
-          
+          <h2 className="font-serif text-6xl tracking-tighter mb-20 leading-tight">Order <br /> Summary</h2>
+
           <div className="space-y-10">
             <div className="flex justify-between text-[12px] font-bold uppercase tracking-widest pb-8 border-b border-white/10">
               <span className="font-serif italic text-zinc-400">Inventory Value</span>
-              <span>${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+              <span>{currency}{total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
             </div>
             <div className="flex justify-between text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold">
               <span>Bespoke Logistics</span>
               <span className="text-[#8ca67a]">Complimentary</span>
             </div>
             <div className="pt-8 flex justify-between items-end border-t border-white/10">
-               <span className="text-[11px] uppercase tracking-[0.4em] font-bold">Total Payable</span>
-               <span className="text-2xl font-serif font-bold">${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+              <span className="text-[11px] uppercase tracking-[0.4em] font-bold">Total Payable</span>
+              <span className="text-2xl font-serif font-bold">{currency}{total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
             </div>
           </div>
         </div>
-        
+
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-1.5 rounded-full bg-[#8ca67a]"></div>
@@ -116,13 +117,13 @@ export const CheckoutFlow: React.FC<CheckoutFlowProps> = ({ onComplete, onBack, 
             {step === 2 && (
               <div className="space-y-20">
                 <div className="p-12 bg-zinc-50 border border-black/5 flex items-center gap-10">
-                   <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-xl">
-                      <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                   </div>
-                   <div className="flex flex-col gap-1">
-                     <span className="text-[11px] uppercase tracking-[0.4em] font-bold">Encrypted Authorization</span>
-                     <span className="text-[8px] uppercase tracking-[0.2em] text-zinc-400 font-bold">Maison Klyora Secure Gateway</span>
-                   </div>
+                  <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-xl">
+                    <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[11px] uppercase tracking-[0.4em] font-bold">Encrypted Authorization</span>
+                    <span className="text-[8px] uppercase tracking-[0.2em] text-zinc-400 font-bold">Maison Klyora Secure Gateway</span>
+                  </div>
                 </div>
                 <div className="space-y-16">
                   <div className="space-y-4">
@@ -148,8 +149,8 @@ export const CheckoutFlow: React.FC<CheckoutFlowProps> = ({ onComplete, onBack, 
                 <div className="space-y-6">
                   <h3 className="text-[14px] uppercase tracking-[1em] font-bold text-zinc-200">Validation</h3>
                   <div className="p-20 border border-black/10 bg-zinc-50/30 max-w-sm mx-auto shadow-sm">
-                     <span className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-bold block mb-8">Amount to Authorize</span>
-                     <span className="text-6xl font-serif font-bold tracking-tighter text-black">${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                    <span className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-bold block mb-8">Amount to Authorize</span>
+                    <span className="text-6xl font-serif font-bold tracking-tighter text-black">{currency}{total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>
@@ -157,14 +158,14 @@ export const CheckoutFlow: React.FC<CheckoutFlowProps> = ({ onComplete, onBack, 
 
             <div className="pt-40 flex gap-8">
               {step > 1 && (
-                <button 
-                  onClick={() => setStep(step - 1)} 
+                <button
+                  onClick={() => setStep(step - 1)}
                   className="flex-1 py-7 border border-black/10 text-[10px] font-bold uppercase tracking-[0.5em] hover:border-black transition-all text-black"
                 >
                   Return
                 </button>
               )}
-              <button 
+              <button
                 onClick={() => step < 3 ? setStep(step + 1) : handlePayment()}
                 disabled={isProcessing}
                 className="flex-[2] py-7 bg-black text-white text-[10px] font-bold uppercase tracking-[0.6em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-6 shadow-2xl disabled:opacity-50"

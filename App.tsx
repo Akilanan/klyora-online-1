@@ -123,6 +123,7 @@ const App: React.FC = () => {
     return (
       <CheckoutFlow
         total={cartTotal}
+        currency={currency}
         onBack={() => setIsCheckoutOpen(false)}
         onComplete={() => { setIsCheckoutOpen(false); setCart([]); }}
       />
@@ -137,7 +138,7 @@ const App: React.FC = () => {
         loyaltyPoints={loyaltyPoints}
         onCartClick={() => setIsCartOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
-        onWishlistClick={() => { }}
+        onWishlistClick={() => showNotification("Archive Collection: Coming Soon")}
         onSavedLooksClick={() => setIsChatOpen(true)}
         isSynced={isStoreSynced}
       />
@@ -236,12 +237,14 @@ const App: React.FC = () => {
           onClose={() => setIsCartOpen(false)}
           onRemove={(id, vId) => setCart(prev => prev.filter(i => !(i.id === id && i.selectedVariant.id === vId)))}
           onCheckout={handleCheckoutOpen}
+          currency={currency}
         />
       )}
 
       {selectedQuickView && (
         <QuickViewModal
           product={selectedQuickView}
+          allProducts={products}
           onClose={() => setSelectedQuickView(null)}
           onAddToCart={handleAddToCart}
         />

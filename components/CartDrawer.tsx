@@ -8,9 +8,10 @@ interface CartDrawerProps {
   onClose: () => void;
   onRemove: (id: string, variantId: string) => void;
   onCheckout: () => void;
+  currency: string;
 }
 
-export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove, onCheckout }) => {
+export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove, onCheckout, currency }) => {
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   return (
@@ -31,9 +32,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove
             items.map((item) => (
               <div key={`${item.id}-${item.selectedVariant.id}`} className="flex gap-6 animate-fade-in">
                 <div className="w-24 shrink-0">
-                  <BoutiqueImage 
-                    src={item.image} 
-                    alt={item.name} 
+                  <BoutiqueImage
+                    src={item.image}
+                    alt={item.name}
                     aspectRatio="aspect-[3/4]"
                   />
                 </div>
@@ -41,12 +42,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove
                   <div>
                     <h3 className="text-[10px] uppercase font-bold tracking-widest mb-1 leading-tight">{item.name}</h3>
                     <div className="flex items-center gap-2 mt-2">
-                       <span className="text-[8px] bg-zinc-100 px-2 py-0.5 font-bold uppercase tracking-widest">Size {item.selectedVariant.title}</span>
-                       <span className="text-[8px] text-zinc-400 font-bold uppercase tracking-widest">Qty: {item.quantity}</span>
+                      <span className="text-[8px] bg-zinc-100 px-2 py-0.5 font-bold uppercase tracking-widest">Size {item.selectedVariant.title}</span>
+                      <span className="text-[8px] text-zinc-400 font-bold uppercase tracking-widest">Qty: {item.quantity}</span>
                     </div>
                   </div>
                   <div className="flex justify-between items-baseline mt-4">
-                    <p className="text-[11px] font-bold">${item.price} USD</p>
+                    <p className="text-[11px] font-bold">{currency}{item.price}</p>
                     <button onClick={() => onRemove(item.id, item.selectedVariant.id)} className="text-[9px] uppercase tracking-widest border-b border-black/20 hover:border-black transition-colors">Remove</button>
                   </div>
                 </div>
@@ -59,9 +60,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove
           <div className="p-8 bg-white border-t border-black/5">
             <div className="flex justify-between mb-8 text-[11px] uppercase tracking-[0.3em] font-bold">
               <span>Total Boutique Value</span>
-              <span>${subtotal} USD</span>
+              <span>{currency}{subtotal}</span>
             </div>
-            <button 
+            <button
               onClick={onCheckout}
               className="w-full py-5 bg-black text-white text-[10px] font-bold uppercase tracking-[0.5em] hover:opacity-80 transition-all shadow-xl"
             >

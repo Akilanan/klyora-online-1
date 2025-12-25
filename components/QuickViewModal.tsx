@@ -10,12 +10,14 @@ import { SimilarProducts } from './SimilarProducts';
 
 interface QuickViewModalProps {
   product: Product;
+  allProducts: Product[];
   onClose: () => void;
   onAddToCart: (p: Product, variant: ProductVariant) => void;
 }
 
 export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   product,
+  allProducts,
   onClose,
   onAddToCart
 }) => {
@@ -172,7 +174,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 
             {/* 7. Curated Pairings */}
             <div className="pt-20 border-t border-black/5">
-              <SimilarProducts currentProductId={product.id} relatedIds={product.relatedIds} />
+              <SimilarProducts
+                currentProductId={product.id}
+                products={allProducts}
+              />
             </div>
           </div>
 
