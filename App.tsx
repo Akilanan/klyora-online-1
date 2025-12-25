@@ -52,9 +52,17 @@ const App: React.FC = () => {
 
   useEffect(() => {
     // @ts-ignore
-    if (window.KlyoraConfig && window.KlyoraConfig.currency) {
+    if (window.KlyoraConfig) {
       // @ts-ignore
-      setCurrency(window.KlyoraConfig.currency);
+      const config = window.KlyoraConfig;
+      if (config.currency) setCurrency(config.currency);
+
+      if (config.customer) {
+        // Simple logic: 1 point per dollar spent
+        setLoyaltyPoints(Math.floor(config.customer.totalSpent || 0));
+      } else {
+        setLoyaltyPoints(0); // Guest starts at 0
+      }
     }
 
     syncStore();

@@ -12,11 +12,11 @@ interface HeaderProps {
   isSynced: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ 
-  cartCount, 
-  wishlistCount, 
+export const Header: React.FC<HeaderProps> = ({
+  cartCount,
+  wishlistCount,
   loyaltyPoints,
-  onCartClick, 
+  onCartClick,
   onSearchClick,
   onWishlistClick,
   onSavedLooksClick,
@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const loyaltyTier = loyaltyPoints > 5000 ? 'Platinum' : loyaltyPoints > 2000 ? 'Gold' : 'Silver';
+  const loyaltyTier = loyaltyPoints > 5000 ? 'Platinum' : loyaltyPoints > 2000 ? 'Gold' : loyaltyPoints > 0 ? 'Silver' : 'Guest';
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-1000 ${scrolled ? 'bg-black/95 backdrop-blur-2xl border-b border-white/5 py-5 px-10 shadow-2xl' : 'bg-transparent py-10 px-12'}`}>
@@ -44,9 +44,9 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </nav>
 
-        <h1 
-          className="font-serif text-3xl md:text-5xl tracking-[0.2em] cursor-pointer absolute left-1/2 -translate-x-1/2 transition-all hover:scale-105 active:scale-95 text-white font-light" 
-          onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+        <h1
+          className="font-serif text-3xl md:text-5xl tracking-[0.2em] cursor-pointer absolute left-1/2 -translate-x-1/2 transition-all hover:scale-105 active:scale-95 text-white font-light"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           KLYORA
         </h1>

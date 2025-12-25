@@ -23,6 +23,17 @@
   window.KlyoraConfig = {
     shop: {{ shop.permanent_domain | json }},
     currency: {{ cart.currency.symbol | json }},
+    customer: {% if customer %}
+      {
+        id: {{ customer.id | json }},
+        name: {{ customer.name | json }},
+        totalSpent: {{ customer.total_spent | divided_by: 100.0 | json }},
+        ordersCount: {{ customer.orders_count | json }},
+        tags: {{ customer.tags | json }}
+      }
+    {% else %}
+      null
+    {% endif %},
     products: [
       {% for product in collections.all.products limit: 12 %}
         {
