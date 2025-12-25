@@ -47,7 +47,7 @@ export const Footer: React.FC = () => {
 
                     {/* Links Grid */}
                     <div className="flex gap-16 md:gap-32 flex-wrap">
-                        <div>
+                        <nav aria-label="Client Services">
                             <h4 className="text-[9px] uppercase tracking-[0.4em] font-bold text-zinc-500 mb-6">Client Services</h4>
                             <ul className="space-y-4">
                                 {['Concierge', 'Shipping & Returns', 'Size Guide', 'Track Order', 'Gift Cards'].map(link => (
@@ -63,48 +63,48 @@ export const Footer: React.FC = () => {
                                     </a>
                                 </li>
                             </ul>
-                        </div>
-                        <div>
-                            <h4 className="text-[9px] uppercase tracking-[0.4em] font-bold text-zinc-500 mb-6">The Maison</h4>
-                            <ul className="space-y-4">
-                                {['Our Heritage', 'Sustainability', 'Careers', 'Press', 'Legal'].map(link => (
-                                    <li key={link}>
-                                        <a href="#" className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block">
-                                            {link}
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                    </div>
+                    <div>
+                        <h4 className="text-[9px] uppercase tracking-[0.4em] font-bold text-zinc-500 mb-6">The Maison</h4>
+                        <ul className="space-y-4">
+                            {['Our Heritage', 'Sustainability', 'Careers', 'Press', 'Legal'].map(link => (
+                                <li key={link}>
+                                    <a href="#" className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block">
+                                        {link}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
+            </div>
 
-                {/* Bottom Section */}
-                <div className="flex flex-col md:flex-row justify-between items-center pt-12 border-t border-white/10 gap-6">
-                    <div className="flex flex-col gap-4">
-                        <h1 className="font-serif text-2xl tracking-[0.2em] italic opacity-50">KLYORA</h1>
-                        <div className="flex gap-3 mt-2 opacity-50">
-                            {/* Payment Icons (Text Badges) */}
-                            {['VISA', 'AMEX', 'PAYPAL', 'KLARNA'].map(pay => (
-                                <div key={pay} className="border border-white/20 px-2 py-1 text-[8px] font-bold tracking-widest">{pay}</div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="flex gap-8">
-                        {['Instagram', 'Pinterest', 'TikTok'].map(social => (
-                            <a key={social} href="#" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
-                                {social}
-                            </a>
+            {/* Bottom Section */}
+            <div className="flex flex-col md:flex-row justify-between items-center pt-12 border-t border-white/10 gap-6">
+                <div className="flex flex-col gap-4">
+                    <h1 className="font-serif text-2xl tracking-[0.2em] italic opacity-50">KLYORA</h1>
+                    <div className="flex gap-3 mt-2 opacity-50">
+                        {/* Payment Icons (Text Badges) */}
+                        {['VISA', 'AMEX', 'PAYPAL', 'KLARNA'].map(pay => (
+                            <div key={pay} className="border border-white/20 px-2 py-1 text-[8px] font-bold tracking-widest">{pay}</div>
                         ))}
                     </div>
-
-                    <p className="text-[9px] uppercase tracking-widest text-zinc-600">
-                        © 2025 Maison Klyora. All Rights Reserved.
-                    </p>
                 </div>
 
+                <div className="flex gap-8">
+                    {['Instagram', 'Pinterest', 'TikTok'].map(social => (
+                        <a key={social} href="#" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
+                            {social}
+                        </a>
+                    ))}
+                </div>
+
+                <p className="text-[9px] uppercase tracking-widest text-zinc-600">
+                    © 2025 Maison Klyora. All Rights Reserved.
+                </p>
             </div>
-        </footer>
+
+        </div>
+        </footer >
     );
 };
