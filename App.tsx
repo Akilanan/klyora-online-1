@@ -10,7 +10,7 @@ import { StylistChat } from './components/StylistChat';
 import { SearchOverlay } from './components/SearchOverlay';
 import { CheckoutFlow } from './components/CheckoutFlow';
 import { shopifyService } from './services/shopifyService';
-import { BoutiqueImage } from './components/BoutiqueImage';
+import { ProductCard } from './components/ProductCard';
 
 const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop',
@@ -193,29 +193,12 @@ const App: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40">
             {filteredProducts.map((product) => (
-              <div
+              <ProductCard
                 key={product.id}
-                className="group cursor-pointer animate-fade-scale"
+                product={product}
+                currency={currency}
                 onClick={() => setSelectedQuickView(product)}
-              >
-                <div className="relative mb-12 overflow-hidden bg-zinc-900 aspect-[3/4]">
-                  <BoutiqueImage
-                    src={product.image}
-                    alt={product.name}
-                    className="group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="text-[9px] uppercase tracking-[0.5em] font-bold border border-white/20 px-10 py-4">View Detail</span>
-                  </div>
-                </div>
-                <div className="flex justify-between items-start px-2">
-                  <div className="flex-1">
-                    <h3 className="text-[13px] uppercase font-bold tracking-[0.3em] text-white/90">{product.name}</h3>
-                    <p className="text-[8px] text-zinc-600 uppercase tracking-widest mt-3">{product.composition || 'Premium Silhouette'}</p>
-                  </div>
-                  <span className="text-[15px] font-bold font-serif italic">{currency}{product.price}</span>
-                </div>
-              </div>
+              />
             ))}
           </div>
         </section>

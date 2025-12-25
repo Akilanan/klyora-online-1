@@ -31,6 +31,18 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
     setActiveImage(product.image);
   }, [product]);
 
+  const uniqueImages = React.useMemo(() => {
+    const imgs = [product.image];
+    if (product.images) {
+      product.images.forEach(img => {
+        if (!imgs.includes(img) && img !== product.image) {
+          imgs.push(img);
+        }
+      });
+    }
+    return Array.from(new Set(imgs)); // Extra safety
+  }, [product]);
+
   const handleApplySize = (sizeTitle: string) => {
     const variant = product.variants?.find(v => v.title === sizeTitle);
     if (variant) setSelectedVariant(variant);
@@ -59,9 +71,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           </div>
 
           {/* Thumbnails Overlay */}
-          {product.images && product.images.length > 1 && (
+          {uniqueImages.length > 1 && (
             <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 p-4 z-20">
-              {product.images.map((img, idx) => (
+              {uniqueImages.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={(e) => { e.stopPropagation(); setActiveImage(img); }}
