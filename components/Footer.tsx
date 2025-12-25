@@ -57,6 +57,11 @@ export const Footer: React.FC = () => {
                                         </a>
                                     </li>
                                 ))}
+                                <li>
+                                    <a href="https://www.care-label.tm/en/labelling/" target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block">
+                                        Fabric Care Guide
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <div>
@@ -76,7 +81,15 @@ export const Footer: React.FC = () => {
 
                 {/* Bottom Section */}
                 <div className="flex flex-col md:flex-row justify-between items-center pt-12 border-t border-white/10 gap-6">
-                    <h1 className="font-serif text-2xl tracking-[0.2em] italic opacity-50">KLYORA</h1>
+                    <div className="flex flex-col gap-4">
+                        <h1 className="font-serif text-2xl tracking-[0.2em] italic opacity-50">KLYORA</h1>
+                        <div className="flex gap-3 mt-2 opacity-50">
+                            {/* Payment Icons (Text Badges) */}
+                            {['VISA', 'AMEX', 'PAYPAL', 'KLARNA'].map(pay => (
+                                <div key={pay} className="border border-white/20 px-2 py-1 text-[8px] font-bold tracking-widest">{pay}</div>
+                            ))}
+                        </div>
+                    </div>
 
                     <div className="flex gap-8">
                         {['Instagram', 'Pinterest', 'TikTok'].map(social => (

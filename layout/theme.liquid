@@ -8,15 +8,20 @@
     <link rel="canonical" href="{{ canonical_url }}">
 
     <title>
-      {{ page_title }}
-      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
-      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
-      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+      {% if request.page_type == 'index' %}
+        Premium Fashion Clothing for Men & Women | Klyora Official Store
+      {% else %}
+        {{ page_title }} | Klyora
+      {% endif %}
     </title>
 
     {% if page_description %}
       <meta name="description" content="{{ page_description | escape }}">
+    {% else %}
+      <meta name="description" content="Shop premium fashion clothing at Klyora. Discover luxury-quality outfits with modern designs, fast delivery, and secure checkout.">
     {% endif %}
+
+    <meta name="keywords" content="premium clothing, luxury fashion, online fashion store, designer wear, modern outfits">
 
     <!-- Social Meta Tags -->
     <meta property="og:site_name" content="{{ shop.name }}">
