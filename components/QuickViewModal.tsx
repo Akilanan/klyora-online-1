@@ -66,15 +66,15 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
     <div className="fixed inset-0 z-[500] flex items-center justify-center p-0 md:p-8 font-sans">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-fade-in" onClick={onClose} />
 
-      <div className="relative w-full max-w-7xl bg-white shadow-2xl animate-fade-scale flex flex-col md:flex-row overflow-hidden h-full md:h-[85vh] md:max-h-[800px] md:rounded-sm">
-        <button onClick={onClose} className="absolute top-6 right-6 z-[510] p-3 text-black/50 hover:text-black hover:rotate-90 transition-all duration-500 bg-white/80 backdrop-blur rounded-full">
+      <div className="relative w-full max-w-5xl bg-white shadow-2xl animate-fade-scale flex flex-col md:flex-row overflow-hidden h-full md:h-[75vh] md:max-h-[700px] md:rounded-sm">
+        <button onClick={onClose} className="absolute top-4 right-4 z-[510] p-2 text-black/50 hover:text-black hover:rotate-90 transition-all duration-500 bg-white/80 backdrop-blur rounded-full">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
         {/* Left: Product Imagery */}
-        <div className="w-full md:w-[40%] bg-zinc-50 relative group overflow-hidden flex flex-col border-r border-black/5 p-10">
+        <div className="w-full md:w-1/2 bg-zinc-50 relative group overflow-hidden flex flex-col border-r border-black/5 p-8">
           <div className="flex-1 relative overflow-hidden h-full flex items-center justify-center">
             <BoutiqueImage
               src={activeImage || product.image}
@@ -124,36 +124,36 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           )}
         </div>
 
-        {/* Right: Scrollable Details */}
-        <div className="w-full md:w-[60%] flex flex-col bg-white text-black relative">
-          <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-8">
+        {/* Right: Details (Fixed Header + Scroll + Footer) */}
+        <div className="w-full md:w-1/2 flex flex-col bg-white text-black relative">
 
-            {/* 1. Header & Price */}
-            <div className="space-y-4">
+          {/* 1. Fixed Header */}
+          <div className="p-8 border-b border-black/5 bg-white z-10 shrink-0">
+            <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <span className="h-[1px] w-8 bg-black"></span>
-                <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-black">Klyora Atelier</span>
+                <span className="h-[1px] w-6 bg-black"></span>
+                <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-black">Klyora Atelier</span>
               </div>
               <div className="flex justify-between items-start">
-                <h2 className="text-3xl md:text-4xl font-serif italic font-medium tracking-tight text-black leading-tight">{product.name}</h2>
-                <button onClick={onToggleSave} className="p-2 hover:text-red-500 transition-colors">
+                <h2 className="text-2xl md:text-3xl font-serif italic font-medium tracking-tight text-black leading-tight pr-8">{product.name}</h2>
+                <button onClick={onToggleSave} className="p-1 hover:text-red-500 transition-colors">
                   {isSaved ? (
-                    <svg className="w-6 h-6 text-red-500 fill-current" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" /></svg>
+                    <svg className="w-5 h-5 text-red-500 fill-current" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" /></svg>
                   ) : (
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                   )}
                 </button>
               </div>
-              <div className="flex items-baseline gap-4 pt-2">
-                <p className="text-2xl font-sans font-light tracking-wide text-zinc-900">{currency}{product.price.toLocaleString()}</p>
-                <p className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold">Import Duties Included</p>
+              <div className="flex items-baseline gap-4">
+                <p className="text-xl font-sans font-light tracking-wide text-zinc-900">{currency}{product.price.toLocaleString()}</p>
               </div>
             </div>
+          </div>
 
-
-
-            {/* 2. Sizing */}
-            <div className="space-y-6">
+          {/* 2. Scrollable Body */}
+          <div className="flex-1 overflow-y-auto p-8 space-y-8">
+            {/* Sizing */}
+            <div className="space-y-4">
               <div className="flex justify-between items-baseline border-b border-black/5 pb-2">
                 <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500">Select Size</span>
                 <button
@@ -163,110 +163,106 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   Size Guide
                 </button>
               </div>
+              <div className="flex flex-wrap gap-2">
+                {product.variants?.map(variant => (
+                  <button
+                    key={variant.id}
+                    onClick={() => variant.available && setSelectedVariant(variant)}
+                    disabled={!variant.available}
+                    className={`min-w-[3.5rem] h-10 px-3 border text-[10px] font-medium transition-all duration-300 flex items-center justify-center ${!variant.available ? 'opacity-30 cursor-not-allowed line-through bg-zinc-50 border-zinc-100' : selectedVariant?.id === variant.id ? 'bg-black text-white border-black' : 'border-zinc-200 hover:border-black text-black bg-transparent'}`}
+                  >
+                    {variant.title}
+                  </button>
+                )) || <span className="text-sm text-zinc-400 px-2 italic">Universal Fit</span>}
+              </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {product.variants?.map(variant => (
+            {/* Accordion Details */}
+            <div className="space-y-0 border-t border-black/10">
+              {/* Senses */}
+              <div className="border-b border-black/10">
                 <button
-                  key={variant.id}
-                  onClick={() => variant.available && setSelectedVariant(variant)}
-                  disabled={!variant.available}
-                  className={`min-w-[4rem] h-12 px-4 border text-[11px] font-medium transition-all duration-300 flex items-center justify-center ${!variant.available ? 'opacity-30 cursor-not-allowed line-through bg-zinc-50 border-zinc-100' : selectedVariant?.id === variant.id ? 'bg-black text-white border-black' : 'border-zinc-200 hover:border-black text-black bg-transparent'}`}
+                  onClick={() => toggleSection('senses')}
+                  className="w-full py-4 flex justify-between items-center text-left group"
                 >
-                  {variant.title}
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">The Senses & Composition</span>
+                  <span className={`text-lg font-light transition-transform duration-300 ${openSection === 'senses' ? 'rotate-45' : ''}`}>+</span>
                 </button>
-              )) || <span className="text-sm text-zinc-400 px-2 italic">Universal Fit</span>}
-            </div>
-          </div>
-
-          {/* 3. Accordion Details */}
-          <div className="space-y-0 border-t border-black/10">
-            {/* The Senses (Description) */}
-            <div className="border-b border-black/10">
-              <button
-                onClick={() => toggleSection('senses')}
-                className="w-full py-6 flex justify-between items-center text-left group"
-              >
-                <span className="text-[11px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">The Senses & Composition</span>
-                <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'senses' ? 'rotate-45' : ''}`}>+</span>
-              </button>
-              <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'senses' ? 'max-h-[1000px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
-                <div className="space-y-4 text-sm text-zinc-600 font-light leading-relaxed pt-2 max-h-[180px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-zinc-200">
-                  {product.description ? (
-                    product.description.split('\n')
-                      .map(l => l.trim())
-                      .filter(l => l.length > 0)
-                      .map((line, i) => {
-                        // Header detection: Ends with ':' or is very short and uppercasish
-                        const isHeader = (line.includes(':') && line.length < 40) || (line.length < 20 && line === line.toUpperCase());
-
-                        if (isHeader) {
-                          return (
-                            <div key={i} className="mt-6 mb-2">
-                              <h4 className="font-serif italic text-black text-lg border-l-2 border-[#8ca67a] pl-3 inline-block">
-                                {line}
-                              </h4>
-                            </div>
-                          );
-                        }
-                        return <p key={i} className="text-zinc-500">{line}</p>;
-                      })
-                  ) : (
-                    <div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
-                  )}
+                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'senses' ? 'max-h-[1000px] opacity-100 pb-4' : 'max-h-0 opacity-0'}`}>
+                  <div className="space-y-4 text-xs text-zinc-600 font-light leading-relaxed pt-2">
+                    {product.description ? (
+                      product.description.split('\n')
+                        .map(l => l.trim())
+                        .filter(l => l.length > 0)
+                        .map((line, i) => {
+                          const isHeader = (line.includes(':') && line.length < 40) || (line.length < 20 && line === line.toUpperCase());
+                          if (isHeader) {
+                            return (
+                              <div key={i} className="mt-4 mb-2">
+                                <h4 className="font-serif italic text-black text-base border-l-2 border-[#8ca67a] pl-3 inline-block">
+                                  {line}
+                                </h4>
+                              </div>
+                            );
+                          }
+                          return <p key={i} className="text-zinc-500">{line}</p>;
+                        })
+                    ) : (
+                      <div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+                    )}
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-dashed border-zinc-200 grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Material</p>
+                      <p className="text-xs">{product.composition || "Premium Blend"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Origin</p>
+                      <p className="text-xs">{product.origin || "Italy"}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-6 pt-6 border-t border-dashed border-zinc-200 grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Material</p>
-                    <p className="text-xs">{product.composition || "Premium Blend"}</p>
-                  </div>
-                  <div>
-                    <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Origin</p>
-                    <p className="text-xs">{product.origin || "Italy"}</p>
-                  </div>
+              </div>
+
+              {/* Shipping */}
+              <div className="border-b border-black/10">
+                <button
+                  onClick={() => toggleSection('shipping')}
+                  className="w-full py-4 flex justify-between items-center text-left group"
+                >
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">Shipping & Returns</span>
+                  <span className={`text-lg font-light transition-transform duration-300 ${openSection === 'shipping' ? 'rotate-45' : ''}`}>+</span>
+                </button>
+                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'shipping' ? 'max-h-[300px] opacity-100 pb-4' : 'max-h-0 opacity-0'}`}>
+                  <p className="text-xs font-light text-zinc-600 leading-relaxed">
+                    Complimentary {product.shippingTier || "Standard"} shipping on all orders over $500.
+                    Returns accepted within 14 days.
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Shipping & Returns */}
-            <div className="border-b border-black/10">
-              <button
-                onClick={() => toggleSection('shipping')}
-                className="w-full py-6 flex justify-between items-center text-left group"
-              >
-                <span className="text-[11px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">Shipping & Returns</span>
-                <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'shipping' ? 'rotate-45' : ''}`}>+</span>
-              </button>
-              <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'shipping' ? 'max-h-[300px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
-                <p className="text-sm font-light text-zinc-600 leading-relaxed">
-                  Complimentary {product.shippingTier || "Standard"} shipping on all orders over $500.
-                  Returns are accepted within 14 days of delivery for a full refund or exchange, provided items are unworn and tags are attached.
-                </p>
-              </div>
+            {/* Cross Sells */}
+            <div className="pt-4">
+              <SimilarProducts
+                currentProductId={product.id}
+                products={allProducts}
+                currency={currency}
+              />
             </div>
           </div>
 
-          {/* 4. Cross Sells */}
-          <div className="pt-8">
-            <SimilarProducts
-              currentProductId={product.id}
-              products={allProducts}
-              currency={currency}
-            />
+          {/* 3. Fixed Footer */}
+          <div className="p-6 bg-white border-t border-black/5 z-20 shrink-0">
+            <button
+              onClick={() => selectedVariant ? onAddToCart(product, selectedVariant) : null}
+              disabled={!selectedVariant}
+              className="w-full bg-black text-white py-4 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
+            >
+              <span>{selectedVariant ? `Add to Bag - ${currency}${product.price}` : 'Select Size'}</span>
+              {selectedVariant && <span className="w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>}
+            </button>
           </div>
-        </div>
-
-        {/* Sticky Actions Footer */}
-        {/* Actions Footer */}
-        <div className="p-6 bg-white border-t border-black/5 z-20">
-          <button
-            onClick={() => selectedVariant ? onAddToCart(product, selectedVariant) : null}
-            disabled={!selectedVariant}
-            className="w-full bg-black text-white py-5 text-[11px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
-          >
-            <span>{selectedVariant ? `Add to Bag - ${currency}${product.price}` : 'Select Size'}</span>
-            {selectedVariant && <span className="w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>}
-          </button>
         </div>
       </div>
       {isFitAssistantOpen && (
