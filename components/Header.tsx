@@ -43,7 +43,6 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center justify-between text-white">
         <nav className="hidden md:flex gap-14 text-[9px] uppercase tracking-[0.6em] font-bold">
           <button onClick={onArchiveClick} className="hover:opacity-40 transition-opacity">Archive</button>
-          <button onClick={onWishlistClick} className="hover:opacity-40 transition-opacity">Saved Looks</button>
           <button onClick={onConciergeClick} className="hover:opacity-40 transition-opacity flex items-center gap-3">
             Concierge
             <div className={`w-1 h-1 rounded-full ${isSynced ? 'bg-[#8ca67a]' : 'bg-zinc-700'}`}></div>
