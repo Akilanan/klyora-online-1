@@ -8,10 +8,7 @@ interface HeaderProps {
   onCartClick: () => void;
   onSearchClick: () => void;
   onWishlistClick: () => void;
-  onSavedLooksClick: () => void;
-  isSynced: boolean;
-  customerName: string | null;
-  onLoginClick: () => void;
+  onConciergeClick: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -24,7 +21,8 @@ export const Header: React.FC<HeaderProps> = ({
   onSavedLooksClick,
   isSynced,
   customerName,
-  onLoginClick
+  onLoginClick,
+  onConciergeClick
 }) => {
   const [scrolled, setScrolled] = useState(false);
 
@@ -42,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
         <nav className="hidden md:flex gap-14 text-[9px] uppercase tracking-[0.6em] font-bold">
           <button onClick={onWishlistClick} className="hover:opacity-40 transition-opacity">Archive</button>
           <button onClick={onSavedLooksClick} className="hover:opacity-40 transition-opacity">Saved Looks</button>
-          <button onClick={onSavedLooksClick} className="hover:opacity-40 transition-opacity flex items-center gap-3">
+          <button onClick={onConciergeClick} className="hover:opacity-40 transition-opacity flex items-center gap-3">
             Concierge
             <div className={`w-1 h-1 rounded-full ${isSynced ? 'bg-[#8ca67a]' : 'bg-zinc-700'}`}></div>
           </button>

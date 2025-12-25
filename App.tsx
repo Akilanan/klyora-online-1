@@ -14,6 +14,7 @@ import { ProductCard } from './components/ProductCard';
 import { LoginModal } from './components/LoginModal';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { ArchiveDrawer } from './components/ArchiveDrawer';
+import { Footer } from './components/Footer';
 
 const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop',
@@ -318,6 +319,8 @@ const App: React.FC = () => {
           </div>
         </section>
       </main>
+
+      <Footer />
 
       <StylistChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       <SearchOverlay
