@@ -78,6 +78,32 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               aspectRatio="aspect-auto h-full w-full"
               className="transition-transform duration-[3s] ease-out scale-100 group-hover:scale-105 object-cover"
             />
+            {uniqueImages.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const currentIndex = uniqueImages.indexOf(activeImage || product.image);
+                    const prevIndex = currentIndex <= 0 ? uniqueImages.length - 1 : currentIndex - 1;
+                    setActiveImage(uniqueImages[prevIndex]);
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 p-3 text-black bg-white/50 backdrop-blur-md rounded-full hover:bg-black hover:text-white transition-all opacity-0 group-hover:opacity-100 z-10"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const currentIndex = uniqueImages.indexOf(activeImage || product.image);
+                    const nextIndex = (currentIndex + 1) % uniqueImages.length;
+                    setActiveImage(uniqueImages[nextIndex]);
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-3 text-black bg-white/50 backdrop-blur-md rounded-full hover:bg-black hover:text-white transition-all opacity-0 group-hover:opacity-100 z-10"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7" /></svg>
+                </button>
+              </>
+            )}
           </div>
 
           {/* Thumbnails Overlay */}
