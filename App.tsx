@@ -265,8 +265,8 @@ const App: React.FC = () => {
         loyaltyPoints={loyaltyPoints}
         onCartClick={() => setIsCartOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
-        onWishlistClick={() => setIsArchiveOpen(true)}
-        onSavedLooksClick={() => setIsWishlistOpen(true)}
+        onWishlistClick={() => setIsWishlistOpen(true)}
+        onArchiveClick={() => setIsArchiveOpen(true)}
         isSynced={isStoreSynced}
         customerName={customerName}
         onLoginClick={() => setIsLoginOpen(true)}

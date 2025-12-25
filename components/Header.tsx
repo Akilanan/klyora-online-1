@@ -8,7 +8,11 @@ interface HeaderProps {
   onCartClick: () => void;
   onSearchClick: () => void;
   onWishlistClick: () => void;
+  onArchiveClick: () => void;
   onConciergeClick: () => void;
+  isSynced?: boolean;
+  customerName?: string | null;
+  onLoginClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -18,7 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   onCartClick,
   onSearchClick,
   onWishlistClick,
-  onSavedLooksClick,
+  onArchiveClick,
   isSynced,
   customerName,
   onLoginClick,
@@ -38,8 +42,8 @@ export const Header: React.FC<HeaderProps> = ({
     <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-1000 ${scrolled ? 'bg-black/95 backdrop-blur-2xl border-b border-white/5 py-5 px-10 shadow-2xl' : 'bg-transparent py-10 px-12'}`}>
       <div className="flex items-center justify-between text-white">
         <nav className="hidden md:flex gap-14 text-[9px] uppercase tracking-[0.6em] font-bold">
-          <button onClick={onWishlistClick} className="hover:opacity-40 transition-opacity">Archive</button>
-          <button onClick={onSavedLooksClick} className="hover:opacity-40 transition-opacity">Saved Looks</button>
+          <button onClick={onArchiveClick} className="hover:opacity-40 transition-opacity">Archive</button>
+          <button onClick={onWishlistClick} className="hover:opacity-40 transition-opacity">Saved Looks</button>
           <button onClick={onConciergeClick} className="hover:opacity-40 transition-opacity flex items-center gap-3">
             Concierge
             <div className={`w-1 h-1 rounded-full ${isSynced ? 'bg-[#8ca67a]' : 'bg-zinc-700'}`}></div>
