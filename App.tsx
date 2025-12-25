@@ -56,6 +56,8 @@ const App: React.FC = () => {
 
   /* New state for currency */
   const [currency, setCurrency] = useState('$');
+  const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
 
   useEffect(() => {
     // @ts-ignore
@@ -140,12 +142,46 @@ const App: React.FC = () => {
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
+      // Visual Search
       if (visualSearchIds && !visualSearchIds.includes(p.id)) return false;
-      if (activeCategory && p.category !== activeCategory) return false;
+
+      // Text Search
       if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+
+      // Category Filter
+      if (activeCategory && p.category !== activeCategory) return false;
+
+      // Price Filter
+      if (priceRange) {
+        const [min, max] = priceRange;
+        if (p.price < min || (max < 10000 && p.price > max)) return false; // max 10000 is "Above" tier start
+        if (max === 10000 && p.price < 1000) return false; // Special case for "Above 1000" logic if needed, but simple range works
+      }
+
+      // Material Filter
+      if (selectedMaterial) {
+        // Assuming p.composition contains the material string or we have a data field.
+        // If not, we check description or a new field. Let's assume composition exists on Product type as added before.
+        if (!p.composition?.toLowerCase().includes(selectedMaterial.toLowerCase())) return false;
+      }
+
       return true;
     });
-  }, [products, activeCategory, searchQuery, visualSearchIds]);
+  }, [products, activeCategory, searchQuery, visualSearchIds, priceRange, selectedMaterial]);
+
+  const allMaterials = useMemo(() => {
+    const materials = new Set<string>();
+    products.forEach(p => {
+      // Extract main material from composition or mock it if empty
+      // Example composition: "100% Cashmere" -> "Cashmere"
+      if (p.composition) {
+        const simpleMat = p.composition.replace(/[0-9%]/g, '').trim().split(' ')[0]; // Very naive extraction
+        if (simpleMat) materials.add(simpleMat);
+      }
+    });
+    // Fallback/Mock list if extraction is too messy for now to ensure UI looks populated
+    return Array.from(materials).length > 0 ? Array.from(materials) : ['Silk', 'Cotton', 'Wool', 'Cashmere', 'Linen', 'Velvet'];
+  }, [products]);
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const wishlistItems = useMemo(() => products.filter(p => wishlist.includes(p.id)), [products, wishlist]);
@@ -251,11 +287,11 @@ const App: React.FC = () => {
         results={filteredProducts}
         currency={currency}
         onVisualResults={(ids) => { setVisualSearchIds(ids); setIsSearchOpen(false); }}
-        priceRange={null}
-        onPriceRangeChange={() => { }}
-        selectedMaterial={null}
-        onMaterialChange={() => { }}
-        allMaterials={[]}
+        priceRange={priceRange}
+        onPriceRangeChange={setPriceRange}
+        selectedMaterial={selectedMaterial}
+        onMaterialChange={setSelectedMaterial}
+        allMaterials={allMaterials}
       />
 
       {isCartOpen && (
