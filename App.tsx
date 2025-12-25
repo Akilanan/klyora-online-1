@@ -170,22 +170,13 @@ const App: React.FC = () => {
     // Availability Filter
     if (inStockOnly) {
       let result = products;
+      let result = products.filter(p => {
+        // Visual Search
+        if (visualSearchIds && !visualSearchIds.includes(p.id)) return false;
 
-      // Apply visual search filter first if active
-      if (visualSearchIds && visualSearchIds.length > 0) {
-        result = result.filter(p => visualSearchIds.includes(p.id));
-      }
+        // Text Search
+        if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
 
-      // Apply search query filter
-      if (searchQuery) {
-        result = result.filter(p =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.description.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      }
-
-      // Apply other filters
-      result = result.filter(p => {
         // Category Filter
         if (activeCategory && p.category !== activeCategory) return false;
 
