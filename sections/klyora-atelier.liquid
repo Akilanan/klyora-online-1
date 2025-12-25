@@ -17,13 +17,17 @@
 }
 {% endschema %}
 
-{% if collections.all.products.size == 0 %}
-  <div style="background: #000; color: #fff; padding: 40px; text-align: center; border: 1px solid #333; margin: 20px;">
-    <h3 style="font-family: sans-serif; text-transform: uppercase; letter-spacing: 2px;">No Active Products Found</h3>
-    <p style="font-family: sans-serif; color: #888; margin-top: 10px;">Please ensure your products are set to "Active" status in the Shopify Admin.</p>
-    <p style="font-size: 10px; color: #555; margin-top: 5px;">Debug: Collection 'all' size is 0.</p>
-  </div>
-{% endif %}
+<div style="background: #111; color: #0f0; padding: 20px; margin: 20px; border: 1px solid #444; font-family: monospace; z-index: 9999; position: relative;">
+  <h3 style="color: #fff; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">KLYORA DEBUG PANEL</h3>
+  <p><strong>Collections Found:</strong></p>
+  <ul style="list-style: none; padding: 0;">
+    <li>All ('all'): {{ collections.all.products_count }} products</li>
+    {% for col in collections %}
+      <li>- {{ col.title }} ('{{ col.handle }}'): {{ col.products_count }} products</li>
+    {% endfor %}
+  </ul>
+  <p style="margin-top: 10px; color: #888;">If counts are 0, check 'Online Store' channel availability in Admin > Products.</p>
+</div>
 <div id="root"></div>
 
 <script>
