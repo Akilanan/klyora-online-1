@@ -7,7 +7,6 @@ import { BoutiqueImage } from './BoutiqueImage';
 import { FitAssistant } from './FitAssistant';
 import { ProductReviews } from './ProductReviews';
 import { SimilarProducts } from './SimilarProducts';
-import { VirtualTryOnModal } from './VirtualTryOnModal';
 
 interface QuickViewModalProps {
   product: Product;
@@ -58,7 +57,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   };
 
   const [openSection, setOpenSection] = useState<string | null>('senses');
-  const [isTryOnOpen, setIsTryOnOpen] = useState(false);
 
   const toggleSection = (section: string) => {
     setOpenSection(openSection === section ? null : section);
@@ -160,21 +158,12 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             <div className="space-y-6">
               <div className="flex justify-between items-baseline border-b border-black/5 pb-2">
                 <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500">Select Size</span>
-                <div className="flex gap-6">
-                  <button
-                    onClick={() => setIsTryOnOpen(true)}
-                    className="text-[10px] uppercase tracking-[0.2em] font-bold text-black hover:opacity-60 flex items-center gap-2"
-                  >
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    Virtual Try-On
-                  </button>
-                  <button
-                    onClick={() => setIsFitAssistantOpen(true)}
-                    className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#8ca67a] hover:underline underline-offset-4"
-                  >
-                    Size Guide
-                  </button>
-                </div>
+                <button
+                  onClick={() => setIsFitAssistantOpen(true)}
+                  className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#8ca67a] hover:underline underline-offset-4"
+                >
+                  Size Guide
+                </button>
               </div>
 
 // ... (at end of component)
@@ -278,12 +267,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         />
       )}
 
-      {isTryOnOpen && (
-        <VirtualTryOnModal
-          product={product}
-          onClose={() => setIsTryOnOpen(false)}
-        />
-      )}
+
     </div>
   );
 };
