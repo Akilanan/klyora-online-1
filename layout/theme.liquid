@@ -72,6 +72,9 @@
       }
     </script>
 
+    <!-- LCP Optimization: Preload Hero Image -->
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop">
+
     {{ content_for_header }}
 
     <!-- Tailwind CSS -->
@@ -221,6 +224,20 @@
     </style>
 
   <body class="gradient">
+    <noscript>
+      <div style="padding: 40px; text-align: center; color: white; background: #000;">
+        <h1>Premium Fashion Clothing Designed for Modern Style</h1>
+        <p>Shop premium fashion clothing at Klyora. Discover luxury-quality outfits with modern designs, fast delivery, and secure checkout.</p>
+        <h2>The Maison Philosophy</h2>
+        <p>
+           Welcome to Maison Klyora, a digital sanctuary dedicated to the art of the premium silhouette. 
+           Our atelier curators travel the virtual globe to select only the finest materials, ensuring that every view reveals a new detail of uncompromised luxury.
+           We believe that style is an architectural pursuit. From the drape of a wool coat to the structure of a tailored blazer, 
+           every piece in our collection is chosen to enhance your personal narrative.
+        </p>
+        <a href="/collections/all" style="color: white; text-decoration: underline;">Explore Our Premium Clothing Collection</a>
+      </div>
+    </noscript>
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
       {{ content_for_layout }}
     </main>
