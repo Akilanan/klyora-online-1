@@ -13,13 +13,15 @@ interface QuickViewModalProps {
   allProducts: Product[];
   onClose: () => void;
   onAddToCart: (p: Product, variant: ProductVariant) => void;
+  currency?: string;
 }
 
 export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   product,
   allProducts,
   onClose,
-  onAddToCart
+  onAddToCart,
+  currency = '$'
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(product.variants?.[0] || null);
   const [activeImage, setActiveImage] = useState<string | null>(product.image);
@@ -102,7 +104,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               </div>
               <h2 className="text-5xl md:text-6xl font-serif uppercase tracking-tighter leading-[0.9] text-black">{product.name}</h2>
               <div className="flex items-center justify-between pt-4 border-t border-black/5">
-                <p className="text-[20px] font-bold tracking-[0.1em] text-black font-serif italic">${product.price.toLocaleString()} USD</p>
+                <p className="text-[20px] font-bold tracking-[0.1em] text-black font-serif italic">{currency}{product.price.toLocaleString()} USD</p>
                 <p className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold">Complimentary Duty</p>
               </div>
             </div>
@@ -177,6 +179,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               <SimilarProducts
                 currentProductId={product.id}
                 products={allProducts}
+                currency={currency}
               />
             </div>
           </div>

@@ -252,6 +252,7 @@ const App: React.FC = () => {
           allProducts={products}
           onClose={() => setSelectedQuickView(null)}
           onAddToCart={handleAddToCart}
+          currency={currency}
         />
       )}
 

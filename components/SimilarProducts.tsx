@@ -5,9 +5,10 @@ import { BoutiqueImage } from './BoutiqueImage';
 interface SimilarProductsProps {
   currentProductId: string;
   products: any[]; // Using any[] to match catalog structure easily, or proper Product type
+  currency?: string;
 }
 
-export const SimilarProducts: React.FC<SimilarProductsProps> = ({ currentProductId, products }) => {
+export const SimilarProducts: React.FC<SimilarProductsProps> = ({ currentProductId, products, currency = '$' }) => {
   // Find current product to get category
   const currentProduct = products.find(p => p.id === currentProductId);
 
@@ -39,7 +40,7 @@ export const SimilarProducts: React.FC<SimilarProductsProps> = ({ currentProduct
             </div>
             <div className="space-y-1">
               <h5 className="text-[9px] uppercase font-bold tracking-[0.2em] truncate text-black">{item.name}</h5>
-              <p className="text-[11px] font-serif italic text-zinc-400">${item.price}</p>
+              <p className="text-[11px] font-serif italic text-zinc-400">{currency}{item.price}</p>
             </div>
           </div>
         ))}
