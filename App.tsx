@@ -13,6 +13,7 @@ import { shopifyService } from './services/shopifyService';
 import { ProductCard } from './components/ProductCard';
 import { LoginModal } from './components/LoginModal';
 import { WishlistDrawer } from './components/WishlistDrawer';
+import { ArchiveDrawer } from './components/ArchiveDrawer';
 
 const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop',
@@ -30,6 +31,7 @@ const App: React.FC = () => {
   const [loyaltyPoints, setLoyaltyPoints] = useState(1250);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isArchiveOpen, setIsArchiveOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -157,7 +159,7 @@ const App: React.FC = () => {
         loyaltyPoints={loyaltyPoints}
         onCartClick={() => setIsCartOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
-        onWishlistClick={() => window.location.href = '/collections/all'} // Practical Archive = Shop All
+        onWishlistClick={() => setIsArchiveOpen(true)}
         onSavedLooksClick={() => setIsWishlistOpen(true)}
         isSynced={isStoreSynced}
         customerName={customerName}
@@ -270,6 +272,15 @@ const App: React.FC = () => {
           onClose={() => setIsWishlistOpen(false)}
           onRemove={(id) => handleToggleWishlist(id)}
           onMoveToBag={(product) => { setIsWishlistOpen(false); setSelectedQuickView(product); }}
+          currency={currency}
+        />
+      )}
+
+      {isArchiveOpen && (
+        <ArchiveDrawer
+          products={products}
+          onClose={() => setIsArchiveOpen(false)}
+          onSelectProduct={(product) => { setIsArchiveOpen(false); setSelectedQuickView(product); }}
           currency={currency}
         />
       )}
