@@ -165,15 +165,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   Size Guide
                 </button>
               </div>
-
-// ... (at end of component)
-
-              {isTryOnOpen && (
-                <VirtualTryOnModal
-                  product={product}
-                  onClose={() => setIsTryOnOpen(false)}
-                />
-              )}
             </div>
 
             <div className="flex flex-wrap gap-2">
