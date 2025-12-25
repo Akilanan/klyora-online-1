@@ -193,21 +193,26 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'senses' ? 'rotate-45' : ''}`}>+</span>
               </button>
               <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'senses' ? 'max-h-[1000px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
-                <div className="space-y-4 text-sm text-zinc-600 font-light leading-relaxed">
+                <div className="space-y-4 text-sm text-zinc-600 font-light leading-relaxed pt-2">
                   {product.description ? (
-                    product.description.split('\n').map((line, i) => {
-                      const cleanLine = line.trim();
-                      if (!cleanLine) return null;
-                      // Stricter check: Only short labels (approx 5-6 words) get header styling
-                      if (cleanLine.includes(':') && cleanLine.length < 35) {
-                        return (
-                          <p key={i} className="font-serif italic text-black text-lg mt-5 mb-1 border-l-2 border-[#8ca67a] pl-4">
-                            {cleanLine}
-                          </p>
-                        );
-                      }
-                      return <p key={i}>{cleanLine}</p>;
-                    })
+                    product.description.split('\n')
+                      .map(l => l.trim())
+                      .filter(l => l.length > 0)
+                      .map((line, i) => {
+                        // Header detection: Ends with ':' or is very short and uppercasish
+                        const isHeader = (line.includes(':') && line.length < 40) || (line.length < 20 && line === line.toUpperCase());
+
+                        if (isHeader) {
+                          return (
+                            <div key={i} className="mt-6 mb-2">
+                              <h4 className="font-serif italic text-black text-lg border-l-2 border-[#8ca67a] pl-3 inline-block">
+                                {line}
+                              </h4>
+                            </div>
+                          );
+                        }
+                        return <p key={i} className="text-zinc-500">{line}</p>;
+                      })
                   ) : (
                     <div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
                   )}
