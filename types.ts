@@ -14,6 +14,8 @@ export interface Product {
   inventoryStatus?: string;
   shippingTier?: string;
   variants?: ProductVariant[];
+  images: string[];
+  descriptionHtml: string;
 }
 
 export interface ProductVariant {

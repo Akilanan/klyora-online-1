@@ -20,7 +20,9 @@ export const MOCK_PRODUCTS: Product[] = [
     relatedIds: ['k5', 'k8', 'k9', 'z1'],
     composition: '100% Mulberry Silk',
     origin: 'Lyon, France',
-    shippingTier: 'Klyora Express (5-7 Days)'
+    shippingTier: 'Klyora Express (5-7 Days)',
+    images: ['https://images.unsplash.com/photo-1539109132314-34a9c668e007?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>A masterpiece of fluid silk, designed to move with the body. Features a hand-rolled hem and bias-cut silhouette.</p>'
   },
   {
     id: 'z1',
@@ -34,7 +36,9 @@ export const MOCK_PRODUCTS: Product[] = [
     relatedIds: ['k1', 'z3'],
     composition: 'Silk Blend Satin',
     origin: 'Global Atelier',
-    shippingTier: 'Global Express (7 Days)'
+    shippingTier: 'Global Express (7 Days)',
+    images: ['https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>A Zendrop-sourced exclusive, refined by the Klyora atelier. Minimalist silhouette with adjustable straps and a cowl neck.</p>'
   },
   {
     id: 'z6',
@@ -49,7 +53,9 @@ export const MOCK_PRODUCTS: Product[] = [
     composition: 'Italian Cotton Velvet',
     origin: 'Milan Atelier',
     shippingTier: 'Secured White Glove',
-    inventoryStatus: 'Limited Edition'
+    inventoryStatus: 'Limited Edition',
+    images: ['https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>A deep midnight velvet masterpiece. Architectural corset boning and a dramatic side slit for evening galas.</p>'
   },
   {
     id: 'z2',
@@ -63,7 +69,9 @@ export const MOCK_PRODUCTS: Product[] = [
     relatedIds: ['k7', 'z4'],
     composition: 'Organic Cotton / Recycled Wool',
     origin: 'Ethical Global Studio',
-    shippingTier: 'Standard Express (8-10 Days)'
+    shippingTier: 'Standard Express (8-10 Days)',
+    images: ['https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>Chunky, textured knit with an editorial fit. Sourced for the modern wanderer who values both warmth and architectural style.</p>'
   },
   {
     id: 'k2',
@@ -77,7 +85,9 @@ export const MOCK_PRODUCTS: Product[] = [
     relatedIds: ['k3', 'k7', 'k10', 'z7'],
     composition: '100% Grade-A Cashmere',
     origin: 'Inner Mongolia / Biella, Italy',
-    shippingTier: 'White Glove Concierge'
+    shippingTier: 'White Glove Concierge',
+    images: ['https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>Crafted from 100% Mongolian cashmere. A timeless staple featuring a structured shoulder and relaxed waist.</p>'
   },
   {
     id: 'z7',
@@ -91,7 +101,9 @@ export const MOCK_PRODUCTS: Product[] = [
     relatedIds: ['k2', 'k4'],
     composition: 'Super 150s Wool / Silk Facings',
     origin: 'London Atelier',
-    shippingTier: 'White Glove Concierge'
+    shippingTier: 'White Glove Concierge',
+    images: ['https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>The pinnacle of menswear. Sourced via Zen-Exclusive channels and tailored to architectural perfection.</p>'
   },
   {
     id: 'z3',
@@ -105,7 +117,9 @@ export const MOCK_PRODUCTS: Product[] = [
     relatedIds: ['k5', 'z1'],
     composition: 'Premium Vegan Leather',
     origin: 'Global Studio',
-    shippingTier: 'Global Express (7 Days)'
+    shippingTier: 'Global Express (7 Days)',
+    images: ['https://images.unsplash.com/photo-1544816153-199d82175e1e?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>Vegan leather tote with sharp, architectural lines. A Zendrop bestseller customized for the Klyora collection.</p>'
   },
   {
     id: 'k9',
@@ -120,7 +134,9 @@ export const MOCK_PRODUCTS: Product[] = [
     composition: 'Nylon Tulle / Silk Lining',
     origin: 'Milan, Italy',
     inventoryStatus: 'Limited Edition',
-    shippingTier: 'Secured White Glove'
+    shippingTier: 'Secured White Glove',
+    images: ['https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>A dramatic, floor-length gown with hand-applied sequins and layered Italian tulle. Designed for the most exclusive galas.</p>'
   },
   {
     id: 'z4',
@@ -134,7 +150,9 @@ export const MOCK_PRODUCTS: Product[] = [
     relatedIds: ['k11', 'z2'],
     composition: 'Cotton Velvet Blend',
     origin: 'Europe Studio',
-    shippingTier: 'Global Express (7 Days)'
+    shippingTier: 'Global Express (7 Days)',
+    images: ['https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>Deep black velvet with a subtle sheen. A versatile piece for the Klyora night collection, sourced through the Zendrop network.</p>'
   },
   {
     id: 'k3',
@@ -147,7 +165,9 @@ export const MOCK_PRODUCTS: Product[] = [
     image: 'https://images.unsplash.com/photo-1594932224828-b4b057bfe4ee?q=80&w=1000&auto=format&fit=crop',
     relatedIds: ['k2', 'k6', 'k12'],
     composition: '98% Virgin Wool, 2% Elastane',
-    origin: 'Tuscany, Italy'
+    origin: 'Tuscany, Italy',
+    images: ['https://images.unsplash.com/photo-1594932224828-b4b057bfe4ee?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>High-waisted silhouette with sharp architectural pleats. Italian virgin wool blend.</p>'
   },
   {
     id: 'z5',
@@ -161,7 +181,9 @@ export const MOCK_PRODUCTS: Product[] = [
     relatedIds: ['k12', 'z2'],
     composition: '100% European Linen',
     origin: 'Resort Atelier',
-    shippingTier: 'Global Express (7 Days)'
+    shippingTier: 'Global Express (7 Days)',
+    images: ['https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>Structured linen shorts with a refined waistline. Perfect for seasonal resort wear, sourced via Zendrop fulfillment.</p>'
   },
   {
     id: 'k11',
@@ -174,7 +196,9 @@ export const MOCK_PRODUCTS: Product[] = [
     image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1000&auto=format&fit=crop',
     relatedIds: ['k8', 'k5', 'z4'],
     composition: 'Recycled Poly-Satin',
-    origin: 'Tokyo, Japan'
+    origin: 'Tokyo, Japan',
+    images: ['https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>Architectural pleating that creates a dynamic silhouette. Shimmering fabric that catches the light with every step.</p>'
   },
   {
     id: 'k4',
@@ -187,7 +211,9 @@ export const MOCK_PRODUCTS: Product[] = [
     image: 'https://images.unsplash.com/photo-1555069519-03ef8088825d?q=80&w=1000&auto=format&fit=crop',
     relatedIds: ['k6', 'k9', 'z7'],
     composition: 'Cotton Velvet / Silk Satin Trims',
-    origin: 'Paris, France'
+    origin: 'Paris, France',
+    images: ['https://images.unsplash.com/photo-1555069519-03ef8088825d?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>Deep midnight velvet with silk-satin lapels. Engineered for a perfect evening silhouette.</p>'
   },
   {
     id: 'k10',
@@ -200,6 +226,8 @@ export const MOCK_PRODUCTS: Product[] = [
     image: 'https://images.unsplash.com/photo-1520975661595-6453be3f7070?q=80&w=1000&auto=format&fit=crop',
     relatedIds: ['k2', 'k7'],
     composition: '100% Toscana Sheepskin',
-    origin: 'Madrid, Spain'
+    origin: 'Madrid, Spain',
+    images: ['https://images.unsplash.com/photo-1520975661595-6453be3f7070?q=80&w=1000&auto=format&fit=crop'],
+    descriptionHtml: '<p>Ultra-warm shearling jacket with a rugged leather exterior. Hand-finished seams and heavy-duty hardware.</p>'
   }
 ];
