@@ -22,6 +22,7 @@
 <script>
   window.KlyoraConfig = {
     shop: {{ shop.permanent_domain | json }},
+    currency: {{ cart.currency.symbol | json }},
     products: [
       {% for product in collections.all.products limit: 12 %}
         {
