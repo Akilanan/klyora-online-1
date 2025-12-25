@@ -49,35 +49,61 @@ export const Header: React.FC<HeaderProps> = ({
           ) : (
             <button onClick={onLoginClick} className="hover:opacity-40 transition-opacity">Login</button>
           )}
-        </nav>
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden text-white"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle Menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
+          </button>
 
-        <h1
-          className="font-serif text-3xl md:text-5xl tracking-[0.2em] cursor-pointer absolute left-1/2 -translate-x-1/2 transition-all hover:scale-105 active:scale-95 text-white font-light"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        >
-          KLYORA
-        </h1>
-
-        <div className="flex items-center gap-10">
-          <div className="hidden lg:flex flex-col items-end mr-6 group cursor-help">
-            <div className="flex items-center gap-2">
-              <span className="text-[7px] uppercase tracking-[0.4em] font-bold text-zinc-500">Tier Status</span>
-              <span className="text-[8px] font-bold text-white group-hover:text-[#8ca67a] transition-colors">{loyaltyTier}</span>
-            </div>
+          {/* Logo */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 group cursor-pointer">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-[0.2em] font-serif italic relative z-10" aria-label="Maison Klyora Home">
+              KLYORA
+            </h1>
+            <div className="absolute -inset-4 bg-white/0 group-hover:bg-white/10 blur-xl transition-all duration-700 rounded-full" />
           </div>
-          <div className="flex gap-8">
-            <button onClick={onSearchClick} className="text-[9px] uppercase tracking-[0.4em] font-bold hover:opacity-40 transition-opacity">Discovery</button>
-            <button onClick={onCartClick} className="text-[9px] uppercase tracking-[0.4em] font-bold hover:opacity-40 flex items-center gap-3 transition-opacity">
-              Bag
-              <div className="flex items-center justify-center">
-                <div className={`w-4 h-4 rounded-full border border-white/20 flex items-center justify-center text-[7px] transition-all ${cartCount > 0 ? 'bg-white text-black border-white scale-110' : 'text-zinc-500'}`}>
-                  {cartCount}
-                </div>
-              </div>
+
+          {/* Desktop Nav - Right */}
+          <div className="hidden md:flex items-center gap-8">
+            <button
+              onClick={onSearchClick}
+              className="text-xs uppercase tracking-widest hover:text-zinc-400 transition-colors"
+              aria-label="Search"
+            >
+              Search
+            </button>
+            <button
+              onClick={onConciergeClick}
+              className="text-xs uppercase tracking-widest hover:text-zinc-400 transition-colors"
+              aria-label="Concierge AI"
+            >
+              Concierge
+            </button>
+            <button
+              onClick={onWishlistClick} // Changed from onSavedLooksClick to onWishlistClick based on original props
+              className="text-xs uppercase tracking-widest hover:text-zinc-400 transition-colors relative"
+              aria-label="View Wishlist"
+            >
+              Wishlist
+              {wishlistCount > 0 && (
+                <span className="absolute -top-3 -right-3 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[9px] font-bold text-black border border-black">
+                  {wishlistCount}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={onCartClick}
+              className="text-xs uppercase tracking-widest hover:text-zinc-400 transition-colors relative"
+              aria-label="View Cart"
+            >
+              Cart ({cartCount})
             </button>
           </div>
-        </div>
       </div>
     </header>
   );
 };
+```
