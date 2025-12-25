@@ -23,6 +23,8 @@
   window.KlyoraConfig = {
     shop: {{ shop.permanent_domain | json }},
     currency: {{ cart.currency.symbol | json }},
+    currencyCode: {{ cart.currency.iso_code | json }},
+    country: {{ localization.country.name | default: 'Unknown' | json }},
     customer: {% if customer %}
       {
         id: {{ customer.id | json }},
