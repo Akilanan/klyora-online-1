@@ -1,7 +1,6 @@
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { Product } from '../types';
-import { geminiService } from '../services/geminiService';
 import { BoutiqueImage } from './BoutiqueImage';
 
 interface SearchOverlayProps {
@@ -43,30 +42,12 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
   currency,
   onVisualResults
 }) => {
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   const PRICE_TIERS: { label: string; range: [number, number] | null }[] = [
     { label: 'All Prices', range: null },
     { label: `Under 500 ${currency}`, range: [0, 500] },
     { label: `500 — 1000 ${currency}`, range: [500, 1000] },
     { label: `Above 1000 ${currency}`, range: [1000, 10000] },
   ];
-
-  const handleVisualSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setIsAnalyzing(true);
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64 = reader.result as string;
-        const matchedIds = await geminiService.findMatchesFromImage(base64, catalog);
-        onVisualResults(matchedIds);
-        setIsAnalyzing(false);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   if (!isOpen) return null;
 
@@ -102,25 +83,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
             />
           </div>
 
-          {/* Visual Search Button */}
-          <div className="flex flex-col gap-4">
-            <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-zinc-400">Visual</span>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isAnalyzing}
-              className="flex items-center gap-4 group cursor-pointer"
-            >
-              <div className="w-12 h-12 border border-black/10 rounded-full flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all">
-                {isAnalyzing ? (
-                  <div className="w-4 h-4 border border-black group-hover:border-white border-t-transparent animate-spin rounded-full"></div>
-                ) : (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                )}
-              </div>
-              <span className="text-[10px] uppercase tracking-widest font-bold group-hover:underline decoration-1 underline-offset-4">Upload Image</span>
-            </button>
-            <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleVisualSearch} />
-          </div>
+
 
           {/* Price Filter */}
           <div className="space-y-4">
