@@ -74,13 +74,13 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </button>
 
         {/* Left: Product Imagery */}
-        <div className="w-full md:w-[40%] bg-zinc-50 relative group overflow-hidden flex flex-col border-r border-black/5">
-          <div className="flex-1 relative overflow-hidden h-full">
+        <div className="w-full md:w-1/2 bg-zinc-50 relative group overflow-hidden flex flex-col border-r border-black/5 p-6">
+          <div className="flex-1 relative overflow-hidden h-full flex items-center justify-center">
             <BoutiqueImage
               src={activeImage || product.image}
               alt={product.name}
               aspectRatio="aspect-auto h-full w-full"
-              className="transition-transform duration-[3s] ease-out scale-100 group-hover:scale-105 object-cover"
+              className="transition-transform duration-[3s] ease-out scale-100 group-hover:scale-105 object-contain"
             />
             {uniqueImages.length > 1 && (
               <>
@@ -91,9 +91,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                     const prevIndex = currentIndex <= 0 ? uniqueImages.length - 1 : currentIndex - 1;
                     setActiveImage(uniqueImages[prevIndex]);
                   }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 p-3 text-black bg-white/50 backdrop-blur-md rounded-full hover:bg-black hover:text-white transition-all opacity-0 group-hover:opacity-100 z-10"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 p-3 text-black/20 hover:text-black hover:bg-white/10 transition-all z-10"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 19l-7-7 7-7" /></svg>
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 19l-7-7 7-7" /></svg>
                 </button>
                 <button
                   onClick={(e) => {
@@ -102,33 +102,31 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                     const nextIndex = (currentIndex + 1) % uniqueImages.length;
                     setActiveImage(uniqueImages[nextIndex]);
                   }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-3 text-black bg-white/50 backdrop-blur-md rounded-full hover:bg-black hover:text-white transition-all opacity-0 group-hover:opacity-100 z-10"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 p-3 text-black/20 hover:text-black hover:bg-white/10 transition-all z-10"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7" /></svg>
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 5l7 7-7 7" /></svg>
                 </button>
               </>
             )}
           </div>
 
-          {/* Thumbnails Overlay */}
+          {/* Thumbnails Overlay - Simplified */}
           {uniqueImages.length > 1 && (
-            <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3 p-4 z-20">
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 p-2 z-20">
               {uniqueImages.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={(e) => { e.stopPropagation(); setActiveImage(img); }}
-                  className={`w-14 aspect-[3/4] border transition-all duration-300 shadow-lg ${activeImage === img ? 'border-black ring-1 ring-black scale-110 opacity-100' : 'border-white/50 opacity-80 hover:opacity-100 hover:scale-105'} bg-white overflow-hidden`}
-                >
-                  <img src={img} className="w-full h-full object-cover" alt="" />
-                </button>
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${activeImage === img ? 'bg-black w-4' : 'bg-black/20 hover:bg-black/40'}`}
+                />
               ))}
             </div>
           )}
         </div>
 
         {/* Right: Scrollable Details */}
-        <div className="w-full md:w-[60%] flex flex-col bg-white text-black relative">
-          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 hover:scrollbar-thumb-black/20 p-8 md:p-12 space-y-10">
+        <div className="w-full md:w-1/2 flex flex-col bg-white text-black relative">
+          <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-10">
 
             {/* 1. Header & Price */}
             <div className="space-y-4">
