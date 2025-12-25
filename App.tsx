@@ -28,7 +28,20 @@ const App: React.FC = () => {
   const [isStoreSynced, setIsStoreSynced] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<string[]>([]);
+
+  const [wishlist, setWishlist] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('klyora_wishlist');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('klyora_wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
+
   const [loyaltyPoints, setLoyaltyPoints] = useState(1250);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
