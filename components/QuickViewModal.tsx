@@ -192,15 +192,16 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <span className="text-[11px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">The Senses & Composition</span>
                 <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'senses' ? 'rotate-45' : ''}`}>+</span>
               </button>
-              <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'senses' ? 'max-h-[500px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
-                <div className="space-y-6 text-sm text-zinc-600 font-light leading-relaxed">
+              <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'senses' ? 'max-h-[1000px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
+                <div className="space-y-4 text-sm text-zinc-600 font-light leading-relaxed">
                   {product.description ? (
                     product.description.split('\n').map((line, i) => {
                       const cleanLine = line.trim();
                       if (!cleanLine) return null;
-                      if (cleanLine.includes(':') && cleanLine.length < 60) {
+                      // Stricter check: Only short labels (approx 5-6 words) get header styling
+                      if (cleanLine.includes(':') && cleanLine.length < 35) {
                         return (
-                          <p key={i} className="font-serif italic text-black text-lg mt-6 mb-2 border-l-2 border-[#8ca67a] pl-4">
+                          <p key={i} className="font-serif italic text-black text-lg mt-5 mb-1 border-l-2 border-[#8ca67a] pl-4">
                             {cleanLine}
                           </p>
                         );
@@ -211,7 +212,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                     <div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
                   )}
                 </div>
-                <div className="mt-4 pt-4 border-t border-dashed border-zinc-200 grid grid-cols-2 gap-4">
+                <div className="mt-6 pt-6 border-t border-dashed border-zinc-200 grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Material</p>
                     <p className="text-xs">{product.composition || "Premium Blend"}</p>
