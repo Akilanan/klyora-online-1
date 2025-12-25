@@ -267,6 +267,7 @@ const App: React.FC = () => {
         onSearchClick={() => setIsSearchOpen(true)}
         onWishlistClick={() => setIsWishlistOpen(true)}
         onArchiveClick={() => setIsArchiveOpen(true)}
+        onConciergeClick={() => setIsChatOpen(true)}
         isSynced={isStoreSynced}
         customerName={customerName}
         onLoginClick={() => setIsLoginOpen(true)}

@@ -44,23 +44,45 @@ export class GeminiService {
   }
 
   async *getStylistResponseStream(history: ChatMessage[], currentQuery: string) {
+    const apiKey = (window as any).KlyoraConfig?.geminiApiKey;
+
+    if (!apiKey) {
+      // Mock "Demo Mode" Response
+      const mockResponses = [
+        "The Klyora silhouette this season is defined by architectural draping. I recommend pairing the structured blazer with our fluid silk trousers for a balanced profile.",
+        "For an evening aesthetic, the Midnight Wool series offers understated elegance. The texture absorbs light beautifully.",
+        "Our 2025 Palette focuses on mineral tones—Slate, Onyx, and Deep Moss. These shades provide a versatile foundation for any wardrobe.",
+        "I would advise selecting your true size for a tailored fit, or sizing up once for that intentional, relaxed runway volume."
+      ];
+      const response = mockResponses[Math.floor(Math.random() * mockResponses.length)];
+
+      await new Promise(resolve => setTimeout(resolve, 800)); // Simulate thinking
+
+      for (const char of response) {
+        yield char;
+        await new Promise(resolve => setTimeout(resolve, 20));
+      }
+      return;
+    }
+
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenAI({ apiKey });
       const stream = await ai.models.generateContentStream({
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-1.5-flash',
         contents: [
           ...history.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
           { role: 'user', parts: [{ text: currentQuery }] }
         ],
         config: {
           systemInstruction: "You are the Executive Stylist at Maison Klyora. Your tone is refined, concise, and professional. You provide luxury fashion insights focusing on silhouette, materiality, and 2025 seasonal direction.",
-          tools: [{ googleSearch: {} }],
           temperature: 0.7,
         }
       });
 
       for await (const chunk of stream) {
-        yield chunk.text;
+        // @ts-ignore
+        const text = chunk.text();
+        if (text) yield text;
       }
     } catch (error) {
       yield "Our digital atelier is momentarily undergoing maintenance. Please inquire again shortly.";
@@ -72,7 +94,7 @@ export class GeminiService {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const catalogData = catalog.map(p => `${p.id}: ${p.name}`).join(', ');
       const base64Data = imageBuffer.includes(',') ? imageBuffer.split(',')[1] : imageBuffer;
-      
+
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
         contents: {
@@ -105,9 +127,9 @@ export class GeminiService {
           responseMimeType: "application/json",
           responseSchema: {
             type: Type.OBJECT,
-            properties: { 
-              size: { type: Type.STRING }, 
-              rationale: { type: Type.STRING } 
+            properties: {
+              size: { type: Type.STRING },
+              rationale: { type: Type.STRING }
             },
             required: ["size", "rationale"]
           }
@@ -129,7 +151,7 @@ export class GeminiService {
           tools: [{ googleSearch: {} }],
         },
       });
-      
+
       return {
         text: response.text || "Synthesizing seasonal curation...",
         sources: response.candidates?.[0]?.groundingMetadata?.groundingChunks || []
@@ -234,7 +256,7 @@ export class GeminiService {
 
       const frames: string[] = [];
       const angles = ['front view', 'side profile', 'reverse view', 'alternate profile'];
-      
+
       for (const angle of angles) {
         const response = await ai.models.generateContent({
           model: 'gemini-2.5-flash-image',

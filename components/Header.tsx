@@ -29,6 +29,7 @@ export const Header: React.FC<HeaderProps> = ({
   onConciergeClick
 }) => {
   const [scrolled, setScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -103,6 +104,53 @@ export const Header: React.FC<HeaderProps> = ({
             Cart ({cartCount})
           </button>
         </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <div className={`fixed inset-0 bg-white z-[60] transition-transform duration-500 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:hidden flex flex-col pt-32 px-10`}>
+        <button
+          className="absolute top-10 right-10 text-xs uppercase tracking-widest font-bold"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          Close
+        </button>
+
+        <nav className="flex flex-col gap-12">
+          <button
+            onClick={() => { setIsMobileMenuOpen(false); onConciergeClick(); }}
+            className="text-4xl font-serif italic text-black text-left"
+          >
+            Concierge
+          </button>
+          <button
+            onClick={() => { setIsMobileMenuOpen(false); onWishlistClick(); }}
+            className="text-4xl font-serif italic text-black text-left"
+          >
+            Saved Looks ({wishlistCount})
+          </button>
+          <button
+            onClick={() => { setIsMobileMenuOpen(false); onCartClick(); }}
+            className="text-4xl font-serif italic text-black text-left"
+          >
+            Cart ({cartCount})
+          </button>
+          <button
+            onClick={() => { setIsMobileMenuOpen(false); onArchiveClick(); }}
+            className="text-4xl font-serif italic text-black text-left"
+          >
+            Archive
+          </button>
+          {customerName ? (
+            <a href="/account" className="text-sm uppercase tracking-widest mt-10">Account</a>
+          ) : (
+            <button
+              onClick={() => { setIsMobileMenuOpen(false); onLoginClick?.(); }}
+              className="text-sm uppercase tracking-widest mt-10 text-left"
+            >
+              Login
+            </button>
+          )}
+        </nav>
       </div>
     </header>
   );

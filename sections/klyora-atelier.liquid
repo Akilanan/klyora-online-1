@@ -7,6 +7,13 @@
       "id": "heading",
       "label": "Heading",
       "default": "KLYORA"
+    },
+    {
+      "type": "text",
+      "id": "gemini_api_key",
+      "label": "Google Gemini API Key",
+      "default": "AIzaSyDXEZMruQQFsgfUeKxwSD_UORbXDteHQ9Y",
+      "info": "Paste your API key here to enable the AI Concierge. Get one from aistudio.google.com"
     }
   ],
   "presets": [
@@ -21,6 +28,7 @@
 
 <script>
   window.KlyoraConfig = {
+    geminiApiKey: {{ section.settings.gemini_api_key | json }},
     shop: {{ shop.permanent_domain | json }},
     currency: {{ cart.currency.symbol | json }},
     currencyCode: {{ cart.currency.iso_code | json }},
