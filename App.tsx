@@ -296,6 +296,27 @@ const App: React.FC = () => {
           </div>
         </section>
 
+        {/* Brand Manifesto (SEO & Storytelling) */}
+        <section className="max-w-4xl mx-auto px-10 py-32 text-center">
+          <h2 className="text-[9px] uppercase tracking-[0.6em] font-bold text-[#8ca67a] mb-8">The Maison Philosophy</h2>
+          <p className="font-serif text-2xl md:text-3xl italic leading-relaxed text-white/90 mb-10">
+            "True luxury is found in the silence of a perfect silhouette."
+          </p>
+          <div className="text-zinc-500 text-xs md:text-sm leading-loose tracking-wide space-y-6 font-light max-w-2xl mx-auto">
+            <p>
+              Welcome to <strong className="text-zinc-600 font-normal">Maison Klyora</strong>, a digital sanctuary dedicated to the art of the
+              <em className="text-zinc-400 not-italic"> premium silhouette</em>. Our atelier curators travel the virtual globe to select only
+              the finest materials, ensuring that every view reveals a new detail of uncompromised luxury.
+            </p>
+            <p>
+              We believe that style is an architectural pursuit. From the drape of a wool coat to the structure of a tailored blazer,
+              every piece in our collection is chosen to enhance your personal narrative. We invite you to explore our bespoke inventory,
+              where each item is more than a garment—it is a promise of enduring elegance. Experience the detail, embrace the premium,
+              and define your legacy with Klyora.
+            </p>
+          </div>
+        </section>
+
         {/* Boutique Grid */}
         <section className="max-w-[1600px] mx-auto px-10 py-48">
           <div className="mb-32 flex flex-col md:flex-row items-baseline justify-between border-b border-white/5 pb-16 gap-10">
