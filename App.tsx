@@ -169,222 +169,262 @@ const App: React.FC = () => {
 
     // Availability Filter
     if (inStockOnly) {
-      if (!p.variants?.some(v => v.available)) return false;
-    }
+      let result = products;
 
-    return true;
-  });
+      // Apply visual search filter first if active
+      if (visualSearchIds && visualSearchIds.length > 0) {
+        result = result.filter(p => visualSearchIds.includes(p.id));
+      }
 
-  // Sorting
-  if (sortBy === 'price-asc') {
-    result.sort((a, b) => a.price - b.price);
-  } else if (sortBy === 'price-desc') {
-    result.sort((a, b) => b.price - a.price);
-  } else if (sortBy === 'name-asc') {
-    result.sort((a, b) => a.name.localeCompare(b.name));
-  } else if (sortBy === 'newest') {
-    result.sort((a, b) => b.id.localeCompare(a.id));
-  }
+      // Apply search query filter
+      if (searchQuery) {
+        result = result.filter(p =>
+          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.description.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
 
-  return result;
-}, [products, activeCategory, searchQuery, visualSearchIds, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy]);
+      // Apply other filters
+      result = result.filter(p => {
+        // Category Filter
+        if (activeCategory && p.category !== activeCategory) return false;
 
-const allMaterials = useMemo(() => {
-  const materials = new Set<string>();
-  products.forEach(p => {
-    // Extract main material from composition or mock it if empty
-    // Example composition: "100% Cashmere" -> "Cashmere"
-    if (p.composition) {
-      const simpleMat = p.composition.replace(/[0-9%]/g, '').trim().split(' ')[0]; // Very naive extraction
-      if (simpleMat) materials.add(simpleMat);
-    }
-  });
-  // Fallback/Mock list if extraction is too messy for now to ensure UI looks populated
-  return Array.from(materials).length > 0 ? Array.from(materials) : ['Silk', 'Cotton', 'Wool', 'Cashmere', 'Linen', 'Velvet'];
-}, [products]);
-
-const allColors = useMemo(() => {
-  const colors = new Set<string>();
-  products.forEach(p => {
-    p.variants?.forEach(v => {
-      const parts = v.title.split(' / ');
-      parts.forEach(part => {
-        if (['Black', 'White', 'Beige', 'Red', 'Blue', 'Navy', 'Green', 'Brown', 'Grey', 'Silver', 'Gold', 'Cream', 'Charcoal'].includes(part)) {
-          colors.add(part);
+        // Price Filter
+        if (priceRange) {
+          const [min, max] = priceRange;
+          if (p.price < min || (max < 10000 && p.price > max)) return false;
+          if (max === 10000 && p.price < 1000) return false;
         }
+
+        // Material Filter
+        if (selectedMaterial) {
+          if (!p.composition?.toLowerCase().includes(selectedMaterial.toLowerCase())) return false;
+        }
+
+        // Color Filter
+        if (selectedColor) {
+          const hasColor = p.variants?.some(v => v.title.toLowerCase().includes(selectedColor.toLowerCase()));
+          if (!hasColor && !p.description.toLowerCase().includes(selectedColor.toLowerCase())) return false;
+        }
+
+        // Availability Filter
+        if (inStockOnly) {
+          if (!p.variants?.some(v => v.available)) return false;
+        }
+
+        return true;
+      });
+
+      // Sorting
+      if (sortBy === 'price-asc') {
+        result.sort((a, b) => a.price - b.price);
+      } else if (sortBy === 'price-desc') {
+        result.sort((a, b) => b.price - a.price);
+      } else if (sortBy === 'name-asc') {
+        result.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sortBy === 'newest') {
+        result.sort((a, b) => b.id.localeCompare(a.id));
+      }
+
+      return result;
+    }, [products, activeCategory, searchQuery, visualSearchIds, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy]);
+
+  const allMaterials = useMemo(() => {
+    const materials = new Set<string>();
+    products.forEach(p => {
+      // Extract main material from composition or mock it if empty
+      // Example composition: "100% Cashmere" -> "Cashmere"
+      if (p.composition) {
+        const simpleMat = p.composition.replace(/[0-9%]/g, '').trim().split(' ')[0]; // Very naive extraction
+        if (simpleMat) materials.add(simpleMat);
+      }
+    });
+    // Fallback/Mock list if extraction is too messy for now to ensure UI looks populated
+    return Array.from(materials).length > 0 ? Array.from(materials) : ['Silk', 'Cotton', 'Wool', 'Cashmere', 'Linen', 'Velvet'];
+  }, [products]);
+
+  const allColors = useMemo(() => {
+    const colors = new Set<string>();
+    products.forEach(p => {
+      p.variants?.forEach(v => {
+        const parts = v.title.split(' / ');
+        parts.forEach(part => {
+          if (['Black', 'White', 'Beige', 'Red', 'Blue', 'Navy', 'Green', 'Brown', 'Grey', 'Silver', 'Gold', 'Cream', 'Charcoal'].includes(part)) {
+            colors.add(part);
+          }
+        });
       });
     });
-  });
-  const defaultColors = ['Black', 'White', 'Beige', 'Navy', 'Grey'];
-  defaultColors.forEach(c => colors.add(c));
-  return Array.from(colors);
-}, [products]);
+    const defaultColors = ['Black', 'White', 'Beige', 'Navy', 'Grey'];
+    defaultColors.forEach(c => colors.add(c));
+    return Array.from(colors);
+  }, [products]);
 
-const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-const wishlistItems = useMemo(() => products.filter(p => wishlist.includes(p.id)), [products, wishlist]);
+  const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const wishlistItems = useMemo(() => products.filter(p => wishlist.includes(p.id)), [products, wishlist]);
 
 
-return (
-  <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black">
-    <Header
-      cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
-      wishlistCount={wishlist.length}
-      loyaltyPoints={loyaltyPoints}
-      onCartClick={() => setIsCartOpen(true)}
-      onSearchClick={() => setIsSearchOpen(true)}
-      onWishlistClick={() => setIsArchiveOpen(true)}
-      onSavedLooksClick={() => setIsWishlistOpen(true)}
-      isSynced={isStoreSynced}
-      customerName={customerName}
-      onLoginClick={() => setIsLoginOpen(true)}
-    />
+  return (
+    <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black">
+      <Header
+        cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
+        wishlistCount={wishlist.length}
+        loyaltyPoints={loyaltyPoints}
+        onCartClick={() => setIsCartOpen(true)}
+        onSearchClick={() => setIsSearchOpen(true)}
+        onWishlistClick={() => setIsArchiveOpen(true)}
+        onSavedLooksClick={() => setIsWishlistOpen(true)}
+        isSynced={isStoreSynced}
+        customerName={customerName}
+        onLoginClick={() => setIsLoginOpen(true)}
+      />
 
-    <main>
-      {/* Editorial Hero */}
-      <section className="relative h-[100vh] w-full overflow-hidden flex items-center justify-center">
-        {BACKGROUND_IMAGES.map((img, idx) => (
-          <div
-            key={img}
-            className="absolute inset-0 transition-opacity duration-[3000ms] ease-in-out"
-            style={{
-              opacity: idx === bgIndex ? 0.4 : 0,
-              backgroundImage: `url(${img})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              transform: `scale(${1 + smoothScrollY * 0.0001})`
-            }}
-          />
-        ))}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
-        <div className="relative z-10 text-center px-6">
-          <span className="text-[9px] uppercase tracking-[1.2em] text-white/30 block mb-12 animate-fade-in-up">MAISON KLYORA</span>
-          <h1 className="editorial-heading font-serif tracking-tighter mb-16 animate-fade-scale text-white/90">Curated <br /> <span className="italic">Luxury</span></h1>
-          <div className="flex flex-col md:flex-row justify-center items-center gap-12">
-            <button
-              onClick={() => setIsChatOpen(true)}
-              className="group relative px-20 py-7 bg-white text-black text-[9px] font-bold uppercase tracking-[0.5em] hover:bg-zinc-200 transition-all"
-            >
-              AI Concierge
-            </button>
-            <button
-              onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-              className="text-white text-[8px] uppercase tracking-[0.6em] font-bold border-b border-white/10 pb-2 hover:border-white transition-all"
-            >
-              Explore Collection
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Boutique Grid */}
-      <section className="max-w-[1600px] mx-auto px-10 py-48">
-        <div className="mb-32 flex flex-col md:flex-row items-baseline justify-between border-b border-white/5 pb-16 gap-10">
-          <div>
-            <h2 className="text-3xl uppercase tracking-[0.6em] font-bold text-white font-serif italic">Bespoke Inventory</h2>
-            <p className="text-[9px] text-zinc-600 uppercase tracking-widest mt-6">Hand-selected for the Klyora silhouette</p>
-          </div>
-          <div className="flex items-center gap-14">
-            {['Women', 'Men', 'Atelier Exclusive'].map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat.includes('Exclusive') ? 'Exclusive' : cat)}
-                className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all ${activeCategory === (cat.includes('Exclusive') ? 'Exclusive' : cat) ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40">
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              currency={currency}
-              onClick={() => setSelectedQuickView(product)}
-              isSaved={wishlist.includes(product.id)}
-              onToggleSave={(e) => { e?.stopPropagation(); handleToggleWishlist(product.id); }}
+      <main>
+        {/* Editorial Hero */}
+        <section className="relative h-[100vh] w-full overflow-hidden flex items-center justify-center">
+          {BACKGROUND_IMAGES.map((img, idx) => (
+            <div
+              key={img}
+              className="absolute inset-0 transition-opacity duration-[3000ms] ease-in-out"
+              style={{
+                opacity: idx === bgIndex ? 0.4 : 0,
+                backgroundImage: `url(${img})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                transform: `scale(${1 + smoothScrollY * 0.0001})`
+              }}
             />
           ))}
-        </div>
-      </section>
-    </main>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
+          <div className="relative z-10 text-center px-6">
+            <span className="text-[9px] uppercase tracking-[1.2em] text-white/30 block mb-12 animate-fade-in-up">MAISON KLYORA</span>
+            <h1 className="editorial-heading font-serif tracking-tighter mb-16 animate-fade-scale text-white/90">Curated <br /> <span className="italic">Luxury</span></h1>
+            <div className="flex flex-col md:flex-row justify-center items-center gap-12">
+              <button
+                onClick={() => setIsChatOpen(true)}
+                className="group relative px-20 py-7 bg-white text-black text-[9px] font-bold uppercase tracking-[0.5em] hover:bg-zinc-200 transition-all"
+              >
+                AI Concierge
+              </button>
+              <button
+                onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+                className="text-white text-[8px] uppercase tracking-[0.6em] font-bold border-b border-white/10 pb-2 hover:border-white transition-all"
+              >
+                Explore Collection
+              </button>
+            </div>
+          </div>
+        </section>
 
-    <StylistChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-    <SearchOverlay
-      isOpen={isSearchOpen}
-      onClose={() => setIsSearchOpen(false)}
-      searchQuery={searchQuery}
-      onSearchChange={setSearchQuery}
-      activeCategory={activeCategory}
-      onCategoryChange={setActiveCategory}
-      resultsCount={filteredProducts.length}
-      catalog={products}
-      results={filteredProducts}
-      currency={currency}
-      onVisualResults={(ids) => { setVisualSearchIds(ids); setIsSearchOpen(false); }}
-      priceRange={priceRange}
-      onPriceRangeChange={setPriceRange}
-      selectedMaterial={selectedMaterial}
-      onMaterialChange={setSelectedMaterial}
-      allMaterials={allMaterials}
-      selectedColor={selectedColor}
-      onColorChange={setSelectedColor}
-      allColors={allColors}
-      inStockOnly={inStockOnly}
-      onInStockChange={setInStockOnly}
-      sortBy={sortBy}
-      onSortChange={setSortBy}
-    />
+        {/* Boutique Grid */}
+        <section className="max-w-[1600px] mx-auto px-10 py-48">
+          <div className="mb-32 flex flex-col md:flex-row items-baseline justify-between border-b border-white/5 pb-16 gap-10">
+            <div>
+              <h2 className="text-3xl uppercase tracking-[0.6em] font-bold text-white font-serif italic">Bespoke Inventory</h2>
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest mt-6">Hand-selected for the Klyora silhouette</p>
+            </div>
+            <div className="flex items-center gap-14">
+              {['Women', 'Men', 'Atelier Exclusive'].map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat.includes('Exclusive') ? 'Exclusive' : cat)}
+                  className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all ${activeCategory === (cat.includes('Exclusive') ? 'Exclusive' : cat) ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
 
-    {isCartOpen && (
-      <CartDrawer
-        items={cart}
-        onClose={() => setIsCartOpen(false)}
-        onRemove={(id, vId) => setCart(prev => prev.filter(i => !(i.id === id && i.selectedVariant.id === vId)))}
-        onCheckout={handleCheckout}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40">
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                currency={currency}
+                onClick={() => setSelectedQuickView(product)}
+                isSaved={wishlist.includes(product.id)}
+                onToggleSave={(e) => { e?.stopPropagation(); handleToggleWishlist(product.id); }}
+              />
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <StylistChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <SearchOverlay
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+        resultsCount={filteredProducts.length}
+        catalog={products}
+        results={filteredProducts}
         currency={currency}
+        onVisualResults={(ids) => { setVisualSearchIds(ids); setIsSearchOpen(false); }}
+        priceRange={priceRange}
+        onPriceRangeChange={setPriceRange}
+        selectedMaterial={selectedMaterial}
+        onMaterialChange={setSelectedMaterial}
+        allMaterials={allMaterials}
+        selectedColor={selectedColor}
+        onColorChange={setSelectedColor}
+        allColors={allColors}
+        inStockOnly={inStockOnly}
+        onInStockChange={setInStockOnly}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
       />
-    )}
 
-    {isWishlistOpen && (
-      <WishlistDrawer
-        items={wishlistItems}
-        onClose={() => setIsWishlistOpen(false)}
-        onRemove={(id) => handleToggleWishlist(id)}
-        onMoveToBag={(product) => { setIsWishlistOpen(false); setSelectedQuickView(product); }}
-        currency={currency}
-      />
-    )}
+      {isCartOpen && (
+        <CartDrawer
+          items={cart}
+          onClose={() => setIsCartOpen(false)}
+          onRemove={(id, vId) => setCart(prev => prev.filter(i => !(i.id === id && i.selectedVariant.id === vId)))}
+          onCheckout={handleCheckout}
+          currency={currency}
+        />
+      )}
 
-    {isArchiveOpen && (
-      <ArchiveDrawer
-        products={products}
-        onClose={() => setIsArchiveOpen(false)}
-        onSelectProduct={(product) => { setIsArchiveOpen(false); setSelectedQuickView(product); }}
-        currency={currency}
-      />
-    )}
+      {isWishlistOpen && (
+        <WishlistDrawer
+          items={wishlistItems}
+          onClose={() => setIsWishlistOpen(false)}
+          onRemove={(id) => handleToggleWishlist(id)}
+          onMoveToBag={(product) => { setIsWishlistOpen(false); setSelectedQuickView(product); }}
+          currency={currency}
+        />
+      )}
 
-    {selectedQuickView && (
-      <QuickViewModal
-        product={selectedQuickView}
-        allProducts={products}
-        onClose={() => setSelectedQuickView(null)}
-        onAddToCart={handleAddToCart}
-        currency={currency}
-        isSaved={wishlist.includes(selectedQuickView.id)}
-        onToggleSave={() => handleToggleWishlist(selectedQuickView.id)}
-      />
-    )}
+      {isArchiveOpen && (
+        <ArchiveDrawer
+          products={products}
+          onClose={() => setIsArchiveOpen(false)}
+          onSelectProduct={(product) => { setIsArchiveOpen(false); setSelectedQuickView(product); }}
+          currency={currency}
+        />
+      )}
 
-    <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      {selectedQuickView && (
+        <QuickViewModal
+          product={selectedQuickView}
+          allProducts={products}
+          onClose={() => setSelectedQuickView(null)}
+          onAddToCart={handleAddToCart}
+          currency={currency}
+          isSaved={wishlist.includes(selectedQuickView.id)}
+          onToggleSave={() => handleToggleWishlist(selectedQuickView.id)}
+        />
+      )}
 
-    <BackToTop />
-    {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
-  </div>
-);
-  };
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+
+      <BackToTop />
+      {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
+    </div>
+  );
+};
 
 export default App;
