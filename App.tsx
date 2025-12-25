@@ -263,14 +263,13 @@ const App: React.FC = () => {
         {/* Editorial Hero */}
         <section className="relative h-[100vh] w-full overflow-hidden flex items-center justify-center">
           {BACKGROUND_IMAGES.map((img, idx) => (
-            <div
+            <img
               key={img}
-              className="absolute inset-0 transition-opacity duration-[3000ms] ease-in-out"
+              src={img}
+              alt={`Maison Klyora Premium Fashion Campaign - Look ${idx + 1}`}
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[3000ms] ease-in-out"
               style={{
                 opacity: idx === bgIndex ? 0.4 : 0,
-                backgroundImage: `url(${img})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
                 transform: `scale(${1 + smoothScrollY * 0.0001})`
               }}
             />
