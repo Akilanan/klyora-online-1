@@ -14,6 +14,8 @@ interface QuickViewModalProps {
   onClose: () => void;
   onAddToCart: (p: Product, variant: ProductVariant) => void;
   currency?: string;
+  isSaved?: boolean;
+  onToggleSave?: () => void;
 }
 
 export const QuickViewModal: React.FC<QuickViewModalProps> = ({
@@ -21,7 +23,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   allProducts,
   onClose,
   onAddToCart,
-  currency = '$'
+  currency = '$',
+  isSaved,
+  onToggleSave
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(product.variants?.[0] || null);
   const [activeImage, setActiveImage] = useState<string | null>(product.image);
@@ -132,7 +136,16 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <span className="h-[1px] w-8 bg-black"></span>
                 <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-black">Klyora Atelier</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-serif italic font-medium tracking-tight text-black leading-tight">{product.name}</h2>
+              <div className="flex justify-between items-start">
+                <h2 className="text-4xl md:text-5xl font-serif italic font-medium tracking-tight text-black leading-tight">{product.name}</h2>
+                <button onClick={onToggleSave} className="p-2 hover:text-red-500 transition-colors">
+                  {isSaved ? (
+                    <svg className="w-6 h-6 text-red-500 fill-current" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" /></svg>
+                  ) : (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                  )}
+                </button>
+              </div>
               <div className="flex items-baseline gap-4 pt-2">
                 <p className="text-2xl font-sans font-light tracking-wide text-zinc-900">{currency}{product.price.toLocaleString()}</p>
                 <p className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold">Import Duties Included</p>

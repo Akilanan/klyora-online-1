@@ -12,6 +12,7 @@ import { CheckoutFlow } from './components/CheckoutFlow';
 import { shopifyService } from './services/shopifyService';
 import { ProductCard } from './components/ProductCard';
 import { LoginModal } from './components/LoginModal';
+import { WishlistDrawer } from './components/WishlistDrawer';
 
 const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop',
@@ -28,6 +29,7 @@ const App: React.FC = () => {
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState(1250);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -123,6 +125,17 @@ const App: React.FC = () => {
     window.location.href = `/cart/${items}`;
   };
 
+  const handleToggleWishlist = (productId: string) => {
+    setWishlist(prev => {
+      if (prev.includes(productId)) {
+        showNotification("Removed from Saved Looks");
+        return prev.filter(id => id !== productId);
+      }
+      showNotification("Saved to Your Looks");
+      return [...prev, productId];
+    });
+  };
+
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
       if (visualSearchIds && !visualSearchIds.includes(p.id)) return false;
@@ -133,7 +146,7 @@ const App: React.FC = () => {
   }, [products, activeCategory, searchQuery, visualSearchIds]);
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
+  const wishlistItems = useMemo(() => products.filter(p => wishlist.includes(p.id)), [products, wishlist]);
 
 
   return (
@@ -144,8 +157,8 @@ const App: React.FC = () => {
         loyaltyPoints={loyaltyPoints}
         onCartClick={() => setIsCartOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
-        onWishlistClick={() => showNotification("Archive Collection: Coming Soon")}
-        onSavedLooksClick={() => setIsChatOpen(true)}
+        onWishlistClick={() => window.location.href = '/collections/all'} // Practical Archive = Shop All
+        onSavedLooksClick={() => setIsWishlistOpen(true)}
         isSynced={isStoreSynced}
         customerName={customerName}
         onLoginClick={() => setIsLoginOpen(true)}
@@ -215,6 +228,8 @@ const App: React.FC = () => {
                 product={product}
                 currency={currency}
                 onClick={() => setSelectedQuickView(product)}
+                isSaved={wishlist.includes(product.id)}
+                onToggleSave={(e) => { e?.stopPropagation(); handleToggleWishlist(product.id); }}
               />
             ))}
           </div>
@@ -249,6 +264,16 @@ const App: React.FC = () => {
         />
       )}
 
+      {isWishlistOpen && (
+        <WishlistDrawer
+          items={wishlistItems}
+          onClose={() => setIsWishlistOpen(false)}
+          onRemove={(id) => handleToggleWishlist(id)}
+          onMoveToBag={(product) => { setIsWishlistOpen(false); setSelectedQuickView(product); }}
+          currency={currency}
+        />
+      )}
+
       {selectedQuickView && (
         <QuickViewModal
           product={selectedQuickView}
@@ -256,6 +281,8 @@ const App: React.FC = () => {
           onClose={() => setSelectedQuickView(null)}
           onAddToCart={handleAddToCart}
           currency={currency}
+          isSaved={wishlist.includes(selectedQuickView.id)}
+          onToggleSave={() => handleToggleWishlist(selectedQuickView.id)}
         />
       )}
 
