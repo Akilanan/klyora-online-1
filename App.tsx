@@ -145,80 +145,55 @@ const App: React.FC = () => {
 
   /* Full filtering logic */
   const filteredProducts = useMemo(() => {
+    let result = products.filter(p => {
+      // Visual Search
+      if (visualSearchIds && !visualSearchIds.includes(p.id)) return false;
 
-    // Category Filter
-    if (activeCategory && p.category !== activeCategory) return false;
+      // Text Search
+      if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
 
-    // Price Filter
-    if (priceRange) {
-      const [min, max] = priceRange;
-      if (p.price < min || (max < 10000 && p.price > max)) return false;
-      if (max === 10000 && p.price < 1000) return false;
-    }
+      // Category Filter
+      if (activeCategory && p.category !== activeCategory) return false;
 
-    // Material Filter
-    if (selectedMaterial) {
-      if (!p.composition?.toLowerCase().includes(selectedMaterial.toLowerCase())) return false;
-    }
-
-    // Color Filter
-    if (selectedColor) {
-      const hasColor = p.variants?.some(v => v.title.toLowerCase().includes(selectedColor.toLowerCase()));
-      if (!hasColor && !p.description.toLowerCase().includes(selectedColor.toLowerCase())) return false;
-    }
-
-    // Availability Filter
-    if (inStockOnly) {
-      let result = products;
-      let result = products.filter(p => {
-        // Visual Search
-        if (visualSearchIds && !visualSearchIds.includes(p.id)) return false;
-
-        // Text Search
-        if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-
-        // Category Filter
-        if (activeCategory && p.category !== activeCategory) return false;
-
-        // Price Filter
-        if (priceRange) {
-          const [min, max] = priceRange;
-          if (p.price < min || (max < 10000 && p.price > max)) return false;
-          if (max === 10000 && p.price < 1000) return false;
-        }
-
-        // Material Filter
-        if (selectedMaterial) {
-          if (!p.composition?.toLowerCase().includes(selectedMaterial.toLowerCase())) return false;
-        }
-
-        // Color Filter
-        if (selectedColor) {
-          const hasColor = p.variants?.some(v => v.title.toLowerCase().includes(selectedColor.toLowerCase()));
-          if (!hasColor && !p.description.toLowerCase().includes(selectedColor.toLowerCase())) return false;
-        }
-
-        // Availability Filter
-        if (inStockOnly) {
-          if (!p.variants?.some(v => v.available)) return false;
-        }
-
-        return true;
-      });
-
-      // Sorting
-      if (sortBy === 'price-asc') {
-        result.sort((a, b) => a.price - b.price);
-      } else if (sortBy === 'price-desc') {
-        result.sort((a, b) => b.price - a.price);
-      } else if (sortBy === 'name-asc') {
-        result.sort((a, b) => a.name.localeCompare(b.name));
-      } else if (sortBy === 'newest') {
-        result.sort((a, b) => b.id.localeCompare(a.id));
+      // Price Filter
+      if (priceRange) {
+        const [min, max] = priceRange;
+        if (p.price < min || (max < 10000 && p.price > max)) return false;
+        if (max === 10000 && p.price < 1000) return false;
       }
 
-      return result;
-    }, [products, activeCategory, searchQuery, visualSearchIds, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy]);
+      // Material Filter
+      if (selectedMaterial) {
+        if (!p.composition?.toLowerCase().includes(selectedMaterial.toLowerCase())) return false;
+      }
+
+      // Color Filter
+      if (selectedColor) {
+        const hasColor = p.variants?.some(v => v.title.toLowerCase().includes(selectedColor.toLowerCase()));
+        if (!hasColor && !p.description.toLowerCase().includes(selectedColor.toLowerCase())) return false;
+      }
+
+      // Availability Filter
+      if (inStockOnly) {
+        if (!p.variants?.some(v => v.available)) return false;
+      }
+
+      return true;
+    });
+
+    // Sorting
+    if (sortBy === 'price-asc') {
+      result.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-desc') {
+      result.sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'name-asc') {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === 'newest') {
+      result.sort((a, b) => b.id.localeCompare(a.id));
+    }
+
+    return result;
+  }, [products, activeCategory, searchQuery, visualSearchIds, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy]);
 
   const allMaterials = useMemo(() => {
     const materials = new Set<string>();
