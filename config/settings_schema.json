@@ -1,0 +1,30 @@
+
+[
+  {
+    "name": "Theme settings",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Klyora Brand Identity"
+      },
+      {
+        "type": "color",
+        "id": "color_brand_onyx",
+        "label": "Primary Onyx",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "color_brand_olive",
+        "label": "Atelier Olive",
+        "default": "#8ca67a"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Heading Font",
+        "default": "playfair_display_n4"
+      }
+    ]
+  }
+]

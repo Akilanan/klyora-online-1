@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KLYORA | Premium Designer Dresses & Luxury AI Fashion</title>
+    <meta name="description" content="Shop the official Klyora boutique for exclusive designer dresses and luxury clothing. Experience our AI-powered virtual try-on at Klyoraofficial.com.">
+    <meta name="keywords" content="Klyora, Klyoraofficial, designer dresses, luxury clothing, premium fashion, AI stylist, virtual try-on">
+    
+    <!-- OpenGraph for Social Sharing -->
+    <meta property="og:title" content="KLYORA | Official Premium Boutique">
+    <meta property="og:description" content="Discover the intersection of high fashion and artificial intelligence at Klyoraofficial.com.">
+    <meta property="og:url" content="https://Klyoraofficial.com">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1539109132314-34a9c668e007?q=80&w=2070&auto=format&fit=crop">
+
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://Klyoraofficial.com" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Klyora Official",
+      "url": "https://Klyoraofficial.com",
+      "logo": "https://Klyoraofficial.com/logo.png",
+      "description": "High-end premium cloth brand specializing in designer dresses and luxury seasonal apparel.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Digital Atelier",
+        "addressLocality": "London",
+        "addressCountry": "UK"
+      }
+    }
+    </script>
+
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #000000;
+        color: #ffffff;
+        letter-spacing: -0.01em;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      .font-serif {
+        font-family: 'Playfair Display', serif;
+      }
+      
+      @keyframes slideInRight {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+      }
+      .animate-slide-right {
+        animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+      }
+
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      
+      .editorial-heading {
+        font-size: clamp(3rem, 10vw, 9rem);
+        line-height: 0.85;
+        font-weight: 300;
+        text-transform: uppercase;
+      }
+
+      .checkout-input {
+        width: 100%;
+        background: transparent;
+        border-bottom: 1.5px solid rgba(255,255,255,0.08);
+        padding: 1.25rem 0;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: white;
+        letter-spacing: 0.25em;
+        outline: none;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .checkout-input:focus {
+        border-bottom-color: #fff;
+        padding-left: 0.5rem;
+      }
+      .checkout-input::placeholder {
+        color: #444;
+        font-weight: 300;
+      }
+
+      @keyframes fadeInScale {
+        from { opacity: 0; transform: translateY(40px) scale(1.05); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      .animate-fade-scale {
+        animation: fadeInScale 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        will-change: transform, opacity;
+      }
+
+      .parallax-layer {
+        will-change: transform;
+        backface-visibility: hidden;
+        transform: translateZ(0);
+      }
+
+      .luxury-zoom {
+        transition: transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .luxury-zoom:hover {
+        transform: scale(1.1);
+      }
+
+      /* Noir Shimmer Placeholder Animation */
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      .skeleton-noir {
+        background: linear-gradient(90deg, #050505 25%, #151515 50%, #050505 75%);
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite linear;
+      }
+      
+      .image-reveal {
+        opacity: 0;
+        transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .image-reveal.loaded {
+        opacity: 1;
+      }
+
+      /* AR Try-On Shimmer Scan */
+      @keyframes ar-shimmer {
+        0% { transform: translateX(-150%) skewX(-30deg); }
+        50% { transform: translateX(150%) skewX(-30deg); }
+        100% { transform: translateX(150%) skewX(-30deg); }
+      }
+      .ar-scan-effect {
+        position: relative;
+        overflow: hidden;
+      }
+      .ar-scan-effect::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -50%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(140, 166, 122, 0.4), rgba(140, 166, 122, 0.6), rgba(140, 166, 122, 0.4), transparent);
+        animation: ar-shimmer 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      @keyframes pulse-ring {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(140, 166, 122, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(140, 166, 122, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(140, 166, 122, 0); }
+      }
+      .animate-pulse-glimmer:hover {
+        animation: pulse-ring 2s infinite;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

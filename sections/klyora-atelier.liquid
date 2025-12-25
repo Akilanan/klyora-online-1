@@ -1,0 +1,49 @@
+{% schema %}
+{
+  "name": "Klyora Atelier",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "KLYORA"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Klyora Atelier"
+    }
+  ]
+}
+{% endschema %}
+
+<div id="root"></div>
+
+<script>
+  window.KlyoraConfig = {
+    shop: "{{ shop.permanent_domain }}",
+    products: [
+      {% for product in collections.all.products limit: 12 %}
+        {
+          id: "{{ product.id }}",
+          name: "{{ product.title | escape }}",
+          price: {{ product.price | divided_by: 100.0 }},
+          image: "{{ product.featured_image | img_url: '1024x' }}",
+          category: "{{ product.type }}",
+          description: "{{ product.description | strip_html | escape | truncate: 150 }}",
+          variants: [
+            {% for variant in product.variants %}
+              {
+                id: "{{ variant.id }}",
+                title: "{{ variant.title | escape }}",
+                price: {{ variant.price | divided_by: 100.0 }}
+              }{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          ]
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  };
+</script>
+
+<script src="{{ 'klyora.js' | asset_url }}" defer="defer"></script>

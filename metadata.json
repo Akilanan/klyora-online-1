@@ -1,0 +1,8 @@
+
+{
+  "name": "Klyora Boutique Theme",
+  "description": "Professional Shopify 2.0 Theme for Klyora, featuring AI Stylist and boutique curation.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

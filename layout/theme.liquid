@@ -1,0 +1,174 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {{ content_for_header }}
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #000000;
+        color: #ffffff;
+        letter-spacing: -0.01em;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      .font-serif {
+        font-family: 'Playfair Display', serif;
+      }
+      
+      @keyframes slideInRight {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+      }
+      .animate-slide-right {
+        animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+      }
+
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      
+      .editorial-heading {
+        font-size: clamp(3rem, 10vw, 9rem);
+        line-height: 0.85;
+        font-weight: 300;
+        text-transform: uppercase;
+      }
+
+      .checkout-input {
+        width: 100%;
+        background: transparent;
+        border-bottom: 1.5px solid rgba(255,255,255,0.08);
+        padding: 1.25rem 0;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: white;
+        letter-spacing: 0.25em;
+        outline: none;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .checkout-input:focus {
+        border-bottom-color: #fff;
+        padding-left: 0.5rem;
+      }
+      .checkout-input::placeholder {
+        color: #444;
+        font-weight: 300;
+      }
+
+      @keyframes fadeInScale {
+        from { opacity: 0; transform: translateY(40px) scale(1.05); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      .animate-fade-scale {
+        animation: fadeInScale 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        will-change: transform, opacity;
+      }
+
+      .parallax-layer {
+        will-change: transform;
+        backface-visibility: hidden;
+        transform: translateZ(0);
+      }
+
+      .luxury-zoom {
+        transition: transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .luxury-zoom:hover {
+        transform: scale(1.1);
+      }
+
+      /* Noir Shimmer Placeholder Animation */
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      .skeleton-noir {
+        background: linear-gradient(90deg, #050505 25%, #151515 50%, #050505 75%);
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite linear;
+      }
+      
+      .image-reveal {
+        opacity: 0;
+        transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .image-reveal.loaded {
+        opacity: 1;
+      }
+
+      /* AR Try-On Shimmer Scan */
+      @keyframes ar-shimmer {
+        0% { transform: translateX(-150%) skewX(-30deg); }
+        50% { transform: translateX(150%) skewX(-30deg); }
+        100% { transform: translateX(150%) skewX(-30deg); }
+      }
+      .ar-scan-effect {
+        position: relative;
+        overflow: hidden;
+      }
+      .ar-scan-effect::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -50%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(140, 166, 122, 0.4), rgba(140, 166, 122, 0.6), rgba(140, 166, 122, 0.4), transparent);
+        animation: ar-shimmer 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      @keyframes pulse-ring {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(140, 166, 122, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(140, 166, 122, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(140, 166, 122, 0); }
+      }
+      .animate-pulse-glimmer:hover {
+        animation: pulse-ring 2s infinite;
+      }
+    </style>
+
+  <body class="gradient">
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+  </body>
+</html>

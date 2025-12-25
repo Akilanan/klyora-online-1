@@ -1,0 +1,14 @@
+
+{
+  "sections": {
+    "main": {
+      "type": "klyora-atelier",
+      "settings": {
+        "heading": "KLYORA"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
