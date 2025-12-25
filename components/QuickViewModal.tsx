@@ -154,13 +154,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               </div>
             </div>
 
-            import {VirtualTryOnModal} from './VirtualTryOnModal';
 
-            // ... (inside component)
-
-            const [isTryOnOpen, setIsTryOnOpen] = useState(false);
-
-            // ... (inside JSX)
 
             {/* 2. Sizing */}
             <div className="space-y-6">
@@ -192,8 +186,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 />
               )}
             </div>
-            );
-};
+
             <div className="flex flex-wrap gap-2">
               {product.variants?.map(variant => (
                 <button
@@ -277,17 +270,20 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+      {isFitAssistantOpen && (
+        <FitAssistant
+          product={product}
+          onClose={() => setIsFitAssistantOpen(false)}
+          onApplySize={handleApplySize}
+        />
+      )}
 
-      {
-    isFitAssistantOpen && (
-      <FitAssistant
-        product={product}
-        onClose={() => setIsFitAssistantOpen(false)}
-        onApplySize={handleApplySize}
-      />
-    )
-  }
-    </div >
+      {isTryOnOpen && (
+        <VirtualTryOnModal
+          product={product}
+          onClose={() => setIsTryOnOpen(false)}
+        />
+      )}
+    </div>
   );
 };
