@@ -17,37 +17,26 @@
 }
 {% endschema %}
 
-<div style="background: #111; color: #0f0; padding: 20px; margin: 20px; border: 1px solid #444; font-family: monospace; z-index: 9999; position: relative;">
-  <h3 style="color: #fff; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">KLYORA DEBUG PANEL</h3>
-  <p><strong>Collections Found:</strong></p>
-  <ul style="list-style: none; padding: 0;">
-    <li>All ('all'): {{ collections.all.products_count }} products</li>
-    {% for col in collections %}
-      <li>- {{ col.title }} ('{{ col.handle }}'): {{ col.products_count }} products</li>
-    {% endfor %}
-  </ul>
-  <p style="margin-top: 10px; color: #888;">If counts are 0, check 'Online Store' channel availability in Admin > Products.</p>
-</div>
 <div id="root"></div>
 
 <script>
   window.KlyoraConfig = {
-    shop: "{{ shop.permanent_domain }}",
+    shop: {{ shop.permanent_domain | json }},
     products: [
       {% for product in collections.all.products limit: 12 %}
         {
-          id: "{{ product.id }}",
-          name: "{{ product.title | escape }}",
-          price: {{ product.price | divided_by: 100.0 }},
-          image: "{{ product.featured_image | img_url: '1024x' }}",
-          category: "{{ product.type }}",
-          description: "{{ product.description | strip_html | escape | truncate: 150 }}",
+          id: {{ product.id | json }},
+          name: {{ product.title | json }},
+          price: {{ product.price | divided_by: 100.0 | json }},
+          image: {{ product.featured_image | img_url: '1024x' | json }},
+          category: {{ product.type | json }},
+          description: {{ product.description | strip_html | truncate: 150 | json }},
           variants: [
             {% for variant in product.variants %}
               {
-                id: "{{ variant.id }}",
-                title: "{{ variant.title | escape }}",
-                price: {{ variant.price | divided_by: 100.0 }}
+                id: {{ variant.id | json }},
+                title: {{ variant.title | json }},
+                price: {{ variant.price | divided_by: 100.0 | json }}
               }{% unless forloop.last %},{% endunless %}
             {% endfor %}
           ]
