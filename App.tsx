@@ -40,6 +40,7 @@ const App: React.FC = () => {
   const [bgIndex, setBgIndex] = useState(0);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [selectedQuickView, setSelectedQuickView] = useState<Product | null>(null);
+  const [customerName, setCustomerName] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'info' } | null>(null);
 
   const animateParallax = () => {
@@ -60,8 +61,10 @@ const App: React.FC = () => {
       if (config.customer) {
         // Simple logic: 1 point per dollar spent
         setLoyaltyPoints(Math.floor(config.customer.totalSpent || 0));
+        setCustomerName(config.customer.name);
       } else {
         setLoyaltyPoints(0); // Guest starts at 0
+        setCustomerName(null);
       }
     }
 
@@ -103,9 +106,19 @@ const App: React.FC = () => {
     showNotification(`${product.name} Added to Bag.`);
   };
 
-  const handleCheckoutOpen = () => {
-    setIsCartOpen(false);
-    setIsCheckoutOpen(true);
+  const handleCheckout = () => {
+    if (cart.length === 0) return;
+
+    // Construct Cart Permalink
+    // Format: /cart/{variant_id}:{quantity},{variant_id}:{quantity}
+    const items = cart.map(item => {
+      // Extract numeric ID if it's a GID
+      const variantId = item.selectedVariant.id.toString().split('/').pop();
+      return `${variantId}:${item.quantity}`;
+    }).join(',');
+
+    // Redirect to real Shopify Checkout
+    window.location.href = `/cart/${items}`;
   };
 
   const filteredProducts = useMemo(() => {
@@ -119,16 +132,7 @@ const App: React.FC = () => {
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  if (isCheckoutOpen) {
-    return (
-      <CheckoutFlow
-        total={cartTotal}
-        currency={currency}
-        onBack={() => setIsCheckoutOpen(false)}
-        onComplete={() => { setIsCheckoutOpen(false); setCart([]); }}
-      />
-    );
-  }
+
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black">
@@ -141,6 +145,7 @@ const App: React.FC = () => {
         onWishlistClick={() => showNotification("Archive Collection: Coming Soon")}
         onSavedLooksClick={() => setIsChatOpen(true)}
         isSynced={isStoreSynced}
+        customerName={customerName}
       />
 
       <main>
@@ -236,7 +241,7 @@ const App: React.FC = () => {
           items={cart}
           onClose={() => setIsCartOpen(false)}
           onRemove={(id, vId) => setCart(prev => prev.filter(i => !(i.id === id && i.selectedVariant.id === vId)))}
-          onCheckout={handleCheckoutOpen}
+          onCheckout={handleCheckout}
           currency={currency}
         />
       )}
