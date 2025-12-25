@@ -248,6 +248,8 @@ const App: React.FC = () => {
         onCategoryChange={setActiveCategory}
         resultsCount={filteredProducts.length}
         catalog={products}
+        results={filteredProducts}
+        currency={currency}
         onVisualResults={(ids) => { setVisualSearchIds(ids); setIsSearchOpen(false); }}
         priceRange={null}
         onPriceRangeChange={() => { }}
