@@ -74,7 +74,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </button>
 
         {/* Left: Product Imagery */}
-        <div className="w-full md:w-1/2 bg-zinc-50 relative group overflow-hidden flex flex-col border-r border-black/5 p-6">
+        <div className="w-full md:w-[40%] bg-zinc-50 relative group overflow-hidden flex flex-col border-r border-black/5 p-10">
           <div className="flex-1 relative overflow-hidden h-full flex items-center justify-center">
             <BoutiqueImage
               src={activeImage || product.image}
@@ -125,8 +125,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </div>
 
         {/* Right: Scrollable Details */}
-        <div className="w-full md:w-1/2 flex flex-col bg-white text-black relative">
-          <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-10">
+        <div className="w-full md:w-[60%] flex flex-col bg-white text-black relative">
+          <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-8">
 
             {/* 1. Header & Price */}
             <div className="space-y-4">
@@ -191,7 +191,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'senses' ? 'rotate-45' : ''}`}>+</span>
               </button>
               <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'senses' ? 'max-h-[1000px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
-                <div className="space-y-4 text-sm text-zinc-600 font-light leading-relaxed pt-2">
+                <div className="space-y-4 text-sm text-zinc-600 font-light leading-relaxed pt-2 max-h-[180px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-zinc-200">
                   {product.description ? (
                     product.description.split('\n')
                       .map(l => l.trim())
