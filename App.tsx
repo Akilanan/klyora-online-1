@@ -11,6 +11,7 @@ import { SearchOverlay } from './components/SearchOverlay';
 import { CheckoutFlow } from './components/CheckoutFlow';
 import { shopifyService } from './services/shopifyService';
 import { ProductCard } from './components/ProductCard';
+import { LoginModal } from './components/LoginModal';
 
 const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop',
@@ -27,6 +28,7 @@ const App: React.FC = () => {
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState(1250);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -146,6 +148,7 @@ const App: React.FC = () => {
         onSavedLooksClick={() => setIsChatOpen(true)}
         isSynced={isStoreSynced}
         customerName={customerName}
+        onLoginClick={() => setIsLoginOpen(true)}
       />
 
       <main>
@@ -255,6 +258,8 @@ const App: React.FC = () => {
           currency={currency}
         />
       )}
+
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
 
       <BackToTop />
       {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}

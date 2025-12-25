@@ -11,6 +11,7 @@ interface HeaderProps {
   onSavedLooksClick: () => void;
   isSynced: boolean;
   customerName: string | null;
+  onLoginClick: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -22,7 +23,8 @@ export const Header: React.FC<HeaderProps> = ({
   onWishlistClick,
   onSavedLooksClick,
   isSynced,
-  customerName
+  customerName,
+  onLoginClick
 }) => {
   const [scrolled, setScrolled] = useState(false);
 
@@ -44,9 +46,11 @@ export const Header: React.FC<HeaderProps> = ({
             Concierge
             <div className={`w-1 h-1 rounded-full ${isSynced ? 'bg-[#8ca67a]' : 'bg-zinc-700'}`}></div>
           </button>
-          <a href={customerName ? "/account" : "/account/login"} className="hover:opacity-40 transition-opacity">
-            {customerName ? "Account" : "Login"}
-          </a>
+          {customerName ? (
+            <a href="/account" className="hover:opacity-40 transition-opacity">Account</a>
+          ) : (
+            <button onClick={onLoginClick} className="hover:opacity-40 transition-opacity">Login</button>
+          )}
         </nav>
 
         <h1

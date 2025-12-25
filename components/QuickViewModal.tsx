@@ -52,36 +52,42 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
     if (variant) setSelectedVariant(variant);
   };
 
-  return (
-    <div className="fixed inset-0 z-[500] flex items-center justify-center p-0 md:p-8">
-      <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl animate-fade-in" onClick={onClose} />
+  const [openSection, setOpenSection] = useState<string | null>('senses');
 
-      <div className="relative w-full max-w-7xl bg-white shadow-2xl animate-fade-scale flex flex-col md:flex-row overflow-hidden h-full md:h-[90vh] border border-white/5">
-        <button onClick={onClose} className="absolute top-8 right-8 z-[510] p-3 mix-blend-difference hover:rotate-90 transition-all duration-700 text-white/60 hover:text-white">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M6 18L18 6M6 6l12 12" />
+  const toggleSection = (section: string) => {
+    setOpenSection(openSection === section ? null : section);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[500] flex items-center justify-center p-0 md:p-8 font-sans">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-fade-in" onClick={onClose} />
+
+      <div className="relative w-full max-w-7xl bg-white shadow-2xl animate-fade-scale flex flex-col md:flex-row overflow-hidden h-full md:h-[90vh] md:rounded-sm">
+        <button onClick={onClose} className="absolute top-6 right-6 z-[510] p-3 text-black/50 hover:text-black hover:rotate-90 transition-all duration-500 bg-white/80 backdrop-blur rounded-full">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
         {/* Left: Product Imagery */}
-        <div className="w-full md:w-1/2 bg-zinc-100 relative group overflow-hidden flex flex-col">
+        <div className="w-full md:w-1/2 bg-zinc-50 relative group overflow-hidden flex flex-col">
           <div className="flex-1 relative overflow-hidden h-full">
             <BoutiqueImage
               src={activeImage || product.image}
               alt={product.name}
               aspectRatio="aspect-auto h-full w-full"
-              className="transition-all duration-[3s] ease-out scale-100 group-hover:scale-105 object-cover"
+              className="transition-transform duration-[3s] ease-out scale-100 group-hover:scale-105 object-cover"
             />
           </div>
 
           {/* Thumbnails Overlay */}
           {uniqueImages.length > 1 && (
-            <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 p-4 z-20">
+            <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3 p-4 z-20">
               {uniqueImages.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={(e) => { e.stopPropagation(); setActiveImage(img); }}
-                  className={`w-12 h-16 border transition-all shadow-lg ${activeImage === img ? 'border-black opacity-100 scale-110' : 'border-white/50 opacity-70 hover:opacity-100 hover:scale-105'} bg-white`}
+                  className={`w-14 aspect-[3/4] border transition-all duration-300 shadow-lg ${activeImage === img ? 'border-black ring-1 ring-black scale-110 opacity-100' : 'border-white/50 opacity-80 hover:opacity-100 hover:scale-105'} bg-white overflow-hidden`}
                 >
                   <img src={img} className="w-full h-full object-cover" alt="" />
                 </button>
@@ -91,91 +97,96 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </div>
 
         {/* Right: Scrollable Details */}
-        <div className="w-full md:w-1/2 flex flex-col bg-white text-black overflow-y-auto no-scrollbar">
-          <div className="p-10 md:p-20 space-y-20 pb-32">
+        <div className="w-full md:w-1/2 flex flex-col bg-white text-black relative">
+          <div className="flex-1 overflow-y-auto no-scrollbar p-10 md:p-14 space-y-12 pb-32">
 
             {/* 1. Header & Price */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <span className="text-[9px] uppercase tracking-[0.6em] text-[#8ca67a] font-bold">KLYORA ATELIER</span>
-                <span className="text-[7px] text-zinc-400 px-3 py-1 rounded-full font-bold uppercase tracking-widest border border-black/5">
-                  Exclusive Design
-                </span>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <span className="h-[1px] w-8 bg-black"></span>
+                <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-black">Klyora Atelier</span>
               </div>
-              <h2 className="text-5xl md:text-6xl font-serif uppercase tracking-tighter leading-[0.9] text-black">{product.name}</h2>
-              <div className="flex items-center justify-between pt-4 border-t border-black/5">
-                <p className="text-[20px] font-bold tracking-[0.1em] text-black font-serif italic">{currency}{product.price.toLocaleString()} USD</p>
-                <p className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold">Complimentary Duty</p>
+              <h2 className="text-4xl md:text-5xl font-serif italic font-medium tracking-tight text-black leading-tight">{product.name}</h2>
+              <div className="flex items-baseline gap-4 pt-2">
+                <p className="text-2xl font-sans font-light tracking-wide text-zinc-900">{currency}{product.price.toLocaleString()}</p>
+                <p className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold">Import Duties Included</p>
               </div>
             </div>
 
-            {/* 2. Narrative */}
+            {/* 2. Sizing */}
             <div className="space-y-6">
-              <h4 className="text-[10px] uppercase font-bold tracking-[0.4em] text-zinc-300">The Senses</h4>
-              <div
-                className="text-[16px] leading-[1.8] text-zinc-800 font-serif italic font-light prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-              />
-            </div>
-
-            {/* 3. Sizing & Consultation */}
-            <div className="space-y-8 p-10 bg-zinc-50 border border-black/5">
-              <div className="flex justify-between items-baseline">
-                <h4 className="text-[10px] uppercase font-bold tracking-[0.3em]">Select Silhouette Size</h4>
+              <div className="flex justify-between items-baseline border-b border-black/5 pb-2">
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500">Select Size</span>
                 <button
                   onClick={() => setIsFitAssistantOpen(true)}
-                  className="text-[9px] uppercase tracking-[0.4em] font-bold text-[#8ca67a] hover:opacity-60 transition-opacity"
+                  className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#8ca67a] hover:underline underline-offset-4"
                 >
-                  Tailoring Advice
+                  Size Guide
                 </button>
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2">
                 {product.variants?.map(variant => (
                   <button
                     key={variant.id}
                     onClick={() => variant.available && setSelectedVariant(variant)}
                     disabled={!variant.available}
-                    className={`px-8 py-4 border text-[10px] font-bold uppercase tracking-widest transition-all ${!variant.available ? 'opacity-40 cursor-not-allowed line-through bg-zinc-100 text-zinc-400' : selectedVariant?.id === variant.id ? 'bg-black text-white border-black shadow-xl ring-1 ring-black' : 'border-black/10 hover:border-black bg-white'}`}
+                    className={`min-w-[4rem] h-12 px-4 border text-[11px] font-medium transition-all duration-300 flex items-center justify-center ${!variant.available ? 'opacity-30 cursor-not-allowed line-through bg-zinc-50 border-zinc-100' : selectedVariant?.id === variant.id ? 'bg-black text-white border-black' : 'border-zinc-200 hover:border-black text-black bg-transparent'}`}
                   >
                     {variant.title}
                   </button>
-                )) || <span className="text-[10px] uppercase text-zinc-400 font-bold tracking-widest">Universal Fitment</span>}
+                )) || <span className="text-sm text-zinc-400 px-2 italic">Universal Fit</span>}
               </div>
             </div>
 
-            {/* 4. Specifications */}
-            <div className="space-y-8">
-              <h4 className="text-[10px] uppercase font-bold tracking-[0.4em] text-zinc-300">Technical Attributes</h4>
-              <div className="grid grid-cols-2 gap-y-10 gap-x-12">
-                <div className="space-y-2">
-                  <p className="text-[8px] uppercase font-bold tracking-[0.3em] text-zinc-400">Materiality</p>
-                  <p className="text-[12px] uppercase tracking-widest font-medium text-black">{product.composition || "Premium Fiber Blend"}</p>
+            {/* 3. Accordion Details */}
+            <div className="space-y-0 border-t border-black/10">
+              {/* The Senses (Description) */}
+              <div className="border-b border-black/10">
+                <button
+                  onClick={() => toggleSection('senses')}
+                  className="w-full py-6 flex justify-between items-center text-left group"
+                >
+                  <span className="text-[11px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">The Senses & Composition</span>
+                  <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'senses' ? 'rotate-45' : ''}`}>+</span>
+                </button>
+                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'senses' ? 'max-h-[500px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
+                  <div
+                    className="text-sm font-serif leading-[1.8] text-zinc-600 font-light"
+                    dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                  />
+                  <div className="mt-4 pt-4 border-t border-dashed border-zinc-200 grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Material</p>
+                      <p className="text-xs">{product.composition || "Premium Blend"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Origin</p>
+                      <p className="text-xs">{product.origin || "Italy"}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-[8px] uppercase font-bold tracking-[0.3em] text-zinc-400">Origins</p>
-                  <p className="text-[12px] uppercase tracking-widest font-medium text-black">{product.origin || "Atelier Paris"}</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-[8px] uppercase font-bold tracking-[0.3em] text-zinc-400">Fulfillment</p>
-                  <p className="text-[12px] uppercase tracking-widest font-medium text-black">{product.shippingTier || "White Glove Express"}</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-[8px] uppercase font-bold tracking-[0.3em] text-zinc-400">Maintenance</p>
-                  <p className="text-[12px] uppercase tracking-widest font-medium text-black">Atelier Care Advised</p>
+              </div>
+
+              {/* Shipping & Returns */}
+              <div className="border-b border-black/10">
+                <button
+                  onClick={() => toggleSection('shipping')}
+                  className="w-full py-6 flex justify-between items-center text-left group"
+                >
+                  <span className="text-[11px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">Shipping & Returns</span>
+                  <span className={`text-xl font-light transition-transform duration-300 ${openSection === 'shipping' ? 'rotate-45' : ''}`}>+</span>
+                </button>
+                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'shipping' ? 'max-h-[300px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
+                  <p className="text-sm font-light text-zinc-600 leading-relaxed">
+                    Complimentary {product.shippingTier || "Standard"} shipping on all orders over $500.
+                    Returns are accepted within 14 days of delivery for a full refund or exchange, provided items are unworn and tags are attached.
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* 5. Curation Tools */}
-            <StyleRecommendations product={product} />
-
-            {/* 6. Reflections */}
-            <div className="pt-20 border-t border-black/5">
-              <ProductReviews productName={product.name} />
-            </div>
-
-            {/* 7. Curated Pairings */}
-            <div className="pt-20 border-t border-black/5">
+            {/* 4. Cross Sells */}
+            <div className="pt-8">
               <SimilarProducts
                 currentProductId={product.id}
                 products={allProducts}
@@ -184,14 +195,15 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             </div>
           </div>
 
-          {/* Persistent Bag Integration */}
-          <div className="mt-auto pt-8 pb-12 px-10 md:px-20 bg-white/90 backdrop-blur-xl sticky bottom-0 border-t border-black/5 z-20">
+          {/* Sticky Actions Footer */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 bg-white/95 backdrop-blur border-t border-black/5 z-20">
             <button
               onClick={() => selectedVariant ? onAddToCart(product, selectedVariant) : null}
               disabled={!selectedVariant}
-              className="w-full bg-black text-white py-7 text-[11px] font-bold uppercase tracking-[0.6em] hover:bg-zinc-800 transition-all shadow-2xl active:scale-[0.98] disabled:opacity-20"
+              className="w-full bg-black text-white py-5 text-[11px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
             >
-              {selectedVariant ? 'Add to Private Collection' : 'Select Silhouette'}
+              <span>{selectedVariant ? `Add to Bag - ${currency}${product.price}` : 'Select Size'}</span>
+              {selectedVariant && <span className="w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>}
             </button>
           </div>
         </div>
