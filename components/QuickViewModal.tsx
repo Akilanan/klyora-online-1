@@ -74,7 +74,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </button>
 
         {/* Left: Product Imagery */}
-        <div className="w-full md:w-1/2 bg-zinc-50 relative group overflow-hidden flex flex-col">
+        <div className="w-full md:w-[45%] bg-zinc-50 relative group overflow-hidden flex flex-col">
           <div className="flex-1 relative overflow-hidden h-full">
             <BoutiqueImage
               src={activeImage || product.image}
@@ -127,8 +127,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </div>
 
         {/* Right: Scrollable Details */}
-        <div className="w-full md:w-1/2 flex flex-col bg-white text-black relative">
-          <div className="flex-1 overflow-y-auto no-scrollbar p-10 md:p-14 space-y-12 pb-32">
+        <div className="w-full md:w-[55%] flex flex-col bg-white text-black relative">
+          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 hover:scrollbar-thumb-black/20 p-8 md:p-12 space-y-10 pb-32">
 
             {/* 1. Header & Price */}
             <div className="space-y-4">
@@ -137,7 +137,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-black">Klyora Atelier</span>
               </div>
               <div className="flex justify-between items-start">
-                <h2 className="text-4xl md:text-5xl font-serif italic font-medium tracking-tight text-black leading-tight">{product.name}</h2>
+                <h2 className="text-3xl md:text-4xl font-serif italic font-medium tracking-tight text-black leading-tight">{product.name}</h2>
                 <button onClick={onToggleSave} className="p-2 hover:text-red-500 transition-colors">
                   {isSaved ? (
                     <svg className="w-6 h-6 text-red-500 fill-current" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" /></svg>
