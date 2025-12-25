@@ -66,7 +66,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
     <div className="fixed inset-0 z-[500] flex items-center justify-center p-0 md:p-8 font-sans">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-fade-in" onClick={onClose} />
 
-      <div className="relative w-full max-w-7xl bg-white shadow-2xl animate-fade-scale flex flex-col md:flex-row overflow-hidden h-full md:h-[90vh] md:rounded-sm">
+      <div className="relative w-full max-w-7xl bg-white shadow-2xl animate-fade-scale flex flex-col md:flex-row overflow-hidden h-full md:h-[85vh] md:max-h-[800px] md:rounded-sm">
         <button onClick={onClose} className="absolute top-6 right-6 z-[510] p-3 text-black/50 hover:text-black hover:rotate-90 transition-all duration-500 bg-white/80 backdrop-blur rounded-full">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
@@ -74,7 +74,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </button>
 
         {/* Left: Product Imagery */}
-        <div className="w-full md:w-[45%] bg-zinc-50 relative group overflow-hidden flex flex-col">
+        <div className="w-full md:w-[40%] bg-zinc-50 relative group overflow-hidden flex flex-col border-r border-black/5">
           <div className="flex-1 relative overflow-hidden h-full">
             <BoutiqueImage
               src={activeImage || product.image}
@@ -127,8 +127,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </div>
 
         {/* Right: Scrollable Details */}
-        <div className="w-full md:w-[55%] flex flex-col bg-white text-black relative">
-          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 hover:scrollbar-thumb-black/20 p-8 md:p-12 space-y-10 pb-32">
+        <div className="w-full md:w-[60%] flex flex-col bg-white text-black relative">
+          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 hover:scrollbar-thumb-black/20 p-8 md:p-12 space-y-10">
 
             {/* 1. Header & Price */}
             <div className="space-y-4">
@@ -259,7 +259,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </div>
 
         {/* Sticky Actions Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 bg-white/95 backdrop-blur border-t border-black/5 z-20">
+        {/* Actions Footer */}
+        <div className="p-6 bg-white border-t border-black/5 z-20">
           <button
             onClick={() => selectedVariant ? onAddToCart(product, selectedVariant) : null}
             disabled={!selectedVariant}
