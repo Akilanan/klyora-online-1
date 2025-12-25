@@ -165,10 +165,12 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
                 onChange={(e) => onSortChange(e.target.value)}
                 className="w-full bg-transparent border-b border-zinc-200 text-[11px] uppercase tracking-widest font-bold py-2 outline-none cursor-pointer"
               >
-                <option value="relevance">Relevance</option>
+                <option value="relevance">Featured</option>
                 <option value="newest">Newest Arrivals</option>
                 <option value="price-asc">Price: Low to High</option>
                 <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Alphabetical: A-Z</option>
+                <option value="name-desc">Alphabetical: Z-A</option>
               </select>
             </div>
 
