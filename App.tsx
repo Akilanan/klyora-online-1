@@ -96,6 +96,17 @@ const App: React.FC = () => {
     };
   }, [scrollY]);
 
+  /* SEO: Dynamic Title Management */
+  useEffect(() => {
+    if (selectedQuickView) {
+      document.title = `${selectedQuickView.name} | Maison Klyora`;
+    } else if (activeCategory) {
+      document.title = `${activeCategory} Collection | Maison Klyora`;
+    } else {
+      document.title = "Maison Klyora | Curated Luxury";
+    }
+  }, [selectedQuickView, activeCategory]);
+
   const syncStore = async () => {
     setIsSyncing(true);
     const storeProducts = await shopifyService.fetchLiveCatalog();
