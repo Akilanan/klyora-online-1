@@ -20,6 +20,13 @@ interface SearchOverlayProps {
   results: Product[]; // Used for display
   currency: string;
   onVisualResults: (productIds: string[]) => void;
+  selectedColor: string | null;
+  onColorChange: (color: string | null) => void;
+  allColors: string[];
+  inStockOnly: boolean;
+  onInStockChange: (inStock: boolean) => void;
+  sortBy: string;
+  onSortChange: (sort: string) => void;
 }
 
 const CATEGORIES = ['Women', 'Men', 'Seasonal', 'Exclusive'];
@@ -40,7 +47,14 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
   catalog,
   results,
   currency,
-  onVisualResults
+  onVisualResults,
+  selectedColor,
+  onColorChange,
+  allColors,
+  inStockOnly,
+  onInStockChange,
+  sortBy,
+  onSortChange
 }) => {
   const PRICE_TIERS: { label: string; range: [number, number] | null }[] = [
     { label: 'All Prices', range: null },
@@ -121,6 +135,51 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Palette Filter */}
+          <div className="space-y-4">
+            <h3 className="text-[9px] uppercase tracking-[0.3em] font-bold text-zinc-400">Palette</h3>
+            <div className="flex flex-wrap gap-2">
+              {allColors.map(color => (
+                <button
+                  key={color}
+                  onClick={() => onColorChange(selectedColor === color ? null : color)}
+                  className={`w-6 h-6 rounded-full border border-zinc-200 shadow-sm flex items-center justify-center transition-all ${selectedColor === color ? 'ring-1 ring-black scale-110' : 'hover:scale-105'}`}
+                  style={{ backgroundColor: color.toLowerCase() }}
+                  title={color}
+                >
+                  {selectedColor === color && <div className="w-1.5 h-1.5 bg-black rounded-full mix-blend-difference invert" />}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Sort & Availability */}
+          <div className="space-y-6 pt-6 border-t border-zinc-100">
+            {/* Sort */}
+            <div className="space-y-3">
+              <h3 className="text-[9px] uppercase tracking-[0.3em] font-bold text-zinc-400">Sort By</h3>
+              <select
+                value={sortBy}
+                onChange={(e) => onSortChange(e.target.value)}
+                className="w-full bg-transparent border-b border-zinc-200 text-[11px] uppercase tracking-widest font-bold py-2 outline-none cursor-pointer"
+              >
+                <option value="relevance">Relevance</option>
+                <option value="newest">Newest Arrivals</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </select>
+            </div>
+
+            {/* Availability Toggle */}
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <div className={`w-3 h-3 border border-black transition-all flex items-center justify-center ${inStockOnly ? 'bg-black' : 'bg-transparent'}`}>
+                {inStockOnly && <div className="w-1.5 h-1.5 bg-white"></div>}
+              </div>
+              <input type="checkbox" className="hidden" checked={inStockOnly} onChange={(e) => onInStockChange(e.target.checked)} />
+              <span className="text-[10px] uppercase tracking-widest font-bold group-hover:underline underline-offset-4">In Stock Only</span>
+            </label>
           </div>
         </div>
 

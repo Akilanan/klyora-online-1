@@ -58,6 +58,9 @@ const App: React.FC = () => {
   const [currency, setCurrency] = useState('$');
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [sortBy, setSortBy] = useState<string>('relevance');
 
   useEffect(() => {
     // @ts-ignore
@@ -292,6 +295,13 @@ const App: React.FC = () => {
         selectedMaterial={selectedMaterial}
         onMaterialChange={setSelectedMaterial}
         allMaterials={allMaterials}
+        selectedColor={selectedColor}
+        onColorChange={setSelectedColor}
+        allColors={allColors}
+        inStockOnly={inStockOnly}
+        onInStockChange={setInStockOnly}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
       />
 
       {isCartOpen && (
