@@ -15,6 +15,7 @@ import { LoginModal } from './components/LoginModal';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { ArchiveDrawer } from './components/ArchiveDrawer';
 import { Footer } from './components/Footer';
+import { WinterPromoModal } from './components/WinterPromoModal';
 
 const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop',
@@ -457,6 +458,7 @@ const App: React.FC = () => {
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
 
       <BackToTop />
+      <WinterPromoModal />
       {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
     </div>
   );
