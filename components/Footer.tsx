@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+    onConciergeClick: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onConciergeClick }) => {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'success'>('idle');
 
@@ -52,9 +56,23 @@ export const Footer: React.FC = () => {
                             <ul className="space-y-4">
                                 {['Concierge', 'Shipping & Returns', 'Size Guide', 'Track Order', 'Gift Cards'].map(link => (
                                     <li key={link}>
-                                        <a href="#" className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block">
-                                            {link}
-                                        </a>
+                                        {link === 'Concierge' ? (
+                                            <button onClick={onConciergeClick} className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block text-left">
+                                                {link}
+                                            </button>
+                                        ) : (
+                                            <a
+                                                href={
+                                                    link === 'Shipping & Returns' ? '/policies/shipping-policy' :
+                                                        link === 'Size Guide' ? '/pages/size-guide' :
+                                                            link === 'Track Order' ? '#' :
+                                                                link === 'Gift Cards' ? '/products/gift-card' : '#'
+                                                }
+                                                className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block"
+                                            >
+                                                {link}
+                                            </a>
+                                        )}
                                     </li>
                                 ))}
                                 <li>
@@ -69,7 +87,14 @@ export const Footer: React.FC = () => {
                             <ul className="space-y-4">
                                 {['Our Heritage', 'Sustainability', 'Careers', 'Press', 'Legal'].map(link => (
                                     <li key={link}>
-                                        <a href="#" className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block">
+                                        <a
+                                            href={
+                                                link === 'Legal' ? '/policies/terms-of-service' :
+                                                    link === 'Sustainability' ? '/pages/sustainability' :
+                                                        link === 'Our Heritage' ? '/pages/about-us' : '#'
+                                            }
+                                            className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block"
+                                        >
                                             {link}
                                         </a>
                                     </li>

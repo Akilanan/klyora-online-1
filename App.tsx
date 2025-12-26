@@ -385,7 +385,7 @@ const App: React.FC = () => {
         </section>
       </main>
 
-      <Footer />
+      <Footer onConciergeClick={() => setIsChatOpen(true)} />
 
       <StylistChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       <SearchOverlay
