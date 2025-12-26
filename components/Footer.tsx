@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 
 interface FooterProps {
     onConciergeClick: () => void;
+    onLinkClick: (title: string, type: 'shipping' | 'size-guide' | 'gift-card' | 'legal' | 'sustainability' | 'coming-soon') => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onConciergeClick }) => {
+export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick }) => {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'success'>('idle');
 
@@ -61,17 +62,17 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick }) => {
                                                 {link}
                                             </button>
                                         ) : (
-                                            <a
-                                                href={
-                                                    link === 'Shipping & Returns' ? '/policies/shipping-policy' :
-                                                        link === 'Size Guide' ? '/pages/size-guide' :
-                                                            link === 'Track Order' ? '#' :
-                                                                link === 'Gift Cards' ? '/products/gift-card' : '#'
-                                                }
-                                                className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block"
+                                            <button
+                                                onClick={() => {
+                                                    if (link === 'Shipping & Returns') onLinkClick(link, 'shipping');
+                                                    else if (link === 'Size Guide') onLinkClick(link, 'size-guide');
+                                                    else if (link === 'Gift Cards') onLinkClick(link, 'gift-card');
+                                                    else onLinkClick(link, 'coming-soon');
+                                                }}
+                                                className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block text-left"
                                             >
                                                 {link}
-                                            </a>
+                                            </button>
                                         )}
                                     </li>
                                 ))}
@@ -87,16 +88,16 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick }) => {
                             <ul className="space-y-4">
                                 {['Our Heritage', 'Sustainability', 'Careers', 'Press', 'Legal'].map(link => (
                                     <li key={link}>
-                                        <a
-                                            href={
-                                                link === 'Legal' ? '/policies/terms-of-service' :
-                                                    link === 'Sustainability' ? '/pages/sustainability' :
-                                                        link === 'Our Heritage' ? '/pages/about-us' : '#'
-                                            }
-                                            className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block"
+                                        <button
+                                            onClick={() => {
+                                                if (link === 'Legal') onLinkClick(link, 'legal');
+                                                else if (link === 'Sustainability') onLinkClick(link, 'sustainability');
+                                                else onLinkClick(link, 'coming-soon');
+                                            }}
+                                            className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block text-left"
                                         >
                                             {link}
-                                        </a>
+                                        </button>
                                     </li>
                                 ))}
                             </ul>

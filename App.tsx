@@ -16,6 +16,7 @@ import { WishlistDrawer } from './components/WishlistDrawer';
 import { ArchiveDrawer } from './components/ArchiveDrawer';
 import { Footer } from './components/Footer';
 import { WinterPromoModal } from './components/WinterPromoModal';
+import { InfoModal } from './components/InfoModal';
 
 const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop',
@@ -48,6 +49,7 @@ const App: React.FC = () => {
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [infoModal, setInfoModal] = useState<{ isOpen: boolean; title: string; content: React.ReactNode } | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -385,7 +387,69 @@ const App: React.FC = () => {
         </section>
       </main>
 
-      <Footer onConciergeClick={() => setIsChatOpen(true)} />
+      <Footer
+        onConciergeClick={() => setIsChatOpen(true)}
+        onLinkClick={(title, type) => {
+          let content;
+          switch (type) {
+            case 'size-guide':
+              content = (
+                <div className="space-y-6">
+                  <p>Our sizing is tailored to fit the modern silhouette. Please refer to the chart below.</p>
+                  <table className="w-full text-xs border border-white/20 text-center">
+                    <thead className="bg-white/5 font-bold uppercase tracking-wider">
+                      <tr><th className="p-3">Size</th><th className="p-3">US</th><th className="p-3">EU</th><th className="p-3">Bust (cm)</th></tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10">
+                      <tr><td className="p-3">XS</td><td className="p-3">0-2</td><td className="p-3">34</td><td className="p-3">80-84</td></tr>
+                      <tr><td className="p-3">S</td><td className="p-3">4-6</td><td className="p-3">36</td><td className="p-3">85-89</td></tr>
+                      <tr><td className="p-3">M</td><td className="p-3">8-10</td><td className="p-3">38</td><td className="p-3">90-94</td></tr>
+                      <tr><td className="p-3">L</td><td className="p-3">12-14</td><td className="p-3">40</td><td className="p-3">95-100</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              );
+              break;
+            case 'shipping':
+              content = (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-serif">Global Shipping</h3>
+                  <p>We offer complimentary express shipping on all orders over $500. All parcels are insured and trackable.</p>
+                  <ul className="list-disc pl-5 space-y-2 opacity-80">
+                    <li>Europe: 1-2 Business Days</li>
+                    <li>USA/Canada: 2-3 Business Days</li>
+                    <li>Asia/Pacific: 3-5 Business Days</li>
+                  </ul>
+                  <h3 className="text-lg font-serif mt-6">Returns</h3>
+                  <p>Returns are accepted within 30 days of delivery. Items must be unworn and in original condition with tags attached.</p>
+                </div>
+              );
+              break;
+            case 'gift-card':
+              content = (
+                <div className="text-center py-8">
+                  <p className="mb-6">Digital Gift Cards are the ultimate expression of luxury choice.</p>
+                  <p>To purchase a Gift Card, please visit our Atelier in Paris or contact our Concierge for a personalized arrangement.</p>
+                  <button onClick={() => { setInfoModal(null); setIsChatOpen(true); }} className="mt-8 px-6 py-3 bg-white text-black text-xs uppercase tracking-widest font-bold hover:bg-zinc-200 transition-colors">
+                    Contact Concierge
+                  </button>
+                </div>
+              );
+              break;
+            case 'coming-soon':
+              content = (
+                <div className="text-center py-12">
+                  <p className="text-lg italic font-serif">This section is currently being curated.</p>
+                  <p className="mt-4 text-xs uppercase tracking-widest opacity-60">Please check back soon.</p>
+                </div>
+              );
+              break;
+            default:
+              content = <p>Information unavailable.</p>;
+          }
+          setInfoModal({ isOpen: true, title, content });
+        }}
+      />
 
       <StylistChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       <SearchOverlay
@@ -456,6 +520,15 @@ const App: React.FC = () => {
       )}
 
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+
+      {infoModal && (
+        <InfoModal
+          isOpen={infoModal.isOpen}
+          onClose={() => setInfoModal(null)}
+          title={infoModal.title}
+          content={infoModal.content}
+        />
+      )}
 
       <BackToTop />
       <WinterPromoModal />
