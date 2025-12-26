@@ -16,12 +16,12 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 680,
     description: 'A masterpiece of fluid silk, designed to move with the body. Features a hand-rolled hem and bias-cut silhouette.',
     category: 'Women',
-    image: 'https://images.unsplash.com/photo-1539109132314-34a9c668e007?q=80&w=1000&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop',
     relatedIds: ['k5', 'k8', 'k9', 'z1'],
     composition: '100% Mulberry Silk',
     origin: 'Lyon, France',
     shippingTier: 'Klyora Express (5-7 Days)',
-    images: ['https://images.unsplash.com/photo-1539109132314-34a9c668e007?q=80&w=1000&auto=format&fit=crop'],
+    images: ['https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop'],
     descriptionHtml: '<p>A masterpiece of fluid silk, designed to move with the body. Features a hand-rolled hem and bias-cut silhouette.</p>'
   },
   {

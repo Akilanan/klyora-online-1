@@ -19,7 +19,7 @@ import { WinterPromoModal } from './components/WinterPromoModal';
 
 const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1539109132314-34a9c668e007?q=80&w=2070&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=2070&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=2070&auto=format&fit=crop'
 ];
