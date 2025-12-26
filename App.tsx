@@ -425,6 +425,70 @@ const App: React.FC = () => {
                 </div>
               );
               break;
+            case 'fabric-care':
+              content = (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-serif">Detailed Care Instructions</h3>
+                  <div className="space-y-4 text-xs tracking-wide">
+                    <div>
+                      <strong className="block mb-1 text-white">Silk</strong>
+                      <p>Dry clean highly recommended. Hand wash cold with pH neutral detergent if necessary. Do not ring. Dry flat in shade.</p>
+                    </div>
+                    <div>
+                      <strong className="block mb-1 text-white">Cashmere</strong>
+                      <p>Hand wash cold or professionally dry clean. Store folded in a breathable bag with cedar balls.</p>
+                    </div>
+                    <div>
+                      <strong className="block mb-1 text-white">Leather</strong>
+                      <p>Professional leather clean only. Keep away from direct heat and sunlight.</p>
+                    </div>
+                  </div>
+                </div>
+              );
+              break;
+            case 'track-order':
+              content = (
+                <div className="text-center py-8">
+                  <p className="mb-4">Enter your order number to retrieve status.</p>
+                  <input type="text" placeholder="ORDER # (e.g. KLY-1024)" className="bg-transparent border-b border-white/30 text-center w-full py-2 mb-6 outline-none uppercase tracking-widest" />
+                  <button className="px-6 py-2 bg-white text-black text-[10px] uppercase font-bold tracking-widest hover:bg-zinc-200">Track</button>
+                  <p className="mt-8 text-[10px] opacity-60">Tracking information is also sent to your registered email.</p>
+                </div>
+              );
+              break;
+            case 'heritage':
+              content = (
+                <div className="space-y-4 leading-relaxed">
+                  <h3 className="text-2xl font-serif italic mb-4">The Atelier</h3>
+                  <p>Founded in 2024, Maison Klyora represents the intersection of timeless elegance and modern craftsmanship.</p>
+                  <p>Each piece is designed in our Paris studio, drawing inspiration from architectural forms and the fluidity of nature.</p>
+                  <p>We are dedicated to the preservation of artisanal techniques, ensuring that every garment tells a story of mastery.</p>
+                </div>
+              );
+              break;
+            case 'sustainability':
+              content = (
+                <div className="space-y-4">
+                  <p>Conscious luxury is at the heart of our practice.</p>
+                  <ul className="list-disc pl-5 space-y-2 opacity-80 mt-4">
+                    <li>100% Organic Silk and Cotton sources.</li>
+                    <li>Zero-plastic packaging commitment.</li>
+                    <li>Made-to-order model to minimize waste.</li>
+                    <li>Ethical partnerships with European ateliers.</li>
+                  </ul>
+                </div>
+              );
+              break;
+            case 'contact':
+            case 'careers':
+            case 'press':
+              content = (
+                <div className="text-center py-10">
+                  <p className="mb-6">We are always looking for exceptional talent and partners.</p>
+                  <a href="mailto:contact@klyora.com" className="text-lg font-serif italic border-b border-white/20 pb-1 hover:text-white hover:border-white transition-colors">contact@klyora.com</a>
+                </div>
+              );
+              break;
             case 'gift-card':
               content = (
                 <div className="text-center py-8">

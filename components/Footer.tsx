@@ -67,6 +67,7 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick })
                                                     if (link === 'Shipping & Returns') onLinkClick(link, 'shipping');
                                                     else if (link === 'Size Guide') onLinkClick(link, 'size-guide');
                                                     else if (link === 'Gift Cards') onLinkClick(link, 'gift-card');
+                                                    else if (link === 'Track Order') onLinkClick(link, 'track-order');
                                                     else onLinkClick(link, 'coming-soon');
                                                 }}
                                                 className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block text-left"
@@ -77,9 +78,12 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick })
                                     </li>
                                 ))}
                                 <li>
-                                    <a href="https://www.care-label.tm/en/labelling/" target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block">
+                                    <button
+                                        onClick={() => onLinkClick('Fabric Care Guide', 'fabric-care')}
+                                        className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block text-left"
+                                    >
                                         Fabric Care Guide
-                                    </a>
+                                    </button>
                                 </li>
                             </ul>
                         </nav>
