@@ -109,7 +109,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                     </div>
                     <p className="text-[8px] text-zinc-600 uppercase tracking-widest mt-3">{product.composition || 'Premium Silhouette'}</p>
                 </div>
-                <span className="text-[15px] font-bold font-serif italic">{currency}{product.price.toLocaleString()}</span>
+                <span className="text-[15px] font-bold font-serif italic">{product.formattedPrice || `${currency}${product.price.toLocaleString()}`}</span>
             </div>
         </div>
     );
