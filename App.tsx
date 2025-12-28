@@ -516,24 +516,86 @@ const App: React.FC = () => {
                 </div>
               );
               break;
-            case 'contact':
             case 'careers':
+              content = (
+                <div className="space-y-8">
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-widest mb-4">Atelier Positions</h3>
+                    <div className="space-y-6">
+                      <div className="border-b border-white/10 pb-4">
+                        <div className="flex justify-between items-baseline mb-2">
+                          <h4 className="font-serif italic text-lg">Senior Pattern Cutter</h4>
+                          <span className="text-[9px] uppercase tracking-widest text-zinc-400">Paris, Arr. 3</span>
+                        </div>
+                        <p className="text-xs text-zinc-400 leading-relaxed max-w-md">Requires 7+ years experience in draping and architectural silhouette construction. Mastery of bias cutting essential.</p>
+                      </div>
+                      <div className="border-b border-white/10 pb-4">
+                        <div className="flex justify-between items-baseline mb-2">
+                          <h4 className="font-serif italic text-lg">Textile Archivist</h4>
+                          <span className="text-[9px] uppercase tracking-widest text-zinc-400">Remote / Paris</span>
+                        </div>
+                        <p className="text-xs text-zinc-400 leading-relaxed max-w-md">Manage the digital and physical sourcing library. Expertise in sustainable luxury fibers required.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-center pt-4">
+                    <a href="mailto:careers@klyora.com" className="text-xs uppercase tracking-widest border-b border-white/30 hover:border-white pb-1 transition-colors">Apply via Folio</a>
+                  </div>
+                </div>
+              );
+              break;
             case 'press':
               content = (
-                <div className="text-center py-10">
-                  <p className="mb-6">We are always looking for exceptional talent and partners.</p>
-                  <a href="mailto:contact@klyora.com" className="text-lg font-serif italic border-b border-white/20 pb-1 hover:text-white hover:border-white transition-colors">contact@klyora.com</a>
+                <div className="space-y-8">
+                  <div className="space-y-6">
+                    <blockquote className="border-l-2 border-white/20 pl-6 py-2">
+                      <p className="font-serif italic text-lg mb-4">"Maison Klyora is redefining the quiet luxury movement with silhouettes that feel like liquid architecture."</p>
+                      <footer className="text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">— Vogue Scandinavia, Oct 2025</footer>
+                    </blockquote>
+                    <blockquote className="border-l-2 border-white/20 pl-6 py-2">
+                      <p className="font-serif italic text-lg mb-4">"The commitment to traceability is not just a marketing note; it is the foundation of every seam."</p>
+                      <footer className="text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">— The Gentlewoman</footer>
+                    </blockquote>
+                    <blockquote className="border-l-2 border-white/20 pl-6 py-2">
+                      <p className="font-serif italic text-lg mb-4">"A digital boutique that feels more intimate than a physical salon."</p>
+                      <footer className="text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">— Wallpaper*</footer>
+                    </blockquote>
+                  </div>
+                  <div className="text-center pt-6">
+                    <span className="text-[9px] uppercase tracking-widest text-zinc-500">For inquiries: press@klyora.com</span>
+                  </div>
+                </div>
+              );
+              break;
+            case 'contact':
+              content = (
+                <div className="text-center py-6">
+                  <p className="font-serif italic text-2xl mb-2">The Concierge</p>
+                  <p className="text-xs text-zinc-400 mb-8 max-w-sm mx-auto">Our team is available 24/7 to assist with styling, sizing, and bespoke requests.</p>
+                  <button onClick={() => { setInfoModal(null); setIsChatOpen(true); }} className="px-8 py-3 bg-white text-black text-[10px] uppercase font-bold tracking-widest hover:bg-zinc-200 transition-colors">
+                    Open Live Chat
+                  </button>
                 </div>
               );
               break;
             case 'gift-card':
               content = (
-                <div className="text-center py-8">
-                  <p className="mb-6">Digital Gift Cards are the ultimate expression of luxury choice.</p>
-                  <p>To purchase a Gift Card, please visit our Atelier in Paris or contact our Concierge for a personalized arrangement.</p>
-                  <button onClick={() => { setInfoModal(null); setIsChatOpen(true); }} className="mt-8 px-6 py-3 bg-white text-black text-xs uppercase tracking-widest font-bold hover:bg-zinc-200 transition-colors">
-                    Contact Concierge
-                  </button>
+                <div className="text-center py-6">
+                  <p className="mb-6 font-serif italic text-xl">The Klyora Privilege Card</p>
+                  <div className="max-w-xs mx-auto bg-zinc-900 border border-white/10 p-6 mb-8 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div className="text-left mb-8">
+                      <span className="text-[10px] uppercase tracking-[0.4em] font-bold block mb-1">Maison Klyora</span>
+                      <span className="text-[8px] uppercase tracking-widest text-[#8ca67a]">Virtual Asset</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs font-mono opacity-50 block">0000 0000 0000 0000</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-4 justify-center">
+                    <button className="px-6 py-3 bg-white text-black text-[9px] uppercase font-bold tracking-widest hover:bg-zinc-200 transition-colors">Purchase</button>
+                    <button className="px-6 py-3 border border-white/20 text-white text-[9px] uppercase font-bold tracking-widest hover:bg-white hover:text-black transition-all">Check Balance</button>
+                  </div>
                 </div>
               );
               break;
