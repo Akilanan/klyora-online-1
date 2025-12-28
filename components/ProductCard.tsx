@@ -66,6 +66,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                     <span className="text-[9px] uppercase tracking-[0.5em] font-bold border border-white/20 px-10 py-4">View Detail</span>
                 </div>
 
+                {/* Low Stock Badge */}
+                {(product as any).lowStock && (
+                    <div className="absolute top-4 left-4 z-30 bg-red-900/80 backdrop-blur-sm text-red-100 px-3 py-1 text-[8px] uppercase tracking-widest font-bold animate-pulse">
+                        Only 2 Left
+                    </div>
+                )}
+
                 {/* Save Button */}
                 <button
                     onClick={onToggleSave}
@@ -94,9 +101,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
             <div className="flex justify-between items-start px-2">
                 <div className="flex-1">
                     <h3 className="text-[13px] uppercase font-bold tracking-[0.3em] text-white/90">{product.name}</h3>
+                    <div className="flex items-center gap-2 mt-2 opacity-60">
+                        {/* Stars */}
+                        <div className="flex text-[#8ca67a] text-[8px]">{'★'.repeat(5)}</div>
+                        {/* Count */}
+                        <span className="text-[8px] uppercase tracking-widest text-zinc-500">({(product as any).reviews || 12})</span>
+                    </div>
                     <p className="text-[8px] text-zinc-600 uppercase tracking-widest mt-3">{product.composition || 'Premium Silhouette'}</p>
                 </div>
-                <span className="text-[15px] font-bold font-serif italic">{currency}{product.price}</span>
+                <span className="text-[15px] font-bold font-serif italic">{currency}{product.price.toLocaleString()}</span>
             </div>
         </div>
     );

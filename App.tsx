@@ -16,7 +16,9 @@ import { WishlistDrawer } from './components/WishlistDrawer';
 import { ArchiveDrawer } from './components/ArchiveDrawer';
 import { Footer } from './components/Footer';
 import { WinterPromoModal } from './components/WinterPromoModal';
+import { WinterPromoModal } from './components/WinterPromoModal';
 import { InfoModal } from './components/InfoModal';
+import { MOCK_PRODUCTS } from './constants';
 
 const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop',
@@ -126,7 +128,15 @@ const App: React.FC = () => {
   const syncStore = async () => {
     setIsSyncing(true);
     const storeProducts = await shopifyService.fetchLiveCatalog();
-    setProducts(storeProducts);
+
+    // Fallback to Luxury Mock Data if store is empty (New Store Scenario)
+    if (storeProducts && storeProducts.length > 0) {
+      setProducts(storeProducts);
+    } else {
+      console.log("Using Klyora Luxury Mock Data");
+      setProducts(MOCK_PRODUCTS);
+    }
+
     setIsStoreSynced(true);
     setIsSyncing(false);
   };
