@@ -50,6 +50,7 @@
           id: {{ product.id | json }},
           name: {{ product.title | json }},
           price: {{ product.price | divided_by: 100.0 | json }},
+          formattedPrice: {{ product.price | money | json }},
           image: {{ product.featured_image | img_url: '1024x' | json }},
           category: {{ product.type | json }},
           description: {{ product.description | strip_html | truncate: 150 | json }},

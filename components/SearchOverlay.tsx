@@ -94,10 +94,36 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
                 placeholder="Find anything..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchQuery.trim()) {
+                    const history = JSON.parse(localStorage.getItem('klyora_search_history') || '[]');
+                    if (!history.includes(searchQuery)) {
+                      localStorage.setItem('klyora_search_history', JSON.stringify([searchQuery, ...history].slice(0, 5)));
+                    }
+                  }
+                }}
                 className="w-full text-2xl md:text-3xl font-serif italic bg-transparent outline-none placeholder:text-zinc-300 border-b border-black/10 pb-4 focus:border-black transition-all group-hover:border-black/30"
               />
               <span className="absolute right-0 bottom-4 text-zinc-400 text-[10px] uppercase tracking-widest pointer-events-none">Search</span>
             </div>
+
+            {/* Recent Searches */}
+            {!searchQuery && (
+              <div className="space-y-4 animate-fade-in">
+                <h3 className="text-xs font-serif italic text-zinc-500">Recent</h3>
+                <div className="flex flex-wrap gap-2">
+                  {JSON.parse(localStorage.getItem('klyora_search_history') || '[]').map((term: string) => (
+                    <button
+                      key={term}
+                      onClick={() => onSearchChange(term)}
+                      className="px-3 py-1 bg-zinc-100 text-[10px] uppercase tracking-widest text-zinc-600 hover:bg-black hover:text-white transition-colors"
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Filter Group: Sort */}
             <div className="space-y-4">

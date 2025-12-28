@@ -5,6 +5,7 @@ export interface Product {
   handle: string;
   name: string;
   price: number;
+  formattedPrice?: string;
   description: string;
   category: 'Men' | 'Women' | 'Seasonal' | 'Exclusive';
   image: string;
