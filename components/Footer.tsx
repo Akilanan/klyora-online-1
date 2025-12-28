@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 
 interface FooterProps {
     onConciergeClick: () => void;
-    onLinkClick: (title: string, type: 'shipping' | 'size-guide' | 'gift-card' | 'legal' | 'sustainability' | 'coming-soon') => void;
+    onLinkClick: (title: string, type: 'shipping' | 'size-guide' | 'gift-card' | 'fabric-care' | 'track-order' | 'heritage' | 'sustainability' | 'careers' | 'legal' | 'press' | 'coming-soon') => void;
+    onSubscribe: (email: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick }) => {
+export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, onSubscribe }) => {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'success'>('idle');
 
@@ -13,6 +14,7 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick })
         e.preventDefault();
         if (email) {
             setStatus('success');
+            onSubscribe(email);
             setEmail('');
         }
     };

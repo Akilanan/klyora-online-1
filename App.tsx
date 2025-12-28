@@ -436,11 +436,15 @@ const App: React.FC = () => {
                     </div>
                     <div>
                       <strong className="block mb-1 text-white">Cashmere</strong>
-                      <p>Hand wash cold or professionally dry clean. Store folded in a breathable bag with cedar balls.</p>
+                      <p>Hand wash cold or professionally dry clean. Store folded in a breathable bag with cedar balls to maintain softness.</p>
+                    </div>
+                    <div>
+                      <strong className="block mb-1 text-white">Merino Wool</strong>
+                      <p>Air frequently to refresh. Hand wash in tepid water. Lay flat to dry on a towel to preserve shape.</p>
                     </div>
                     <div>
                       <strong className="block mb-1 text-white">Leather</strong>
-                      <p>Professional leather clean only. Keep away from direct heat and sunlight.</p>
+                      <p>Professional leather clean only. Keep away from direct heat and sunlight. Condition annually.</p>
                     </div>
                   </div>
                 </div>
@@ -458,24 +462,47 @@ const App: React.FC = () => {
               break;
             case 'heritage':
               content = (
-                <div className="space-y-4 leading-relaxed">
-                  <h3 className="text-2xl font-serif italic mb-4">The Atelier</h3>
-                  <p>Founded in 2024, Maison Klyora represents the intersection of timeless elegance and modern craftsmanship.</p>
-                  <p>Each piece is designed in our Paris studio, drawing inspiration from architectural forms and the fluidity of nature.</p>
-                  <p>We are dedicated to the preservation of artisanal techniques, ensuring that every garment tells a story of mastery.</p>
+                <div className="space-y-6 leading-relaxed">
+                  <h3 className="text-2xl font-serif italic mb-2">The Atelier</h3>
+                  <p className="text-zinc-300">Born from a desire to redefine modern silhouettes, <strong className="text-white">Maison Klyora</strong> exists at the convergence of architectural precision and organic fluidity.</p>
+                  <p className="text-zinc-300">Every garment is conceived in our Paris studio, where sketches are translated into reality by fifth-generation artisans. We believe in the quiet authority of luxury—where the inside of a garment is finished as impeccably as the outside.</p>
+                  <p className="italic text-white border-l border-white/20 pl-4 my-4">"True luxury is not just what you see, but how it makes you feel against your skin."</p>
                 </div>
               );
               break;
             case 'sustainability':
               content = (
-                <div className="space-y-4">
-                  <p>Conscious luxury is at the heart of our practice.</p>
-                  <ul className="list-disc pl-5 space-y-2 opacity-80 mt-4">
-                    <li>100% Organic Silk and Cotton sources.</li>
-                    <li>Zero-plastic packaging commitment.</li>
-                    <li>Made-to-order model to minimize waste.</li>
-                    <li>Ethical partnerships with European ateliers.</li>
+                <div className="space-y-5">
+                  <p className="font-serif italic text-lg">Conscious by Design.</p>
+                  <p className="text-zinc-300">We do not believe in seasons, only in longevity.</p>
+                  <ul className="space-y-4 mt-4">
+                    <li className="flex gap-4">
+                      <span className="text-[#8ca67a]">●</span>
+                      <span><strong>Traceable Fibers:</strong> Our silks are sourced from GOTS-certified partners in Como, Italy.</span>
+                    </li>
+                    <li className="flex gap-4">
+                      <span className="text-[#8ca67a]">●</span>
+                      <span><strong>Zero-Waste Pattern Cutting:</strong> We utilize advanced digital modeling to minimize fabric waste during production.</span>
+                    </li>
+                    <li className="flex gap-4">
+                      <span className="text-[#8ca67a]">●</span>
+                      <span><strong>Plastic-Free Logistics:</strong> Your order arrives in recycled cotton garment bags and FSC-certified boxes.</span>
+                    </li>
                   </ul>
+                </div>
+              );
+              break;
+            case 'legal':
+              content = (
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Privacy Policy</h3>
+                    <p className="text-xs text-zinc-400">We respect your privacy. Your data is encrypted and used solely for fulfilling orders and improving your atelier experience. We never sell your data to third parties.</p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Terms of Service</h3>
+                    <p className="text-xs text-zinc-400">By using our site, you agree to our terms. All designs are intellectual property of Maison Klyora. Prices are subject to change without notice.</p>
+                  </div>
                 </div>
               );
               break;
