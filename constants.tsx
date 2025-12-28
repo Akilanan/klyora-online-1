@@ -22,7 +22,10 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: 'Lyon, France',
     shippingTier: 'Klyora Express (5-7 Days)',
     images: ['https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>A masterpiece of fluid silk, designed to move with the body. Features a hand-rolled hem and bias-cut silhouette.</p>'
+    descriptionHtml: '<p>A masterpiece of fluid silk...</p>',
+    rating: 4.9,
+    reviews: 42,
+    lowStock: false
   },
   {
     id: 'z1',
@@ -38,7 +41,10 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: 'Global Atelier',
     shippingTier: 'Global Express (7 Days)',
     images: ['https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>A Zendrop-sourced exclusive, refined by the Klyora atelier. Minimalist silhouette with adjustable straps and a cowl neck.</p>'
+    descriptionHtml: '<p>A Zendrop-sourced exclusive...</p>',
+    rating: 4.7,
+    reviews: 18,
+    lowStock: true
   },
   {
     id: 'z6',
@@ -55,7 +61,10 @@ export const MOCK_PRODUCTS: Product[] = [
     shippingTier: 'Secured White Glove',
     inventoryStatus: 'Limited Edition',
     images: ['https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>A deep midnight velvet masterpiece. Architectural corset boning and a dramatic side slit for evening galas.</p>'
+    descriptionHtml: '<p>A deep midnight velvet masterpiece...</p>',
+    rating: 5.0,
+    reviews: 8,
+    lowStock: true
   },
   {
     id: 'z2',
@@ -71,7 +80,10 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: 'Ethical Global Studio',
     shippingTier: 'Standard Express (8-10 Days)',
     images: ['https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>Chunky, textured knit with an editorial fit. Sourced for the modern wanderer who values both warmth and architectural style.</p>'
+    descriptionHtml: '<p>Chunky, textured knit...</p>',
+    rating: 4.8,
+    reviews: 31,
+    lowStock: false
   },
   {
     id: 'k2',
@@ -228,6 +240,9 @@ export const MOCK_PRODUCTS: Product[] = [
     composition: '100% Toscana Sheepskin',
     origin: 'Madrid, Spain',
     images: ['https://images.unsplash.com/photo-1520975661595-6453be3f7070?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>Ultra-warm shearling jacket with a rugged leather exterior. Hand-finished seams and heavy-duty hardware.</p>'
+    descriptionHtml: '<p>Ultra-warm shearling jacket with a rugged leather exterior.</p>',
+    rating: 4.9,
+    reviews: 15,
+    lowStock: true
   }
 ];
