@@ -9,11 +9,19 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, onSubscribe }) => {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'success'>('idle');
+    const [isSubscribed, setIsSubscribed] = useState(false);
+
+    React.useEffect(() => {
+        const saved = localStorage.getItem('klyora_newsletter_subscribed');
+        if (saved) setIsSubscribed(true);
+    }, []);
 
     const handleSubscribe = (e: React.FormEvent) => {
         e.preventDefault();
         if (email) {
+            localStorage.setItem('klyora_newsletter_subscribed', 'true');
             setStatus('success');
+            setIsSubscribed(true);
             onSubscribe(email);
             setEmail('');
         }
@@ -32,9 +40,9 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                             Subscribe to receive private invitations to runway shows, bespoke curation alerts, and seasonal lookbooks.
                         </p>
 
-                        {status === 'success' ? (
-                            <div className="text-[#8ca67a] text-xs tracking-widest uppercase font-bold animate-fade-in">
-                                Welcome to the Inner Circle.
+                        {status === 'success' || isSubscribed ? (
+                            <div className="text-[#8ca67a] text-xs tracking-widest uppercase font-bold animate-fade-in border border-[#8ca67a]/20 bg-[#8ca67a]/5 p-4 text-center">
+                                You are on the Guest List.
                             </div>
                         ) : (
                             <form onSubmit={handleSubscribe} className="flex gap-4 border-b border-white/20 pb-2 focus-within:border-white transition-colors">
