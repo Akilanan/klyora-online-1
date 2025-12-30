@@ -17,6 +17,7 @@ import { Footer } from './components/Footer';
 import { WinterPromoModal } from './components/WinterPromoModal';
 import { InfoModal } from './components/InfoModal';
 import { ReturnRequestModal } from './components/ReturnRequestModal';
+import { OrderTrackingModal } from './components/OrderTrackingModal';
 import { geminiService } from './services/geminiService';
 import { CookieConsent } from './components/CookieConsent';
 import { MOCK_PRODUCTS } from './constants';
@@ -140,6 +141,7 @@ const App: React.FC = () => {
   const [customerName, setCustomerName] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'info' } | null>(null);
   const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
+  const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
 
   const animateParallax = () => {
     setSmoothScrollY(prev => prev + (scrollY - prev) * 0.1);
@@ -526,11 +528,11 @@ const App: React.FC = () => {
               content = (
                 <div className="space-y-4">
                   <h3 className="text-lg font-serif">Global Shipping</h3>
-                  <p>We offer complimentary express shipping on all orders over $500. All parcels are insured and trackable.</p>
+                  <p>We offer tracked global shipping on all orders. All parcels are insured.</p>
                   <ul className="list-disc pl-5 space-y-2 opacity-80">
-                    <li>Europe: 1-2 Business Days</li>
-                    <li>USA/Canada: 2-3 Business Days</li>
-                    <li>Asia/Pacific: 3-5 Business Days</li>
+                    <li>Processing: 1-3 Business Days</li>
+                    <li>Shipping: 7-15 Business Days</li>
+                    <li>Tracking provided via email</li>
                   </ul>
                   <h3 className="text-lg font-serif mt-6">Returns</h3>
                   <p>Returns are accepted within 30 days of delivery. Items must be unworn and in original condition with tags attached.</p>
@@ -675,6 +677,10 @@ const App: React.FC = () => {
                 </div>
               );
               break;
+            case 'track-order':
+              setInfoModal(null);
+              setIsTrackingModalOpen(true);
+              return; // Exit early as we handlethe modal
             case 'gift-card':
               content = (
                 <div className="text-center py-6">

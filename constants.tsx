@@ -20,7 +20,7 @@ export const MOCK_PRODUCTS: Product[] = [
     relatedIds: ['k5', 'k8', 'k9', 'z1'],
     composition: '100% Mulberry Silk',
     origin: 'Lyon, France',
-    shippingTier: 'Klyora Express (5-7 Days)',
+    shippingTier: 'Global Tracked (7-15 Days)',
     images: ['https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop'],
     descriptionHtml: '<p>A masterpiece of fluid silk...</p>',
     rating: 4.9,

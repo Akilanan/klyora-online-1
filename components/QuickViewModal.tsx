@@ -235,7 +235,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 </button>
                 <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'shipping' ? 'max-h-[300px] opacity-100 pb-4' : 'max-h-0 opacity-0'}`}>
                   <p className="text-xs font-light text-zinc-600 leading-relaxed">
-                    Complimentary {product.shippingTier || "Standard"} shipping on all orders over $500.
+                    Global Shipping (7-15 Business Days) on all orders.
                     Returns accepted within 14 days.
                   </p>
                 </div>

@@ -65,7 +65,7 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                         <nav aria-label="Client Services">
                             <h4 className="text-[9px] uppercase tracking-[0.4em] font-bold text-zinc-500 mb-6">Client Services</h4>
                             <ul className="space-y-4">
-                                {['Concierge', 'Shipping & Returns', 'Return & Refund Policy', 'Size Guide', 'Track Order', 'Gift Cards'].map(link => (
+                                {['Concierge', 'Shipping & Returns', 'Return & Refund Policy', 'Size Guide', 'Track Your Order', 'Gift Cards'].map(link => (
                                     <li key={link}>
                                         {link === 'Concierge' ? (
                                             <button onClick={onConciergeClick} className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block text-left">
@@ -77,6 +77,7 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                                                     if (link === 'Shipping & Returns') onLinkClick(link, 'shipping');
                                                     else if (link === 'Return & Refund Policy') onLinkClick(link, 'return-refund');
                                                     else if (link === 'Size Guide') onLinkClick(link, 'size-guide');
+                                                    else if (link === 'Track Your Order') onLinkClick(link, 'track-order');
                                                     else if (link === 'Gift Cards') onLinkClick(link, 'gift-card');
                                                     else if (link === 'Track Order') onLinkClick(link, 'track-order');
                                                     else onLinkClick(link, 'coming-soon');
