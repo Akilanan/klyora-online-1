@@ -16,6 +16,8 @@ import { ArchiveDrawer } from './components/ArchiveDrawer';
 import { Footer } from './components/Footer';
 import { WinterPromoModal } from './components/WinterPromoModal';
 import { InfoModal } from './components/InfoModal';
+import { ReturnRequestModal } from './components/ReturnRequestModal';
+import { geminiService } from './services/geminiService';
 import { CookieConsent } from './components/CookieConsent';
 import { MOCK_PRODUCTS } from './constants';
 
@@ -137,6 +139,7 @@ const App: React.FC = () => {
   const [selectedQuickView, setSelectedQuickView] = useState<Product | null>(null);
   const [customerName, setCustomerName] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'info' } | null>(null);
+  const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
 
   const animateParallax = () => {
     setSmoothScrollY(prev => prev + (scrollY - prev) * 0.1);
@@ -489,6 +492,15 @@ const App: React.FC = () => {
 
                   <h4 className="font-bold uppercase text-xs tracking-wider mt-4">4. Exchanges</h4>
                   <p className="text-sm opacity-80">We only replace items if they are defective or damaged. If you need to exchange it for the same item, send us an email.</p>
+
+                  <div className="pt-6 border-t border-white/20 mt-6">
+                    <button
+                      onClick={() => { setInfoModal(null); setIsReturnModalOpen(true); }}
+                      className="w-full bg-white text-black py-3 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-zinc-200 transition-colors"
+                    >
+                      Start Return / Replace
+                    </button>
+                  </div>
                 </div>
               );
               break;
@@ -780,6 +792,7 @@ const App: React.FC = () => {
 
       <BackToTop />
       <WinterPromoModal />
+      <ReturnRequestModal isOpen={isReturnModalOpen} onClose={() => setIsReturnModalOpen(false)} />
       {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
     </div>
   );
