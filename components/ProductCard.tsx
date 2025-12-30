@@ -28,6 +28,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
         return images;
     }, [product]);
 
+    // const [supplierInfo, setSupplierInfo] = useState<any>(null);
+
+    // useEffect(() => {
+    //     zendropService.getSupplierInfo(product.id).then(setSupplierInfo);
+    // }, [product.id]);
+
     useEffect(() => {
         let interval: NodeJS.Timeout;
         if (isHovered && allImages.length > 1) {
@@ -128,7 +134,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                             ({((product as any).reviews || 12) + (localStorage.getItem(`klyora_reviews_${product.name}`) ? JSON.parse(localStorage.getItem(`klyora_reviews_${product.name}`)!).length : 0)})
                         </span>
                     </div>
-                    <p className="text-[8px] text-zinc-600 uppercase tracking-widest mt-3">{product.composition || 'Premium Silhouette'}</p>
+                    <p className="text-[8px] text-zinc-600 uppercase tracking-widest mt-3 flex items-center justify-between">
+                        <span>{product.composition || 'Premium Silhouette'}</span>
+                        {/* {supplierInfo && (
+                            <span className="text-[#8ca67a] flex items-center gap-1">
+                                <span className="w-1 h-1 rounded-full bg-[#8ca67a] animate-pulse"></span>
+                                Ships in {supplierInfo.shippingTime}
+                            </span>
+                        )} */}
+                    </p>
                 </div>
                 <span className="text-[15px] font-bold font-serif italic">{product.formattedPrice || `${currency}${product.price.toLocaleString()}`}</span>
             </div>

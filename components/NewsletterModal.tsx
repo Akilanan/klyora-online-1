@@ -1,10 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
+import { shopifyService } from '../services/shopifyService';
 
 export const NewsletterModal: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         // Check if already seen
@@ -22,12 +24,17 @@ export const NewsletterModal: React.FC = () => {
         localStorage.setItem('klyora_newsletter_seen', 'true');
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSubmitting(true);
+
+        await shopifyService.subscribeToNewsletter(email);
+
+        setIsSubmitting(false);
         setSubmitted(true);
         setTimeout(() => {
             handleClose();
-        }, 2000);
+        }, 3000);
     };
 
     if (!isOpen) return null;
@@ -72,9 +79,10 @@ export const NewsletterModal: React.FC = () => {
                                     />
                                     <button
                                         type="submit"
-                                        className="w-full bg-black text-white py-3 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-zinc-800 transition-colors"
+                                        disabled={isSubmitting}
+                                        className="w-full bg-black text-white py-3 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-zinc-800 transition-colors disabled:opacity-50"
                                     >
-                                        Join & Unlock
+                                        {isSubmitting ? 'Joining...' : 'Join & Unlock'}
                                     </button>
                                 </form>
                                 <p className="text-[8px] text-zinc-400 mt-4 uppercase tracking-widest cursor-pointer hover:text-zinc-600" onClick={handleClose}>

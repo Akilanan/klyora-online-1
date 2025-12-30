@@ -13,11 +13,11 @@ export class ShopifyService {
     try {
       // @ts-ignore
       const config = window.KlyoraConfig;
-      
+
       if (config && config.products) {
         return config.products;
       }
-      
+
       console.warn("Klyora Atelier: Using internal collection archive (Local Env).");
       return MOCK_PRODUCTS;
     } catch (e) {
@@ -34,7 +34,7 @@ export class ShopifyService {
       const id = item.variantId.includes('/') ? item.variantId.split('/').pop() : item.variantId;
       return `${id}:${item.quantity}`;
     }).join(',');
-    
+
     return `https://${this.shopDomain}/cart/${cartString}`;
   }
 }
