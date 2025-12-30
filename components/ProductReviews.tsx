@@ -16,8 +16,19 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ productName }) =
   useEffect(() => {
     const fetchReviews = async () => {
       setIsLoading(true);
-      const data = await geminiService.generateMockReviews(productName);
-      setReviews(data);
+
+      // Load local reviews
+      const saved = localStorage.getItem(`klyora_reviews_${productName}`);
+      const localReviews = saved ? JSON.parse(saved) : [];
+
+      // Combine with mock data if we haven't loaded it yet (or just always append for demo)
+      // For this demo, if we have local reviews, we prioritize them, but let's mix them for fullness
+      const mockData = await geminiService.generateMockReviews(productName);
+
+      // Merge unique by ID (simple approach) or just show local + mock
+      // Ideally we'd have a real backend. Here we just ensure we show user's content.
+      setReviews([...localReviews, ...mockData]);
+
       setIsLoading(false);
     };
     fetchReviews();
@@ -36,7 +47,16 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ productName }) =
         comment: newReview.comment,
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
       };
-      setReviews(prev => [review, ...prev]);
+
+      setReviews(prev => {
+        const updated = [review, ...prev];
+        // Save ONLY the new user reviews to local storage to avoid duplicating mock data forever
+        const existingLocal = localStorage.getItem(`klyora_reviews_${productName}`);
+        const localParsed = existingLocal ? JSON.parse(existingLocal) : [];
+        localStorage.setItem(`klyora_reviews_${productName}`, JSON.stringify([review, ...localParsed]));
+        return updated;
+      });
+
       setNewReview({ rating: 5, comment: '', name: '' });
       setIsSubmitting(false);
       setShowForm(false);
@@ -72,7 +92,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ productName }) =
           <p className="text-3xl font-serif italic text-black">What they felt.</p>
         </div>
         {!showForm && (
-          <button 
+          <button
             onClick={() => setShowForm(true)}
             className="text-[9px] uppercase tracking-[0.4em] font-bold text-black border-b border-black pb-1 hover:opacity-50 transition-all"
           >

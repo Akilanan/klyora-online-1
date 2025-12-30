@@ -240,6 +240,22 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   </p>
                 </div>
               </div>
+
+              {/* Client Reflections / Reviews */}
+              <div className="border-b border-black/10">
+                <button
+                  onClick={() => toggleSection('reviews')}
+                  className="w-full py-4 flex justify-between items-center text-left group"
+                >
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold group-hover:text-zinc-600 transition-colors">Client Reflections</span>
+                  <span className={`text-lg font-light transition-transform duration-300 ${openSection === 'reviews' ? 'rotate-45' : ''}`}>+</span>
+                </button>
+                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'reviews' ? 'max-h-[800px] opacity-100 pb-4' : 'max-h-0 opacity-0'}`}>
+                  <div className="pt-4">
+                    <ProductReviews productName={product.name} />
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Cross Sells */}
