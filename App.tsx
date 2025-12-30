@@ -19,6 +19,9 @@ import { InfoModal } from './components/InfoModal';
 import { ReturnRequestModal } from './components/ReturnRequestModal';
 import { OrderTrackingModal } from './components/OrderTrackingModal';
 import { ConciergeChat } from './components/ConciergeChat';
+import { VipAccessModal } from './components/VipAccessModal';
+import { JournalSection } from './components/JournalSection';
+import { InstagramFeed } from './components/InstagramFeed';
 import { geminiService } from './services/geminiService';
 import { CookieConsent } from './components/CookieConsent';
 import { MOCK_PRODUCTS } from './constants';
@@ -156,6 +159,7 @@ const App: React.FC = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState<string>('relevance');
+  const [isVipModalOpen, setIsVipModalOpen] = useState(false);
 
   useEffect(() => {
     // @ts-ignore
@@ -352,6 +356,7 @@ const App: React.FC = () => {
         cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
         wishlistCount={wishlist.length}
         loyaltyPoints={loyaltyPoints}
+        onPriveClick={() => setIsVipModalOpen(true)}
         onCartClick={() => setIsCartOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
         onWishlistClick={() => setIsWishlistOpen(true)}
@@ -471,6 +476,9 @@ const App: React.FC = () => {
             ))}
           </div>
         </section>
+
+        <InstagramFeed />
+        <JournalSection />
       </main>
 
       <Footer
@@ -801,6 +809,10 @@ const App: React.FC = () => {
       <WinterPromoModal />
       <ReturnRequestModal isOpen={isReturnModalOpen} onClose={() => setIsReturnModalOpen(false)} />
       <OrderTrackingModal isOpen={isTrackingModalOpen} onClose={() => setIsTrackingModalOpen(false)} />
+      <VipAccessModal isOpen={isVipModalOpen} onClose={() => setIsVipModalOpen(false)} onAccessGranted={() => {
+        showNotification("Welcome to the Inner Circle. Exclusive access granted.");
+        setActiveCategory('Atelier Exclusive');
+      }} />
       <ConciergeChat />
       {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
     </div>

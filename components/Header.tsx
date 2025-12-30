@@ -13,6 +13,7 @@ interface HeaderProps {
   isSynced?: boolean;
   customerName?: string | null;
   onLoginClick?: () => void;
+  onPriveClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -26,7 +27,8 @@ export const Header: React.FC<HeaderProps> = ({
   isSynced,
   customerName,
   onLoginClick,
-  onConciergeClick
+  onConciergeClick,
+  onPriveClick
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -43,6 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-1000 ${scrolled ? 'bg-black/95 backdrop-blur-2xl border-b border-white/5 py-5 px-10 shadow-2xl' : 'bg-transparent py-10 px-12'}`}>
       <div className="flex items-center justify-between text-white">
         <nav className="hidden md:flex gap-14 text-[9px] uppercase tracking-[0.6em] font-bold">
+          <button onClick={onPriveClick} className="hover:opacity-40 transition-opacity text-[#8ca67a]">Privé</button>
           <button onClick={onArchiveClick} className="hover:opacity-40 transition-opacity">Archive</button>
           {customerName ? (
             <a href="/account" className="hover:opacity-40 transition-opacity">Account</a>
@@ -133,6 +136,12 @@ export const Header: React.FC<HeaderProps> = ({
             className="text-4xl font-serif italic text-black text-left"
           >
             Cart ({cartCount})
+          </button>
+          <button
+            onClick={() => { setIsMobileMenuOpen(false); onPriveClick?.(); }}
+            className="text-4xl font-serif italic text-[#8ca67a] text-left"
+          >
+            Privé
           </button>
           <button
             onClick={() => { setIsMobileMenuOpen(false); onArchiveClick(); }}
