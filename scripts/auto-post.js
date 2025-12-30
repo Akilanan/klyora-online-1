@@ -7,7 +7,14 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Simulate Gemini AI wrapper
+// --- Configuration ---
+const CONFIG = {
+    IG_ACCESS_TOKEN: process.env.IG_ACCESS_TOKEN,
+    IG_USER_ID: process.env.IG_USER_ID,
+    IS_LIVE_MODE: !!(process.env.IG_ACCESS_TOKEN && process.env.IG_USER_ID)
+};
+
+// --- AI Service (Simulated) ---
 class GeminiAI {
     async generateCaption(productName, composition) {
         const prompts = [
@@ -17,22 +24,69 @@ class GeminiAI {
             `Midnight textures. ${productName}. See it now on the runway aka your living room.`
         ];
         // Simulate network delay and AI "thinking"
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 800));
         return prompts[Math.floor(Math.random() * prompts.length)];
     }
 }
 
 const gemini = new GeminiAI();
 
+// --- Social Media Service ---
+class SocialMediaService {
+    async postToInstagram(caption, imageUrl) {
+        if (!CONFIG.IS_LIVE_MODE) {
+            console.log(`[MOCK] Instagram Post Skipped (No Keys). Mocking success.`);
+            return "mock_id_123";
+        }
+
+        console.log(`[LIVE] Posting to Instagram Account: ${CONFIG.IG_USER_ID}...`);
+
+        try {
+            // Step 1: Create Container
+            const containerUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?image_url=${encodeURIComponent(imageUrl)}&caption=${encodeURIComponent(caption)}&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
+            const containerRes = await fetch(containerUrl, { method: 'POST' });
+            const containerData = await containerRes.json();
+
+            if (containerData.error) throw new Error(`Container Error: ${containerData.error.message}`);
+
+            const creationId = containerData.id;
+            console.log(`   ↳ Media Container Created: ${creationId}`);
+
+            // Step 2: Publish Container
+            const publishUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media_publish?creation_id=${creationId}&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
+            const publishRes = await fetch(publishUrl, { method: 'POST' });
+            const publishData = await publishRes.json();
+
+            if (publishData.error) throw new Error(`Publish Error: ${publishData.error.message}`);
+
+            return publishData.id;
+
+        } catch (error) {
+            console.error("   ↳ Instagram API Failed:", error.message);
+            throw error; // Re-throw to handle in main loop
+        }
+    }
+}
+
+const socialService = new SocialMediaService();
+
 // Mock Products (since we are running outside ts-node for simplicity)
 const NEW_ARRIVALS = [
-    { name: "Signature Silk Evening Drape", composition: "100% Mulberry Silk" },
-    { name: "Velvet Nocturne Gown", composition: "Italian Cotton Velvet" },
-    { name: "Heritage Cashmere Overcoat", composition: "100% Mongolian Cashmere" }
+    {
+        name: "Signature Silk Evening Drape",
+        composition: "100% Mulberry Silk",
+        image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1000"
+    },
+    {
+        name: "Velvet Nocturne Gown",
+        composition: "Italian Cotton Velvet",
+        image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000"
+    }
 ];
 
 async function runAutoPoster() {
     console.log("⚡ Starting Klyora Social Auto-Poster...");
+    console.log(`   Mode: ${CONFIG.IS_LIVE_MODE ? "🟢 LIVE (Real Posting)" : "⚪ SIMULATION (Log Only)"}`);
     console.log("----------------------------------------");
 
     const logFile = path.join(__dirname, 'social_queue.log');
@@ -44,21 +98,26 @@ async function runAutoPoster() {
             const caption = await gemini.generateCaption(product.name, product.composition);
             const timestamp = new Date().toISOString();
 
-            const logEntry = `[${timestamp}] [INSTAGRAM] POSTED: "${caption}"\n`;
+            // Attempt Post
+            const postId = await socialService.postToInstagram(caption, product.image);
+
+            // Log Result
+            const status = CONFIG.IS_LIVE_MODE ? "LIVE_POSTED" : "MOCK_POSTED";
+            const logEntry = `[${timestamp}] [${status}] ID:${postId} CAPTION: "${caption}"\n`;
 
             fs.appendFileSync(logFile, logEntry);
-            console.log(`✅ Posted to Instagram: "${caption}"`);
+            console.log(`✅ Success! [${status}] ID: ${postId}`);
 
         } catch (error) {
-            console.error(`❌ Failed to post ${product.name}:`, error);
+            console.error(`❌ Failed to post ${product.name}:`, error.message);
         }
 
         // Wait between posts to simulate natural behavior
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
     }
 
     console.log("----------------------------------------");
-    console.log("🎉 All new arrivals posted to social channels.");
+    console.log("🎉 Queue processing complete.");
 }
 
 runAutoPoster();
