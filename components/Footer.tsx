@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 interface FooterProps {
     onConciergeClick: () => void;
-    onLinkClick: (title: string, type: 'shipping' | 'size-guide' | 'gift-card' | 'fabric-care' | 'track-order' | 'heritage' | 'sustainability' | 'careers' | 'legal' | 'press' | 'coming-soon') => void;
+    onLinkClick: (title: string, type: 'shipping' | 'size-guide' | 'gift-card' | 'fabric-care' | 'track-order' | 'heritage' | 'sustainability' | 'careers' | 'legal' | 'press' | 'return-refund' | 'coming-soon') => void;
     onSubscribe: (email: string) => void;
 }
 
@@ -65,7 +65,7 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                         <nav aria-label="Client Services">
                             <h4 className="text-[9px] uppercase tracking-[0.4em] font-bold text-zinc-500 mb-6">Client Services</h4>
                             <ul className="space-y-4">
-                                {['Concierge', 'Shipping & Returns', 'Size Guide', 'Track Order', 'Gift Cards'].map(link => (
+                                {['Concierge', 'Shipping & Returns', 'Return & Refund Policy', 'Size Guide', 'Track Order', 'Gift Cards'].map(link => (
                                     <li key={link}>
                                         {link === 'Concierge' ? (
                                             <button onClick={onConciergeClick} className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block text-left">
@@ -75,6 +75,7 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                                             <button
                                                 onClick={() => {
                                                     if (link === 'Shipping & Returns') onLinkClick(link, 'shipping');
+                                                    else if (link === 'Return & Refund Policy') onLinkClick(link, 'return-refund');
                                                     else if (link === 'Size Guide') onLinkClick(link, 'size-guide');
                                                     else if (link === 'Gift Cards') onLinkClick(link, 'gift-card');
                                                     else if (link === 'Track Order') onLinkClick(link, 'track-order');
@@ -125,7 +126,7 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                         <h1 className="font-serif text-2xl tracking-[0.2em] italic opacity-50">KLYORA</h1>
                         <div className="flex gap-3 mt-2 opacity-50">
                             {/* Payment Icons (Text Badges) */}
-                            {['VISA', 'AMEX', 'PAYPAL', 'KLARNA'].map(pay => (
+                            {['VISA', 'AMEX', 'PAYPAL', 'RAZORPAY', 'KLARNA'].map(pay => (
                                 <div key={pay} className="border border-white/20 px-2 py-1 text-[8px] font-bold tracking-widest">{pay}</div>
                             ))}
                         </div>
