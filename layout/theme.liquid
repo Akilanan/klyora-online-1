@@ -223,6 +223,49 @@
       }
     </style>
 
+    <script>
+      window.KlyoraConfig = {
+        shopName: "{{ shop.name }}",
+        shopUrl: "{{ shop.url }}",
+        currency: "{{ cart.currency.iso_code }}",
+        products: [
+          {%- for product in collections.all.products limit: 50 -%}
+            {
+              id: "{{ product.id }}",
+              shopifyId: "gid://shopify/Product/{{ product.id }}",
+              handle: "{{ product.handle }}",
+              name: "{{ product.title | escape }}",
+              price: {{ product.price | divided_by: 100.0 }},
+              description: {{ product.description | json }},
+              descriptionHtml: {{ product.description | json }},
+              category: "{%- if product.tags contains 'Men' -%}Men{%- elsif product.tags contains 'Women' -%}Women{%- else -%}Exclusive{%- endif -%}",
+              image: "https:{{ product.featured_image | img_url: 'master' }}",
+              images: [
+                {%- for image in product.images -%}
+                  "https:{{ image | img_url: 'master' }}"{%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+              ],
+              variants: [
+                {%- for variant in product.variants -%}
+                  {
+                    id: "{{ variant.id }}",
+                    title: "{{ variant.title | escape }}",
+                    price: {{ variant.price | divided_by: 100.0 }},
+                    available: {{ variant.available }}
+                  }{%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+              ],
+              relatedIds: [], // Populated by AI or Tags in future
+              shippingTier: "Global Tracked (7-15 Days)",
+              composition: "Premium Source",
+              rating: 4.8, // Default starting rating
+              reviews: 12
+            }{%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        ]
+      };
+    </script>
+
   <body class="gradient">
     <noscript>
       <div style="padding: 40px; text-align: center; color: white; background: #000;">

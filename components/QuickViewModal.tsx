@@ -4,7 +4,7 @@ import { Product, ProductVariant } from '../types';
 import { geminiService } from '../services/geminiService';
 import { StyleRecommendations } from './StyleRecommendations';
 import { BoutiqueImage } from './BoutiqueImage';
-import { FitAssistant } from './FitAssistant';
+import { SizeRecommenderModal } from './SizeRecommenderModal';
 import { ProductReviews } from './ProductReviews';
 import { SimilarProducts } from './SimilarProducts';
 
@@ -29,7 +29,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(product.variants?.[0] || null);
   const [activeImage, setActiveImage] = useState<string | null>(product.image);
-  const [isFitAssistantOpen, setIsFitAssistantOpen] = useState(false);
+  const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
 
   // Reset selected variant when product changes
   useEffect(() => {
@@ -157,10 +157,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               <div className="flex justify-between items-baseline border-b border-black/5 pb-2">
                 <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500">Select Size</span>
                 <button
-                  onClick={() => setIsFitAssistantOpen(true)}
+                  onClick={() => setIsSizeModalOpen(true)}
                   className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#8ca67a] hover:underline underline-offset-4"
                 >
-                  Size Guide
+                  Find My Fit / Size Guide
                 </button>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -281,15 +281,12 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           </div>
         </div>
       </div>
-      {isFitAssistantOpen && (
-        <FitAssistant
-          product={product}
-          onClose={() => setIsFitAssistantOpen(false)}
-          onApplySize={handleApplySize}
-        />
-      )}
 
-
-    </div>
+      <SizeRecommenderModal
+        isOpen={isSizeModalOpen}
+        onClose={() => setIsSizeModalOpen(false)}
+        productName={product.name}
+      />
+    </div >
   );
 };

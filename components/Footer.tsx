@@ -133,12 +133,29 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                         </div>
                     </div>
 
-                    <div className="flex gap-8">
-                        {['Instagram', 'Pinterest', 'TikTok'].map(social => (
-                            <a key={social} href="#" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
-                                {social}
-                            </a>
-                        ))}
+                    <div className="flex flex-col items-end gap-4">
+                        <div className="flex gap-8">
+                            {['Instagram', 'Pinterest', 'TikTok'].map(social => (
+                                <a key={social} href="#" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
+                                    {social}
+                                </a>
+                            ))}
+                        </div>
+
+                        {/* Region Selector */}
+                        <div className="relative group">
+                            <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+                                <span>Global (USD $)</span>
+                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div className="absolute bottom-full right-0 mb-2 w-32 bg-zinc-900 border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                                {['Global (USD $)', 'Europe (EUR €)', 'UK (GBP £)'].map(curr => (
+                                    <button key={curr} className="block w-full text-left px-4 py-2 text-[9px] text-zinc-400 hover:bg-white/5 hover:text-white uppercase tracking-widest">
+                                        {curr}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
 
                     <p className="text-[9px] uppercase tracking-widest text-zinc-600">
