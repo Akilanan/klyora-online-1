@@ -17,6 +17,7 @@ export interface Product {
   variants?: ProductVariant[];
   images: string[];
   descriptionHtml: string;
+  tags?: string[]; // Added for Zendrop/Supplier logic
 }
 
 export interface ProductVariant {

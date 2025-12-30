@@ -33,11 +33,29 @@ export class ZendropService {
         }
     };
 
-    async getSupplierInfo(productId: string): Promise<ZendropData> {
+    async getSupplierInfo(product: Product): Promise<ZendropData> {
+        // 1. Try to read from real Shopify Tags (synced by Zendrop)
+        // Format: "shipping:7-12 Days", "verified_supplier"
+        if (product && product.tags) {
+            const shippingTag = product.tags.find(t => t.toLowerCase().startsWith('shipping:'));
+            const isVerified = product.tags.some(t => t.toLowerCase().includes('zendrop') || t.toLowerCase().includes('verified'));
+
+            if (shippingTag) {
+                return {
+                    supplierId: 'REAL-ZD',
+                    shippingTime: shippingTag.split(':')[1].trim(),
+                    processingTime: '1-3 Days',
+                    stockLevel: 999,
+                    cost: 0,
+                    isVerified: isVerified
+                };
+            }
+        }
+
+        // 2. Fallback to Mock Database (Simulation Mode)
         // Simulate network delay
         await new Promise(resolve => setTimeout(resolve, 500));
-
-        return this.mockDatabase[productId] || this.mockDatabase['default'];
+        return this.mockDatabase[product.id] || this.mockDatabase['default'];
     }
 
     /**

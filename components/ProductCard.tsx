@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Product, ProductVariant } from '../types';
 import { BoutiqueImage } from './BoutiqueImage';
+import { zendropService } from '../services/zendropService';
 
 interface ProductCardProps {
     product: Product;
@@ -28,11 +29,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
         return images;
     }, [product]);
 
-    // const [supplierInfo, setSupplierInfo] = useState<any>(null);
+    const [supplierInfo, setSupplierInfo] = useState<any>(null);
 
-    // useEffect(() => {
-    //     zendropService.getSupplierInfo(product.id).then(setSupplierInfo);
-    // }, [product.id]);
+    useEffect(() => {
+        zendropService.getSupplierInfo(product).then(setSupplierInfo);
+    }, [product]);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -136,12 +137,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                     </div>
                     <p className="text-[8px] text-zinc-600 uppercase tracking-widest mt-3 flex items-center justify-between">
                         <span>{product.composition || 'Premium Silhouette'}</span>
-                        {/* {supplierInfo && (
+                        {supplierInfo && (
                             <span className="text-[#8ca67a] flex items-center gap-1">
                                 <span className="w-1 h-1 rounded-full bg-[#8ca67a] animate-pulse"></span>
                                 Ships in {supplierInfo.shippingTime}
                             </span>
-                        )} */}
+                        )}
                     </p>
                 </div>
                 <span className="text-[15px] font-bold font-serif italic">{product.formattedPrice || `${currency}${product.price.toLocaleString()}`}</span>
