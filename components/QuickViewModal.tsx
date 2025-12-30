@@ -7,6 +7,7 @@ import { BoutiqueImage } from './BoutiqueImage';
 import { SizeRecommenderModal } from './SizeRecommenderModal';
 import { ProductReviews } from './ProductReviews';
 import { SimilarProducts } from './SimilarProducts';
+import { analytics } from '../services/analytics';
 
 interface QuickViewModalProps {
   product: Product;
@@ -37,6 +38,14 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
       setSelectedVariant(product.variants[0]);
     }
     setActiveImage(product.image);
+
+    // Track ViewContent
+    analytics.viewContent({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      currency: currency === '$' ? 'USD' : currency === '€' ? 'EUR' : 'GBP'
+    });
   }, [product]);
 
   const uniqueImages = React.useMemo(() => {
@@ -144,8 +153,13 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   )}
                 </button>
               </div>
-              <div className="flex items-baseline gap-4">
+              <div className="flex items-baseline gap-4 flex-col items-end">
                 <p className="text-xl font-sans font-light tracking-wide text-zinc-900">{currency}{product.price.toLocaleString()}</p>
+                {(product.lowStock || (product.reviews && product.reviews > 10)) && (
+                  <p className="text-[10px] text-red-800 uppercase tracking-widest font-bold animate-pulse">
+                    {product.lowStock ? 'Low Stock: Only 3 Left' : 'High Demand: Selling Fast'}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -271,7 +285,18 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           {/* 3. Fixed Footer */}
           <div className="p-6 bg-white border-t border-black/5 z-20 shrink-0">
             <button
-              onClick={() => selectedVariant ? onAddToCart(product, selectedVariant) : null}
+              onClick={() => {
+                if (selectedVariant) {
+                  onAddToCart(product, selectedVariant);
+                  analytics.addToCart({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    variant: selectedVariant.title,
+                    currency: currency === '$' ? 'USD' : currency === '€' ? 'EUR' : 'GBP'
+                  });
+                }
+              }}
               disabled={!selectedVariant}
               className="w-full bg-black text-white py-4 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
             >

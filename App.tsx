@@ -18,6 +18,7 @@ import { WinterPromoModal } from './components/WinterPromoModal';
 import { InfoModal } from './components/InfoModal';
 import { ReturnRequestModal } from './components/ReturnRequestModal';
 import { OrderTrackingModal } from './components/OrderTrackingModal';
+import { ConciergeChat } from './components/ConciergeChat';
 import { geminiService } from './services/geminiService';
 import { CookieConsent } from './components/CookieConsent';
 import { MOCK_PRODUCTS } from './constants';
@@ -799,6 +800,8 @@ const App: React.FC = () => {
       <BackToTop />
       <WinterPromoModal />
       <ReturnRequestModal isOpen={isReturnModalOpen} onClose={() => setIsReturnModalOpen(false)} />
+      <OrderTrackingModal isOpen={isTrackingModalOpen} onClose={() => setIsTrackingModalOpen(false)} />
+      <ConciergeChat />
       {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
     </div>
   );
