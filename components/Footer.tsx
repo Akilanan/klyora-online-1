@@ -101,28 +101,19 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                         </nav>
                         <nav aria-label="Company Information">
                             <h4 className="text-[9px] uppercase tracking-[0.4em] font-bold text-zinc-500 mb-6">The Maison</h4>
-                            <ul className="space-y-4">
-                                {['Our Heritage', 'Sustainability', 'Careers', 'Press', 'Legal'].map(link => (
-                                    <li key={link}>
-                                        <button
-                                            onClick={() => {
-                                                if (link === 'Legal') onLinkClick(link, 'legal');
-                                                else if (link === 'Sustainability') onLinkClick(link, 'sustainability');
-                                                else onLinkClick(link, 'coming-soon');
-                                            }}
-                                            className="text-[10px] uppercase tracking-widest text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-all block text-left"
-                                        >
-                                            {link}
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className="flex flex-col gap-4 text-xs text-zinc-400">
+                                <button onClick={() => onLinkClick('Our Heritage', 'heritage')} className="text-left hover:text-white transition-colors uppercase tracking-widest text-[10px]">Our Heritage</button>
+                                <button onClick={() => onLinkClick('Sustainability', 'sustainability')} className="text-left hover:text-white transition-colors uppercase tracking-widest text-[10px]">Sustainability</button>
+                                <button onClick={() => onLinkClick('The Journal', 'journal')} className="text-left hover:text-white transition-colors uppercase tracking-widest text-[10px]">The Journal</button>
+                                <button onClick={() => onLinkClick('Privacy Policy', 'legal-privacy')} className="text-left hover:text-white transition-colors uppercase tracking-widest text-[10px]">Privacy Policy</button>
+                                <button onClick={() => onLinkClick('Terms & Conditions', 'legal-terms')} className="text-left hover:text-white transition-colors uppercase tracking-widest text-[10px]">Terms of Service</button>
+                            </div>
                         </nav>
                     </div>
-                </div>
+                </div >
 
                 {/* Bottom Section */}
-                <div className="flex flex-col md:flex-row justify-between items-center pt-12 border-t border-white/10 gap-6">
+                < div className="flex flex-col md:flex-row justify-between items-center pt-12 border-t border-white/10 gap-6" >
                     <div className="flex flex-col gap-4">
                         <h1 className="font-serif text-2xl tracking-[0.2em] italic opacity-50">KLYORA</h1>
                         <div className="flex gap-3 mt-2 opacity-50">
@@ -161,9 +152,9 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                     <p className="text-[9px] uppercase tracking-widest text-zinc-600">
                         © 2025 Maison Klyora. All Rights Reserved.
                     </p>
-                </div>
+                </div >
 
-            </div>
+            </div >
         </footer >
     );
 };

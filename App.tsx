@@ -20,8 +20,10 @@ import { ReturnRequestModal } from './components/ReturnRequestModal';
 import { OrderTrackingModal } from './components/OrderTrackingModal';
 import { ConciergeChat } from './components/ConciergeChat';
 import { VipAccessModal } from './components/VipAccessModal';
+import { NewsletterModal } from './components/NewsletterModal';
 import { JournalSection } from './components/JournalSection';
 import { InstagramFeed } from './components/InstagramFeed';
+import { LEGAL_DOCS } from './components/LegalDocs';
 import { geminiService } from './services/geminiService';
 import { CookieConsent } from './components/CookieConsent';
 import { MOCK_PRODUCTS } from './constants';
@@ -376,6 +378,8 @@ const App: React.FC = () => {
               src={img}
               alt={`Maison Klyora Premium Fashion Campaign - Look ${idx + 1}`}
               className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[3000ms] ease-in-out"
+              loading={idx === 0 ? "eager" : "lazy"}
+              decoding={idx === 0 ? "sync" : "async"}
               style={{
                 opacity: idx === bgIndex ? 0.4 : 0,
                 transform: `scale(${1 + smoothScrollY * 0.0001})`
@@ -610,18 +614,14 @@ const App: React.FC = () => {
                 </div>
               );
               break;
-            case 'legal':
+            case 'legal-privacy':
               content = (
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Privacy Policy</h3>
-                    <p className="text-xs text-zinc-400">We respect your privacy. Your data is encrypted and used solely for fulfilling orders and improving your atelier experience. We never sell your data to third parties.</p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Terms of Service</h3>
-                    <p className="text-xs text-zinc-400">By using our site, you agree to our terms. All designs are intellectual property of Maison Klyora. Prices are subject to change without notice.</p>
-                  </div>
-                </div>
+                <div dangerouslySetInnerHTML={{ __html: LEGAL_DOCS.privacy.content }} />
+              );
+              break;
+            case 'legal-terms':
+              content = (
+                <div dangerouslySetInnerHTML={{ __html: LEGAL_DOCS.terms.content }} />
               );
               break;
             case 'careers':
@@ -814,6 +814,7 @@ const App: React.FC = () => {
         setActiveCategory('Atelier Exclusive');
       }} />
       <ConciergeChat />
+      <NewsletterModal />
       {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
     </div>
   );

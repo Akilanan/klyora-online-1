@@ -47,6 +47,8 @@ export const BoutiqueImage: React.FC<BoutiqueImageProps> = ({
         <img
           src={src}
           alt={alt}
+          loading="lazy"
+          decoding="async"
           onLoad={() => setLoaded(true)}
           onError={() => { setHasError(true); setLoaded(true); }}
           className={`w-full h-full object-cover transition-all duration-[1.5s] cubic-bezier(0.16, 1, 0.3, 1) ${className} ${isLoaded ? 'opacity-100' : 'opacity-0'
