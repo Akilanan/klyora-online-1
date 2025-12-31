@@ -5,13 +5,11 @@ export const LEGAL_DOCS = {
         content: `
             <div class="space-y-4 text-xs leading-relaxed text-zinc-400">
                 <p><strong>Last Updated: December 2025</strong></p>
-                <p>Maison Klyora ("we", "us", or "our") respects your privacy and is committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website.</p>
+                <p>Maison Klyora respects your privacy. This policy outlines how we handle your data.</p>
                 <h4 class="text-white font-bold uppercase tracking-widest mt-4">1. Data We Collect</h4>
-                <p>We may collect, use, store and transfer different kinds of personal data about you which we have grouped together follows: Identity Data, Contact Data, Financial Data, and Transaction Data.</p>
+                <p>We collect Identity, Contact, and Transaction Data to process your orders. We do not sell your personal data to third parties.</p>
                 <h4 class="text-white font-bold uppercase tracking-widest mt-4">2. How We Use Your Data</h4>
-                <p>We will only use your personal data when the law allows us to. Most commonly, we will use your personal data in the following circumstances: Where we need to perform the contract we are about to enter into or have entered into with you.</p>
-                <h4 class="text-white font-bold uppercase tracking-widest mt-4">3. Data Security</h4>
-                <p>We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorized way, altered or disclosed.</p>
+                <p>Your data is used solely for order fulfillment, shipping updates, and (if opted-in) exclusive atelier invitations.</p>
             </div>
         `
     },
@@ -20,33 +18,44 @@ export const LEGAL_DOCS = {
         content: `
              <div class="space-y-4 text-xs leading-relaxed text-zinc-400">
                 <p><strong>Overview</strong></p>
-                <p>This website is operated by Maison Klyora. Throughout the site, the terms “we”, “us” and “our” refer to Maison Klyora. Maison Klyora offers this website, including all information, tools and services available from this site to you, the user, conditioned upon your acceptance of all terms, conditions, policies and notices stated here.</p>
-                <h4 class="text-white font-bold uppercase tracking-widest mt-4">1. Online Store Terms</h4>
-                <p>By agreeing to these Terms of Service, you represent that you are at least the age of majority in your state or province of residence.</p>
-                <h4 class="text-white font-bold uppercase tracking-widest mt-4">2. General Conditions</h4>
-                <p>We reserve the right to refuse service to anyone for any reason at any time. You understand that your content (not including credit card information), may be transferred unencrypted and involve (a) transmissions over various networks; and (b) changes to conform and adapt to technical requirements of connecting networks or devices.</p>
-                <h4 class="text-white font-bold uppercase tracking-widest mt-4">3. Accuracy of Billing</h4>
-                <p>We reserve the right to refuse any order you place with us. We may, in our sole discretion, limit or cancel quantities purchased per person, per household or per order.</p>
+                <p>By accessing Maison Klyora, you agree to these terms.</p>
+                <h4 class="text-white font-bold uppercase tracking-widest mt-4">1. Sales & Availability</h4>
+                <p>We reserve the right to refuse service. Prices and availability are subject to change without notice.</p>
+                <h4 class="text-white font-bold uppercase tracking-widest mt-4">2. Return Policy Agreement</h4>
+                <p>By purchasing, you acknowledge our specialized return policy. <strong>All sales of discounted or 'Archive' items are final.</strong></p>
+                <h4 class="text-white font-bold uppercase tracking-widest mt-4">3. Governing Law</h4>
+                <p>These terms are governed by the laws of the jurisdiction in which our atelier is registered.</p>
             </div>
         `
     },
     shipping: {
-        title: "Shipping Policy",
+        title: "Shipping & Returns Policy",
         content: `
              <div class="space-y-4 text-xs leading-relaxed text-zinc-400">
-                <p><strong>Global Delivery</strong></p>
-                <p>Maison Klyora is proud to offer complimentary tracked shipping on all orders over $200. We partner with premium couriers to ensure your garments arrive in pristine condition.</p>
-                <h4 class="text-white font-bold uppercase tracking-widest mt-4">1. Processing Time</h4>
-                <p>All orders are processed within 1-3 business days. Orders are not shipped or delivered on weekends or holidays.</p>
-                <h4 class="text-white font-bold uppercase tracking-widest mt-4">2. Shipping Estimates</h4>
+                <h3 class="text-lg font-serif italic text-white mb-2">Global Shipping</h3>
+                <p>All orders include complimentary tracking.</p>
                 <ul class="list-disc pl-5 space-y-1">
                     <li>USA & Canada: 7-12 Business Days</li>
                     <li>Europe: 5-10 Business Days</li>
-                    <li>Australia & New Zealand: 7-14 Business Days</li>
                     <li>Rest of World: 10-20 Business Days</li>
                 </ul>
-                <h4 class="text-white font-bold uppercase tracking-widest mt-4">3. Customs & Duties</h4>
-                <p>Maison Klyora is not responsible for any customs and taxes applied to your order. All fees imposed during or after shipping are the responsibility of the customer (tariffs, taxes, etc.).</p>
+                <p class="italic mt-2">Processing time: 1-3 days.</p>
+
+                <h3 class="text-lg font-serif italic text-white mt-8 mb-2">Return & Refund Policy</h3>
+                
+                <h4 class="text-white font-bold uppercase tracking-widest mt-4">1. Defective or Damaged Items</h4>
+                <p>If your item arrives damaged or incorrect, please submit a request within <strong>7 days</strong> with photos. We will issue a full refund or free replacement immediately.</p>
+
+                <h4 class="text-white font-bold uppercase tracking-widest mt-4">2. Sizing & Preference Returns</h4>
+                <p>If you wish to return an item due to fit or change of mind:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Returns must be initiated within 30 days.</li>
+                    <li><strong>Refunds are issued as Store Credit (Gift Card) only.</strong></li>
+                    <li><strong>Customer is responsible for return shipping costs.</strong></li>
+                </ul>
+
+                <h4 class="text-white font-bold uppercase tracking-widest mt-4">3. How to Return</h4>
+                <p>Use the "Start Return" button in the footer. Do not ship items back without prior approval.</p>
             </div>
         `
     }

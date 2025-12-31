@@ -22,11 +22,15 @@ export const ReturnRequestModal: React.FC<ReturnRequestModalProps> = ({ isOpen, 
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API call
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setSubmitted(true);
-        }, 1500);
+        // Construct email body
+        const subject = `Return Request: Order #${formData.orderNumber}`;
+        const body = `Order Number: ${formData.orderNumber}%0D%0AEmail: ${formData.email}%0D%0AType: ${formData.type.toUpperCase()}%0D%0AReason: ${formData.reason}`;
+
+        // Open default mail client
+        window.location.href = `mailto:support@klyora.com?subject=${subject}&body=${body}`;
+
+        setSubmitted(true);
+        setIsSubmitting(false);
     };
 
     return (
