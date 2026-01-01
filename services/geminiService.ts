@@ -49,39 +49,45 @@ export class GeminiService {
     }
   }
 
+  // Helper for Offline/Fallback Responses
+  private async * _getOfflineResponse(currentQuery: string) {
+    const queryLower = currentQuery.toLowerCase();
+    let response = "I advise selecting your true size for a tailored fit.";
+
+    if (queryLower.includes('return') || queryLower.includes('refund')) {
+      response = "For returns, simply scroll to the footer and select 'Concierge Services'. We offer store credit for all preference-based returns.";
+    } else if (queryLower.includes('shipping') || queryLower.includes('track')) {
+      response = "Our global logistics partners typically deliver within 7-12 business days. You will receive a tracking code via email upon dispatch.";
+    } else if (queryLower.includes('fabric') || queryLower.includes('material')) {
+      response = "Maison Klyora prioritizes tactile integrity. We utilize premium blends designed for drape and longevity.";
+    } else if (queryLower.includes('size') || queryLower.includes('fit') || queryLower.includes('measure')) {
+      response = "Our atelier cuts for a modern silhouette. For a structured look, take your usual size. For a relaxed drape, size up once.";
+    } else if (queryLower.includes('hello') || queryLower.includes('hi')) {
+      response = "Welcome to Maison Klyora. How may I assist you with your collection curation today?";
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+
+    for (const char of response) {
+      yield char;
+      await new Promise(resolve => setTimeout(resolve, 10));
+    }
+  }
+
   async *getStylistResponseStream(history: ChatMessage[], currentQuery: string) {
     const apiKey = this._getApiKey();
 
     if (!apiKey) {
       console.warn("⚠️ AI Key missing. Using Offline Fallback.");
-      const queryLower = currentQuery.toLowerCase();
-      let response = "I advise selecting your true size for a tailored fit.";
-      if (queryLower.includes('return') || queryLower.includes('refund')) {
-        response = "For returns, simply scroll to the footer and select 'Concierge Services'. We offer store credit for all preference-based returns.";
-      } else if (queryLower.includes('shipping') || queryLower.includes('track')) {
-        response = "Our global logistics partners typically deliver within 7-12 business days. You will receive a tracking code via email upon dispatch.";
-      } else if (queryLower.includes('fabric') || queryLower.includes('material')) {
-        response = "Maison Klyora prioritizes tactile integrity. We utilize premium blends designed for drape and longevity.";
-      } else if (queryLower.includes('size') || queryLower.includes('fit') || queryLower.includes('measure')) {
-        response = "Our atelier cuts for a modern silhouette. For a structured look, take your usual size. For a relaxed drape, size up once.";
-      } else if (queryLower.includes('hello') || queryLower.includes('hi')) {
-        response = "Welcome to Maison Klyora. How may I assist you with your collection curation today?";
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 600));
-
-      for (const char of response) {
-        yield char;
-        await new Promise(resolve => setTimeout(resolve, 10));
-      }
+      yield* this._getOfflineResponse(currentQuery);
       return;
     }
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
-        model: "gemini-pro",
-        // systemInstruction removed (not supported by gemini-pro)
+        model: "gemini-1.5-flash",
+        systemInstruction: "You are the Executive Stylist at Maison Klyora. Tone: Ultra-luxury, editorial, concise. Use terms like 'drape', 'silhouette', 'architectural'."
       });
 
       // Sanitize history: The first message must be from 'user'.
@@ -95,18 +101,16 @@ export class GeminiService {
         history: sanitizedHistory.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
       });
 
-      // Prepend context since systemInstruction is not supported
-      const contextQuery = `[Role: Executive Stylist at Maison Klyora. Tone: Ultra-luxury, editorial, concise.] ${currentQuery}`;
-      const result = await chat.sendMessageStream(contextQuery);
+      const result = await chat.sendMessageStream(currentQuery);
 
       for await (const chunk of result.stream) {
         const text = chunk.text();
         if (text) yield text;
       }
     } catch (error: any) {
-      // Fallback with DEBUG INFO
-      const fallback = `Our digital atelier is momentarily undergoing maintenance. (Error: ${error.message || 'Unknown'})`;
-      for (const char of fallback) { yield char; }
+      console.error("⚠️ AI Error, switching to Offline Mode:", error);
+      // Silent Fallback - User never sees error
+      yield* this._getOfflineResponse(currentQuery);
     }
   }
 
@@ -117,7 +121,7 @@ export class GeminiService {
       try {
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-          model: "gemini-pro",
+          model: "gemini-1.5-flash",
           generationConfig: {
             responseMimeType: "application/json"
           }
@@ -189,7 +193,7 @@ export class GeminiService {
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
-        model: "gemini-pro",
+        model: "gemini-1.5-flash",
         generationConfig: {
           responseMimeType: "application/json"
         }
