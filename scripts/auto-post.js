@@ -231,10 +231,13 @@ async function runAutoPoster() {
     // 4. Select Random
     const product = availableProducts[Math.floor(Math.random() * availableProducts.length)];
 
-    // Pick a random image from the product's gallery (not just the first one)
+    // Pick a random image from the product's "Top 3" (Hero Shots)
+    // This avoids picking size charts, care tags, or boring detail shots that are usually at the end.
     let image = null;
     if (product.images && product.images.length > 0) {
-        const randomImageIndex = Math.floor(Math.random() * product.images.length);
+        // Only pick from the first 3 images (0, 1, 2)
+        const maxIndex = Math.min(product.images.length, 3);
+        const randomImageIndex = Math.floor(Math.random() * maxIndex);
         image = product.images[randomImageIndex].src;
     }
 
