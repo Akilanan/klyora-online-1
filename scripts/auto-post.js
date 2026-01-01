@@ -89,8 +89,8 @@ async function getRandomProduct() {
         let recentCaptions = [];
         if (CONFIG.IS_LIVE_MODE) {
             try {
-                // Increased limit to 50 to cover "all" recent history
-                const recentPostsUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?fields=caption&limit=50&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
+                // Increased limit to 100 (Max allowed per page) to cover ~4 days of history
+                const recentPostsUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?fields=caption&limit=100&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
                 const recentRes = await fetch(recentPostsUrl);
                 const recentData = await recentRes.json();
                 if (recentData.data) {
