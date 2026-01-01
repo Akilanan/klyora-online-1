@@ -80,7 +80,7 @@ export class GeminiService {
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-1.5-flash-001",
         systemInstruction: "You are the Executive Stylist at Maison Klyora. Tone: Ultra-luxury, editorial, concise. Use terms like 'drape', 'silhouette', 'architectural'."
       });
 
@@ -115,7 +115,7 @@ export class GeminiService {
       try {
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
+          model: "gemini-1.5-flash-001",
           generationConfig: {
             responseMimeType: "application/json"
           }
@@ -187,7 +187,7 @@ export class GeminiService {
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-1.5-flash-001",
         generationConfig: {
           responseMimeType: "application/json"
         }
