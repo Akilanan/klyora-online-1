@@ -205,7 +205,13 @@ async function runAutoPoster() {
 
     // 4. Select Random
     const product = availableProducts[Math.floor(Math.random() * availableProducts.length)];
-    const image = product.images?.[0]?.src;
+
+    // Pick a random image from the product's gallery (not just the first one)
+    let image = null;
+    if (product.images && product.images.length > 0) {
+        const randomImageIndex = Math.floor(Math.random() * product.images.length);
+        image = product.images[randomImageIndex].src;
+    }
 
     if (!image) {
         console.log("Skipping product with no image");
