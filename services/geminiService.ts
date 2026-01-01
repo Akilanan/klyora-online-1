@@ -80,8 +80,8 @@ export class GeminiService {
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash-001",
-        systemInstruction: "You are the Executive Stylist at Maison Klyora. Tone: Ultra-luxury, editorial, concise. Use terms like 'drape', 'silhouette', 'architectural'."
+        model: "gemini-pro",
+        // systemInstruction removed (not supported by gemini-pro)
       });
 
       // Sanitize history: The first message must be from 'user'.
@@ -95,7 +95,9 @@ export class GeminiService {
         history: sanitizedHistory.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
       });
 
-      const result = await chat.sendMessageStream(currentQuery);
+      // Prepend context since systemInstruction is not supported
+      const contextQuery = `[Role: Executive Stylist at Maison Klyora. Tone: Ultra-luxury, editorial, concise.] ${currentQuery}`;
+      const result = await chat.sendMessageStream(contextQuery);
 
       for await (const chunk of result.stream) {
         const text = chunk.text();
@@ -115,7 +117,7 @@ export class GeminiService {
       try {
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash-001",
+          model: "gemini-pro",
           generationConfig: {
             responseMimeType: "application/json"
           }
@@ -187,7 +189,7 @@ export class GeminiService {
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash-001",
+        model: "gemini-pro",
         generationConfig: {
           responseMimeType: "application/json"
         }
