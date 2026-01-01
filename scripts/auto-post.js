@@ -193,6 +193,14 @@ const socialService = new SocialMediaService();
 // --- Main Logic ---
 async function runAutoPoster() {
     console.log("⚡ Starting Klyora Social Auto-Poster...");
+
+    // SAFETY: Random start delay (2 to 15 minutes) to avoid "Bot" patterns at exact :00 times
+    if (CONFIG.IS_LIVE_MODE) {
+        const delay = Math.floor(Math.random() * (900000 - 120000) + 120000); // 2-15 mins
+        console.log(`🛡️ SAFETY PROTOCOL: Sleeping for ${Math.floor(delay / 1000)}s to mimic human behavior...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+    }
+
     const historyService = new HistoryService();
     historyService.load();
     const logFile = path.join(__dirname, 'social_queue.log');
