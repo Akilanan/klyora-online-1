@@ -44,23 +44,28 @@ export class GeminiService {
   }
 
   async *getStylistResponseStream(history: ChatMessage[], currentQuery: string) {
-    const apiKey = (window as any).KlyoraConfig?.geminiApiKey;
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (window as any).KlyoraConfig?.geminiApiKey;
 
     if (!apiKey) {
-      // Mock "Demo Mode" Response
-      const mockResponses = [
-        "The Klyora silhouette this season is defined by architectural draping. I recommend pairing the structured blazer with our fluid silk trousers for a balanced profile.",
-        "For an evening aesthetic, the Midnight Wool series offers understated elegance. The texture absorbs light beautifully.",
-        "Our 2025 Palette focuses on mineral tones—Slate, Onyx, and Deep Moss. These shades provide a versatile foundation for any wardrobe.",
-        "I would advise selecting your true size for a tailored fit, or sizing up once for that intentional, relaxed runway volume."
-      ];
-      const response = mockResponses[Math.floor(Math.random() * mockResponses.length)];
+      // Robust Local "AI" Simulation
+      const queryLower = currentQuery.toLowerCase();
+      let response = "I advise selecting your true size for a tailored fit.";
+
+      if (queryLower.includes('return') || queryLower.includes('refund')) {
+        response = "For returns, simply scroll to the footer and select 'Concierge Services'. We offer store credit for all preference-based returns.";
+      } else if (queryLower.includes('shipping') || queryLower.includes('track')) {
+        response = "Our global logistics partners typically deliver within 7-12 business days. You will receive a tracking code via email upon dispatch.";
+      } else if (queryLower.includes('fabric') || queryLower.includes('material')) {
+        response = "Maison Klyora prioritizes tactile integrity. We utilize premium blends designed for drape and longevity.";
+      } else if (queryLower.includes('size') || queryLower.includes('fit')) {
+        response = "Our atelier cuts for a modern silhouette. For a structured look, take your usual size. For a relaxed drape, size up once.";
+      }
 
       await new Promise(resolve => setTimeout(resolve, 800)); // Simulate thinking
 
       for (const char of response) {
         yield char;
-        await new Promise(resolve => setTimeout(resolve, 20));
+        await new Promise(resolve => setTimeout(resolve, 15));
       }
       return;
     }
@@ -74,7 +79,7 @@ export class GeminiService {
           { role: 'user', parts: [{ text: currentQuery }] }
         ],
         config: {
-          systemInstruction: "You are the Executive Stylist at Maison Klyora, a Parisian digital atelier. Your tone is ultra-luxury, editorial, and sophisticated. Keep responses concise (under 50 words) unless detailed advice is sought. Focus on terminology like 'drape', 'silhouette', 'textile integrity', and 'architectural lines'. Never use generic greetings. Always imply the user is a VIP client.",
+          systemInstruction: "You are the Executive Stylist at Maison Klyora. Tone: Ultra-luxury, editorial, concise. Use terms like 'drape', 'silhouette', 'architectural'.",
           temperature: 0.6,
         }
       });
@@ -85,60 +90,63 @@ export class GeminiService {
         if (text) yield text;
       }
     } catch (error) {
-      yield "Our digital atelier is momentarily undergoing maintenance. Please inquire again shortly.";
-    }
-  }
-
-  async findMatchesFromImage(imageBuffer: string, catalog: Product[]): Promise<string[]> {
-    try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const catalogData = catalog.map(p => `${p.id}: ${p.name}`).join(', ');
-      const base64Data = imageBuffer.includes(',') ? imageBuffer.split(',')[1] : imageBuffer;
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: {
-          parts: [
-            { inlineData: { data: base64Data, mimeType: 'image/jpeg' } },
-            { text: `Analyze this aesthetic. Which Klyora product IDs from our catalog best replicate this vibe? Catalog: ${catalogData}` }
-          ]
-        },
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING }
-          }
-        }
-      });
-      return JSON.parse(response.text || '[]');
-    } catch (error) {
-      return [];
+      // Fallback if API fails
+      const fallback = "Our digital atelier is momentarily undergoing maintenance. I recommend checking our Size Guide for immediate assistance.";
+      for (const char of fallback) { yield char; }
     }
   }
 
   async getSizeRecommendation(measurements: UserMeasurements, product: any): Promise<{ size: string; rationale: string }> {
-    try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Determine the optimal Klyora fit for "${product.name}". Clients Metrics: Height ${measurements.height}cm, Weight ${measurements.weight}kg, Chest ${measurements.chest}cm, Waist ${measurements.waist}cm. Fit Preference: ${measurements.preferredFit}.`,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              size: { type: Type.STRING },
-              rationale: { type: Type.STRING }
-            },
-            required: ["size", "rationale"]
-          }
-        }
-      });
-      return JSON.parse(response.text || '{"size": "M", "rationale": "Recommended based on standard atelier draping."}');
-    } catch (error) {
-      return { size: "M", rationale: "Recommended based on standard atelier draping." };
+    // 1. Try Real AI first
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (window as any).KlyoraConfig?.geminiApiKey;
+
+    if (apiKey) {
+      try {
+        const ai = new GoogleGenAI({ apiKey });
+        const response = await ai.models.generateContent({
+          model: "gemini-1.5-flash",
+          contents: `Client: ${measurements.height}cm, ${measurements.weight}kg, Fit: ${measurements.preferredFit}. Product: ${product.name}. Return JSON {size, rationale}.`,
+          config: { responseMimeType: "application/json" } // Force JSON
+        });
+        return JSON.parse(response.text());
+      } catch (e) {
+        console.log("AI Failed, using Algorithm");
+      }
     }
+
+    // 2. Robust Algorithm Fallback (No API Required)
+    // "Klyora Index" = Weight (kg) / Height (m) (Approximation of mass distribution)
+    const heightM = measurements.height / 100;
+    const bmi = measurements.weight / (heightM * heightM);
+
+    let size = 'M';
+    let vibe = 'tailored';
+
+    if (bmi < 18.5) size = 'XS';
+    else if (bmi < 21) size = 'S';
+    else if (bmi < 25) size = 'M';
+    else if (bmi < 28) size = 'L';
+    else size = 'XL';
+
+    // Adjustment for Preference
+    if (measurements.preferredFit === 'loose') {
+      if (size === 'XS') size = 'S';
+      else if (size === 'S') size = 'M';
+      else if (size === 'M') size = 'L';
+      else if (size === 'L') size = 'XL';
+      vibe = 'relaxed';
+    } else if (measurements.preferredFit === 'tight') {
+      if (size === 'XL') size = 'L';
+      else if (size === 'L') size = 'M';
+      else if (size === 'M') size = 'S';
+      else if (size === 'S') size = 'XS';
+      vibe = 'sculpted';
+    }
+
+    return {
+      size,
+      rationale: `Based on your biometrics (${measurements.height}cm / ${measurements.weight}kg), a size ${size} provides the optimal ${vibe} silhouette for this design.`
+    };
   }
 
   async getStyleRecommendations(query: string): Promise<{ text: string, sources: any[] }> {

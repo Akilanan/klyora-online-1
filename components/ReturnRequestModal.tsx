@@ -27,7 +27,7 @@ export const ReturnRequestModal: React.FC<ReturnRequestModalProps> = ({ isOpen, 
         const body = `Order Number: ${formData.orderNumber}%0D%0AEmail: ${formData.email}%0D%0AType: ${formData.type.toUpperCase()}%0D%0AReason: ${formData.reason}`;
 
         // Open default mail client
-        window.location.href = `mailto:support@klyora.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:support@klyoraofficial.com?subject=${subject}&body=${body}`;
 
         setSubmitted(true);
         setIsSubmitting(false);
