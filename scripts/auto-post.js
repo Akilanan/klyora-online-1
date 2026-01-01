@@ -85,9 +85,35 @@ async function getRandomProduct() {
             throw new Error("No products found in store.");
         }
 
+        // Check for duplicates in recent posts
+        let recentCaptions = [];
+        if (CONFIG.IS_LIVE_MODE) {
+            try {
+                const recentPostsUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?fields=caption&limit=5&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
+                const recentRes = await fetch(recentPostsUrl);
+                const recentData = await recentRes.json();
+                if (recentData.data) {
+                    recentCaptions = recentData.data.map(p => p.caption || "");
+                }
+            } catch (e) {
+                console.warn("⚠️ Could not fetch recent posts for duplicate check:", e.message);
+            }
+        }
+
         const products = data.products;
-        // Randomly pick one
-        const randomProduct = products[Math.floor(Math.random() * products.length)];
+
+        // Filter out products that have been posted recently
+        const availableProducts = products.filter(p => {
+            return !recentCaptions.some(caption => caption.includes(p.title));
+        });
+
+        if (availableProducts.length === 0) {
+            console.log("⚠️ All available products have been posted recently. Skipping.");
+            return null;
+        }
+
+        // Randomly pick one from the FRESH list
+        const randomProduct = availableProducts[Math.floor(Math.random() * availableProducts.length)];
 
         // Find first image
         const image = randomProduct.images && randomProduct.images.length > 0
