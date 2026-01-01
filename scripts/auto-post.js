@@ -17,18 +17,50 @@ const CONFIG = {
     }
 };
 
-// --- AI Service (Simulated) ---
+GEMINI_API_KEY: process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY,
+    // ... other config
+};
+
+// --- AI Service (Real) ---
 class GeminiAI {
     async generateCaption(productName, composition) {
-        const props = [
-            `Elegance redefined. The ${productName} in ${composition}. #MaisonKlyora\n\nShop at: https://klyora-2.myshopify.com`,
-            `Architectural silhouette: ${productName}. Crafted from ${composition}. Shop the winter collection at https://klyora-2.myshopify.com`,
-            `The art of the drape. ${productName}. Now available. #Klyora #Luxury\n\nAcquire yours: https://klyora-2.myshopify.com`,
-            `Midnight textures. ${productName}. See it now on the runway aka your living room.\n\nShop: https://klyora-2.myshopify.com`
-        ];
-        // Simulate network delay and AI "thinking"
-        await new Promise(resolve => setTimeout(resolve, 800));
-        return props[Math.floor(Math.random() * props.length)];
+        if (!CONFIG.GEMINI_API_KEY) {
+            console.log("⚠️ No Gemini API Key found. Using fallback caption.");
+            return `The ${productName}. Experience true luxury. #Klyora`;
+        }
+
+        try {
+            const prompt = `Write a short, sophisticated, high-fashion Instagram caption for a luxury clothing item named "${productName}". 
+            Tone: Elegant, mysterious, exclusive.
+            Include 1-2 tasteful emojis. 
+            Include 5 relevant luxury hashtags (e.g. #MaisonKlyora #QuietLuxury).
+            Add a clear "Link in Bio" call to action.
+            Do NOT wrap the output in quotes.`;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${CONFIG.GEMINI_API_KEY}`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.candidates && data.candidates[0].content) {
+                let caption = data.candidates[0].content.parts[0].text.trim();
+                // Append the direct shop link as requested previously
+                return `${caption}\n\nShop at: https://klyora-2.myshopify.com`;
+            } else {
+                throw new Error("Invalid API response format");
+            }
+        } catch (error) {
+            console.error("⚠️ AI Generation failed, using fallback:", error.message);
+            // Fallback template with shop link
+            return `Introducing the ${productName}.\n\nCrafted for the modern connoisseur.\n\n#MaisonKlyora #LuxuryFashion\n\nShop at: https://klyora-2.myshopify.com`;
+        }
     }
 }
 
