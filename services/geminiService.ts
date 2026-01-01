@@ -94,8 +94,9 @@ export class GeminiService {
         const text = chunk.text();
         if (text) yield text;
       }
-    } catch (error) {
-      const fallback = "Our digital atelier is momentarily undergoing maintenance. I recommend checking our Size Guide for immediate assistance.";
+    } catch (error: any) {
+      // Fallback with DEBUG INFO
+      const fallback = `Our digital atelier is momentarily undergoing maintenance. (Error: ${error.message || 'Unknown'})`;
       for (const char of fallback) { yield char; }
     }
   }
