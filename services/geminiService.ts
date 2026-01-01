@@ -84,8 +84,15 @@ export class GeminiService {
         systemInstruction: "You are the Executive Stylist at Maison Klyora. Tone: Ultra-luxury, editorial, concise. Use terms like 'drape', 'silhouette', 'architectural'."
       });
 
+      // Sanitize history: The first message must be from 'user'.
+      // If the first message is 'model', remove it.
+      const sanitizedHistory = history.filter((msg, index) => {
+        if (index === 0 && msg.role === 'model') return false;
+        return true;
+      });
+
       const chat = model.startChat({
-        history: history.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
+        history: sanitizedHistory.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
       });
 
       const result = await chat.sendMessageStream(currentQuery);
