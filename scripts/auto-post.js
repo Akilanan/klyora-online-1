@@ -30,12 +30,17 @@ class GeminiAI {
         }
 
         try {
-            const prompt = `Write a short, sophisticated, high-fashion Instagram caption for a luxury clothing item named "${productName}". 
-            Tone: Elegant, mysterious, exclusive.
-            Include 1-2 tasteful emojis. 
-            Include 5 relevant luxury hashtags (e.g. #MaisonKlyora #QuietLuxury).
-            Add a clear "Link in Bio" call to action.
-            Do NOT wrap the output in quotes.`;
+            const prompt = `Write a very short, minimalist Instagram caption for a clothing item named "${productName}". 
+            
+            RULES:
+            1. Sound HUMAN, not an AI. 
+            2. No flowery adjectives (e.g., don't use "symphony", "tapestry", "elevate", "unleash", "testament").
+            3. Tone: Cool, effortless, direct. Like a text to a friend or a note in a diary.
+            4. Max 10-15 words.
+            5. Include 1 subtle emoji (black/white hearts, stars).
+            6. Ending: Include 3-4 clean tags (#MaisonKlyora + others).
+            
+            Do NOT include the "Shop at" link in your output, I will add it myself.`;
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${CONFIG.GEMINI_API_KEY}`;
 
