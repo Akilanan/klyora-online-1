@@ -381,6 +381,8 @@ const App: React.FC = () => {
               className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[3000ms] ease-in-out"
               loading={idx === 0 ? "eager" : "lazy"}
               decoding={idx === 0 ? "sync" : "async"}
+              // @ts-ignore - React 18 type definition gap
+              fetchPriority={idx === 0 ? "high" : "low"}
               style={{
                 opacity: idx === bgIndex ? 0.4 : 0,
                 transform: `scale(${1 + smoothScrollY * 0.0001})`

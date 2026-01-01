@@ -44,10 +44,15 @@ export class GeminiService {
   }
 
   async *getStylistResponseStream(history: ChatMessage[], currentQuery: string) {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (window as any).KlyoraConfig?.geminiApiKey;
+    // 1. Safe API Key Extraction (Prevents Crashing on Live)
+    const envKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const windowKey = (window as any).KlyoraConfig?.geminiApiKey;
+    const apiKey = (envKey && envKey.length > 5) ? envKey : windowKey;
 
-    if (!apiKey) {
-      // Robust Local "AI" Simulation
+    // 2. Fallback Mode (If no key found, use Smart Simulation)
+    if (!apiKey || apiKey === 'undefined') {
+      console.warn("⚠️ AI Key missing. Using Maison Klyora Offline Concierge.");
+
       const queryLower = currentQuery.toLowerCase();
       let response = "I advise selecting your true size for a tailored fit.";
 
@@ -57,15 +62,17 @@ export class GeminiService {
         response = "Our global logistics partners typically deliver within 7-12 business days. You will receive a tracking code via email upon dispatch.";
       } else if (queryLower.includes('fabric') || queryLower.includes('material')) {
         response = "Maison Klyora prioritizes tactile integrity. We utilize premium blends designed for drape and longevity.";
-      } else if (queryLower.includes('size') || queryLower.includes('fit')) {
+      } else if (queryLower.includes('size') || queryLower.includes('fit') || queryLower.includes('measure')) {
         response = "Our atelier cuts for a modern silhouette. For a structured look, take your usual size. For a relaxed drape, size up once.";
+      } else if (queryLower.includes('hello') || queryLower.includes('hi')) {
+        response = "Welcome to Maison Klyora. How may I assist you with your collection curation today?";
       }
 
-      await new Promise(resolve => setTimeout(resolve, 800)); // Simulate thinking
+      await new Promise(resolve => setTimeout(resolve, 600)); // Simulate thinking
 
       for (const char of response) {
         yield char;
-        await new Promise(resolve => setTimeout(resolve, 15));
+        await new Promise(resolve => setTimeout(resolve, 10));
       }
       return;
     }
