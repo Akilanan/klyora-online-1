@@ -73,19 +73,42 @@ class SocialMediaService {
 
 const socialService = new SocialMediaService();
 
-// Mock Products (since we are running outside ts-node for simplicity)
-const NEW_ARRIVALS = [
-    {
-        name: "Signature Silk Evening Drape",
-        composition: "100% Mulberry Silk",
-        image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1000"
-    },
-    {
-        name: "Velvet Nocturne Gown",
-        composition: "Italian Cotton Velvet",
-        image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000"
+// Product Service
+async function getRandomProduct() {
+    try {
+        console.log("🔍 Fetching products from Shopify...");
+        // Fetch public JSON of products
+        const response = await fetch('https://klyora-2.myshopify.com/products.json');
+        const data = await response.json();
+
+        if (!data.products || data.products.length === 0) {
+            throw new Error("No products found in store.");
+        }
+
+        const products = data.products;
+        // Randomly pick one
+        const randomProduct = products[Math.floor(Math.random() * products.length)];
+
+        // Find first image
+        const image = randomProduct.images && randomProduct.images.length > 0
+            ? randomProduct.images[0].src
+            : null;
+
+        if (!image) throw new Error(`Product ${randomProduct.title} has no image.`);
+
+        // Clean description for composition (simple heuristic)
+        // Just using title and generic composition for now as description formatting varies
+        return {
+            name: randomProduct.title,
+            composition: "Premium Materials", // Placeholder or extract from HTML if robust parsing text exists
+            image: image
+        };
+
+    } catch (error) {
+        console.error("❌ Failed to fetch products:", error.message);
+        return null; // Return null so main loop can handle it
     }
-];
+}
 
 async function runAutoPoster() {
     console.log("⚡ Starting Klyora Social Auto-Poster...");
@@ -94,29 +117,32 @@ async function runAutoPoster() {
 
     const logFile = path.join(__dirname, 'social_queue.log');
 
-    for (const product of NEW_ARRIVALS) {
-        console.log(`🤖 Analyzing product: ${product.name}...`);
+    // Get ONE random product to post
+    const product = await getRandomProduct();
 
-        try {
-            const caption = await gemini.generateCaption(product.name, product.composition);
-            const timestamp = new Date().toISOString();
+    if (!product) {
+        console.log("⚠️ No product to post. Exiting.");
+        return;
+    }
 
-            // Attempt Post
-            const postId = await socialService.postToInstagram(caption, product.image);
+    console.log(`🤖 Analyzing product: ${product.name}...`);
 
-            // Log Result
-            const status = CONFIG.IS_LIVE_MODE ? "LIVE_POSTED" : "MOCK_POSTED";
-            const logEntry = `[${timestamp}] [${status}] ID:${postId} CAPTION: "${caption}"\n`;
+    try {
+        const caption = await gemini.generateCaption(product.name, product.composition);
+        const timestamp = new Date().toISOString();
 
-            fs.appendFileSync(logFile, logEntry);
-            console.log(`✅ Success! [${status}] ID: ${postId}`);
+        // Attempt Post
+        const postId = await socialService.postToInstagram(caption, product.image);
 
-        } catch (error) {
-            console.error(`❌ Failed to post ${product.name}:`, error.message);
-        }
+        // Log Result
+        const status = CONFIG.IS_LIVE_MODE ? "LIVE_POSTED" : "MOCK_POSTED";
+        const logEntry = `[${timestamp}] [${status}] ID:${postId} CAPTION: "${caption}"\n`;
 
-        // Wait between posts to simulate natural behavior
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        fs.appendFileSync(logFile, logEntry);
+        console.log(`✅ Success! [${status}] ID: ${postId}`);
+
+    } catch (error) {
+        console.error(`❌ Failed to post ${product.name}:`, error.message);
     }
 
     console.log("----------------------------------------");
