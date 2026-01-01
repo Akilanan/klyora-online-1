@@ -35,7 +35,7 @@ class HistoryService {
                 this.history = JSON.parse(fs.readFileSync(this.historyFile, 'utf8'));
             }
         } catch (e) {
-            console.error("⚠️ Failed to load history:", e.message);
+            console.warn("⚠️ Failed to load history (creating new):", e.message);
             this.history = [];
         }
     }
@@ -59,7 +59,7 @@ class HistoryService {
             // 1. Write file
             fs.writeFileSync(this.historyFile, JSON.stringify(this.history, null, 2));
 
-            // 2. Git Commit & Push (Only if in GitHub Actions or Local capable env)
+            // 2. Git Commit & Push (Only if in GitHub Actions or Local capable env with key)
             if (process.env.CI) {
                 console.log("💾 Persisting history to GitHub...");
                 execSync('git config --global user.name "Klyora Bot"');
@@ -79,39 +79,32 @@ class HistoryService {
 // --- Caption Generator (Human Style) ---
 class HumanCaptionGenerator {
     async generateCaption(productName) {
-        // High-quality, minimalist sentence fragments
+        // EXPANDED DICTIONARY (3,000+ Combinations)
         const openers = [
-            "Effortless.",
-            "Just landed.",
-            "The moment.",
-            "Pure elegance.",
-            "Obsessed with this.",
-            "Textures.",
-            "Current mood.",
-            "Timeless."
+            "Effortless.", "Just landed.", "The moment.", "Pure elegance.", "Obsessed with this.",
+            "Textures.", "Current mood.", "Timeless.", "In focus.", "Daily driver.",
+            "Visual noise.", "Quiet confidence.", "Art form.", "The upgrade.", "Next level.",
+            "Soft touch.", "Structured.", "Flow state.", "Iconic.", "Rare find.",
+            "Modern classic.", "Essential.", "Refined.", "Polished.", "Mood."
         ];
 
         const middles = [
-            `The ${productName}.`,
-            `This silhouette. 🖤`,
-            `Details matter.`,
-            `Your new favorite.`,
-            `For the evening.`,
-            `Winter essential.`,
-            `Meet the ${productName}.`,
-            `Simplicity is key.`
+            `The ${productName}.`, `This silhouette. 🖤`, `Details matter.`, `Your new favorite.`,
+            `For the evening.`, `Winter essential.`, `Meet the ${productName}.`, `Simplicity is key.`,
+            `Cannot get enough of the ${productName}.`, `The ${productName} requires no introduction.`,
+            `Wearing the ${productName} on repeat.`, `A masterclass in style.`, `Designed to last.`,
+            `The perfect cut.`, `Feels as good as it looks.`, `Elevated everyday.`,
+            `Made for you.`, `The ${productName} speaks for itself.`
         ];
 
         const closers = [
-            "Link in bio.",
-            "Shop the edit.",
-            "Available now.",
-            "Yours forever.",
-            "Discover more online.",
-            "Limited availability."
+            "Link in bio.", "Shop the edit.", "Available now.", "Yours forever.",
+            "Discover more online.", "Limited availability.", "Tap to view.", "Secure yours.",
+            "Klyora.com", "Online now.", "Don't miss out.", "New season.",
+            "Shipping worldwide.", "See the details."
         ];
 
-        const emojis = ["✨", "🖤", "🕯️", "🧥", "🌑", "🎞️"];
+        const emojis = ["✨", "🖤", "🕯️", "🧥", "🌑", "🎞️", "🥃", "🗝️", "🦢"];
         const hashtags = "#MaisonKlyora #QuietLuxury #Klyora #MinimalistStyle #OOTD";
 
         // Randomly pick one from each category
@@ -120,17 +113,22 @@ class HumanCaptionGenerator {
         const close = closers[Math.floor(Math.random() * closers.length)];
         const emoji = emojis[Math.floor(Math.random() * emojis.length)];
 
-        // 20% chance to just be super short (2 parts)
-        if (Math.random() < 0.2) {
-            return `${mid} ${emoji}\n\n${hashtags}\n\nShop at: https://klyora-2.myshopify.com`;
-        }
+        const template = Math.floor(Math.random() * 3);
 
-        // Standard 3-part structure
-        return `${open} ${mid} ${emoji}\n${close}\n\n${hashtags}\n\nShop at: https://klyora-2.myshopify.com`;
+        if (template === 0) {
+            // Super minimalist
+            return `${mid} ${emoji}\n\n${hashtags}\n\nShop at: https://klyora-2.myshopify.com`;
+        } else if (template === 1) {
+            // Standard
+            return `${open} ${mid} ${emoji}\n${close}\n\n${hashtags}\n\nShop at: https://klyora-2.myshopify.com`;
+        } else {
+            // Editorial
+            return `${open}\n${mid}\n${close}\n\n${hashtags}\n\nShop at: https://klyora-2.myshopify.com`;
+        }
     }
 }
 
-const gemini = new HumanCaptionGenerator(); // Renamed for compatibility, but uses local logic
+const gemini = new HumanCaptionGenerator();
 
 // --- Social Media Service ---
 class SocialMediaService {
@@ -143,24 +141,45 @@ class SocialMediaService {
         console.log(`[LIVE] Posting to Instagram Account: ${CONFIG.IG_USER_ID}...`);
 
         try {
-            // Step 1: Create Container
+            // 1. Post to FEED
+            // Step A: Create Container
             const containerUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?image_url=${encodeURIComponent(imageUrl)}&caption=${encodeURIComponent(caption)}&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
             const containerRes = await fetch(containerUrl, { method: 'POST' });
             const containerData = await containerRes.json();
+            if (containerData.error) throw new Error(`Feed Container Error: ${containerData.error.message}`);
+            const feedCreationId = containerData.id;
 
-            if (containerData.error) throw new Error(`Container Error: ${containerData.error.message}`);
-
-            const creationId = containerData.id;
-            console.log(`   ↳ Media Container Created: ${creationId}`);
-
-            // Step 2: Publish Container
-            const publishUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media_publish?creation_id=${creationId}&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
+            // Step B: Publish Container
+            const publishUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media_publish?creation_id=${feedCreationId}&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
             const publishRes = await fetch(publishUrl, { method: 'POST' });
             const publishData = await publishRes.json();
+            if (publishData.error) throw new Error(`Feed Publish Error: ${publishData.error.message}`);
 
-            if (publishData.error) throw new Error(`Publish Error: ${publishData.error.message}`);
+            const feedId = publishData.id;
+            console.log(`   ✅ Feed Post Published: ${feedId}`);
 
-            return publishData.id;
+            // 2. Post to STORY (Bonus)
+            // Stories do NOT take captions, just the image.
+            console.log("   --> Attempting Story Post...");
+            const storyContainerUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?image_url=${encodeURIComponent(imageUrl)}&media_type=STORIES&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
+            const storyContainerRes = await fetch(storyContainerUrl, { method: 'POST' });
+            const storyContainerData = await storyContainerRes.json();
+
+            let storyId = "SKIPPED";
+            if (!storyContainerData.error) {
+                const storyCreationId = storyContainerData.id;
+                const storyPublishUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media_publish?creation_id=${storyCreationId}&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
+                const storyPublishRes = await fetch(storyPublishUrl, { method: 'POST' });
+                const storyPublishData = await storyPublishRes.json();
+                if (!storyPublishData.error) {
+                    storyId = storyPublishData.id;
+                    console.log(`   ✅ Story Published: ${storyId}`);
+                }
+            } else {
+                console.warn(`   ⚠️ Story failed (non-critical): ${storyContainerData.error.message}`);
+            }
+
+            return { feedId, storyId };
 
         } catch (error) {
             console.error("   ↳ Instagram API Failed:", error.message);
@@ -175,9 +194,7 @@ const socialService = new SocialMediaService();
 async function runAutoPoster() {
     console.log("⚡ Starting Klyora Social Auto-Poster...");
     const historyService = new HistoryService();
-    try {
-        historyService.load();
-    } catch (e) { console.log("Init history empty"); }
+    historyService.load();
     const logFile = path.join(__dirname, 'social_queue.log');
 
     // 1. Fetch Products
@@ -225,14 +242,12 @@ async function runAutoPoster() {
         const caption = await gemini.generateCaption(product.title);
         const timestamp = new Date().toISOString();
 
-        // Attempt Post
-        const postId = await socialService.postToInstagram(caption, image);
-
-        console.log(`✅ Posted! ID: ${postId}`);
+        // Attempt Post (Feed + Story)
+        const result = await socialService.postToInstagram(caption, image);
 
         // Log to file
         const status = CONFIG.IS_LIVE_MODE ? "LIVE_POSTED" : "MOCK_POSTED";
-        fs.appendFileSync(logFile, `[${timestamp}] [${status}] ID:${postId} CAPTION: "${caption}"\n`);
+        fs.appendFileSync(logFile, `[${timestamp}] [${status}] FEED:${result.feedId} STORY:${result.storyId} CAPTION: "${caption}"\n`);
 
         // 6. Update History
         if (CONFIG.IS_LIVE_MODE) {
@@ -242,6 +257,7 @@ async function runAutoPoster() {
 
     } catch (error) {
         console.error("❌ Failed to post:", error.message);
+        // Don't crash output
     }
 
     console.log("----------------------------------------");
