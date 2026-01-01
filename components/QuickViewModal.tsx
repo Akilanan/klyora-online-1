@@ -180,9 +180,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500">Select Size</span>
                 <button
                   onClick={() => setIsSizeModalOpen(true)}
-                  className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#8ca67a] hover:underline underline-offset-4"
+                  className="flex items-center gap-2 text-[10px] uppercase tracking-[0.1em] font-bold text-white bg-black px-3 py-1.5 hover:bg-zinc-800 transition-colors"
                 >
-                  Find My Fit / Size Guide
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                  Find My Fit
                 </button>
               </div>
               <div className="flex flex-wrap gap-2">
