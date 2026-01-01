@@ -281,8 +281,17 @@
         <a href="/collections/all" style="color: white; text-decoration: underline;">Explore Our Premium Clothing Collection</a>
       </div>
     </noscript>
+    <!-- Klyora React App Assets -->
+    <script src="{{ 'klyora.js' | asset_url }}" type="module" defer></script>
+
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
-      {{ content_for_layout }}
+      <!-- React App Mount Point -->
+      <div id="root"></div>
+      
+      <!-- Fallback for non-JS or Sections -->
+      <div id="shopify-section-fallback" style="display: none;">
+        {{ content_for_layout }}
+      </div>
     </main>
   </body>
 </html>
