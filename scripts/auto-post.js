@@ -86,96 +86,52 @@ async function getRandomProduct() {
         }
 
         // Check for duplicates in recent posts (Deep Check: Last 50 posts)
-        let recentCaptions = [];
-        if (CONFIG.IS_LIVE_MODE) {
-            try {
-                // Increased limit to 100 (Max allowed per page) to cover ~4 days of history
-                const recentPostsUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?fields=caption&limit=100&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
-                const recentRes = await fetch(recentPostsUrl);
-                const recentData = await recentRes.json();
-                if (recentData.data) {
-                    recentCaptions = recentData.data.map(p => p.caption || "");
-                }
-            } catch (e) {
-                console.warn("⚠️ Could not fetch recent posts for duplicate check:", e.message);
-            }
-        }
-
-        const products = data.products;
-
-        // Filter out products that have been posted recently
-        let availableProducts = products.filter(p => {
-            return !recentCaptions.some(caption => caption.includes(p.title));
-        });
-
-        // FALLBACK: If we have posted *everything* in the store, reset and pick from ALL products.
-        // This ensures the bot never stops working.
-        if (availableProducts.length === 0) {
-            console.log("🔄 Cycle complete! All products have been posted. Starting fresh cycle.");
-            availableProducts = products;
-        }
-
-        // Randomly pick one from the available list
-        const randomProduct = availableProducts[Math.floor(Math.random() * availableProducts.length)];
-
-        // Find first image
-        const image = randomProduct.images && randomProduct.images.length > 0
-            ? randomProduct.images[0].src
-            : null;
-
-        if (!image) throw new Error(`Product ${randomProduct.title} has no image.`);
-
-        // Clean description for composition (simple heuristic)
-        // Just using title and generic composition for now as description formatting varies
-        return {
-            name: randomProduct.title,
-            composition: "Premium Materials", // Placeholder or extract from HTML if robust parsing text exists
-            image: image
-        };
-
-    } catch (error) {
-        console.error("❌ Failed to fetch products:", error.message);
-        return null; // Return null so main loop can handle it
-    }
-}
-
-async function runAutoPoster() {
-    console.log("⚡ Starting Klyora Social Auto-Poster...");
-    console.log(`   Mode: ${CONFIG.IS_LIVE_MODE ? "🟢 LIVE (Real Posting)" : "⚪ SIMULATION (Log Only)"}`);
-    console.log("----------------------------------------");
-
-    const logFile = path.join(__dirname, 'social_queue.log');
-
-    // Get ONE random product to post
-    const product = await getRandomProduct();
-
-    if (!product) {
-        console.log("⚠️ No product to post. Exiting.");
+        products = data.products || [];
+    } catch (e) {
+        console.error("❌ Failed to fetch products:", e.message);
         return;
     }
 
-    console.log(`🤖 Analyzing product: ${product.name}...`);
+    if (products.length === 0) return;
 
-    try {
-        const caption = await gemini.generateCaption(product.name, product.composition);
-        const timestamp = new Date().toISOString();
+    // 2. Filter using Persistent History
+    let availableProducts = products.filter(p => !historyService.hasPosted(p.handle));
 
-        // Attempt Post
-        const postId = await socialService.postToInstagram(caption, product.image);
-
-        // Log Result
-        const status = CONFIG.IS_LIVE_MODE ? "LIVE_POSTED" : "MOCK_POSTED";
-        const logEntry = `[${timestamp}] [${status}] ID:${postId} CAPTION: "${caption}"\n`;
-
-        fs.appendFileSync(logFile, logEntry);
-        console.log(`✅ Success! [${status}] ID: ${postId}`);
-
-    } catch (error) {
-        console.error(`❌ Failed to post ${product.name}:`, error.message);
+    // 3. Cycle Reset Logic
+    if (availableProducts.length === 0) {
+        console.log("🔄 Cycle complete! All products posted. Starting fresh.");
+        historyService.clear();
+        availableProducts = products;
     }
 
-    console.log("----------------------------------------");
-    console.log("🎉 Queue processing complete.");
+    // 4. Select Random
+    const product = availableProducts[Math.floor(Math.random() * availableProducts.length)];
+    const image = product.images?.[0]?.src;
+
+    if (!image) {
+        console.log("Skipping product with no image");
+        return;
+    }
+
+    console.log(`🤖 Selected: ${product.title}`);
+
+    // 5. Generate & Post
+    try {
+        const caption = await gemini.generateCaption(product.title, "Premium Materials");
+        const postId = await socialService.postToInstagram(caption, image);
+
+        console.log(`✅ Posted! ID: ${postId}`);
+
+        // 6. Update History
+        if (CONFIG.IS_LIVE_MODE) {
+            historyService.add(product.handle);
+            historyService.saveAndPush();
+        }
+
+    } catch (error) {
+        console.error("❌ Failed to post:", error.message);
+    }
 }
 
 runAutoPoster();
+```
