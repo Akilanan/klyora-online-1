@@ -85,11 +85,12 @@ async function getRandomProduct() {
             throw new Error("No products found in store.");
         }
 
-        // Check for duplicates in recent posts
+        // Check for duplicates in recent posts (Deep Check: Last 50 posts)
         let recentCaptions = [];
         if (CONFIG.IS_LIVE_MODE) {
             try {
-                const recentPostsUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?fields=caption&limit=5&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
+                // Increased limit to 50 to cover "all" recent history
+                const recentPostsUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?fields=caption&limit=50&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
                 const recentRes = await fetch(recentPostsUrl);
                 const recentData = await recentRes.json();
                 if (recentData.data) {
@@ -103,16 +104,18 @@ async function getRandomProduct() {
         const products = data.products;
 
         // Filter out products that have been posted recently
-        const availableProducts = products.filter(p => {
+        let availableProducts = products.filter(p => {
             return !recentCaptions.some(caption => caption.includes(p.title));
         });
 
+        // FALLBACK: If we have posted *everything* in the store, reset and pick from ALL products.
+        // This ensures the bot never stops working.
         if (availableProducts.length === 0) {
-            console.log("⚠️ All available products have been posted recently. Skipping.");
-            return null;
+            console.log("🔄 Cycle complete! All products have been posted. Starting fresh cycle.");
+            availableProducts = products;
         }
 
-        // Randomly pick one from the FRESH list
+        // Randomly pick one from the available list
         const randomProduct = availableProducts[Math.floor(Math.random() * availableProducts.length)];
 
         // Find first image
