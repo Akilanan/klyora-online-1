@@ -3,6 +3,7 @@ import 'dotenv/config'; // Load .env file locally
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,59 +18,119 @@ const CONFIG = {
     }
 };
 
-GEMINI_API_KEY: process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY,
-    // ... other config
-};
-
-// --- AI Service (Real) ---
-class GeminiAI {
-    async generateCaption(productName, composition) {
-        if (!CONFIG.GEMINI_API_KEY) {
-            console.log("⚠️ No Gemini API Key found. Using fallback caption.");
-            return `The ${productName}. Experience true luxury. #Klyora`;
+// --- History Service (Git Persistence) ---
+class HistoryService {
+    constructor() {
+        this.historyFile = path.join(__dirname, '../data/posted_history.json');
+        this.history = [];
+        // Ensure data directory exists
+        if (!fs.existsSync(path.dirname(this.historyFile))) {
+            fs.mkdirSync(path.dirname(this.historyFile), { recursive: true });
         }
+    }
 
+    load() {
         try {
-            const prompt = `Write a very short, minimalist Instagram caption for a clothing item named "${productName}". 
-            
-            RULES:
-            1. Sound HUMAN, not an AI. 
-            2. No flowery adjectives (e.g., don't use "symphony", "tapestry", "elevate", "unleash", "testament").
-            3. Tone: Cool, effortless, direct. Like a text to a friend or a note in a diary.
-            4. Max 10-15 words.
-            5. Include 1 subtle emoji (black/white hearts, stars).
-            6. Ending: Include 3-4 clean tags (#MaisonKlyora + others).
-            
-            Do NOT include the "Shop at" link in your output, I will add it myself.`;
-
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${CONFIG.GEMINI_API_KEY}`;
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.candidates && data.candidates[0].content) {
-                let caption = data.candidates[0].content.parts[0].text.trim();
-                // Append the direct shop link as requested previously
-                return `${caption}\n\nShop at: https://klyora-2.myshopify.com`;
-            } else {
-                throw new Error("Invalid API response format");
+            if (fs.existsSync(this.historyFile)) {
+                this.history = JSON.parse(fs.readFileSync(this.historyFile, 'utf8'));
             }
-        } catch (error) {
-            console.error("⚠️ AI Generation failed, using fallback:", error.message);
-            // Fallback template with shop link
-            return `Introducing the ${productName}.\n\nCrafted for the modern connoisseur.\n\n#MaisonKlyora #LuxuryFashion\n\nShop at: https://klyora-2.myshopify.com`;
+        } catch (e) {
+            console.error("⚠️ Failed to load history:", e.message);
+            this.history = [];
+        }
+    }
+
+    hasPosted(productHandle) {
+        return this.history.includes(productHandle);
+    }
+
+    add(productHandle) {
+        if (!this.history.includes(productHandle)) {
+            this.history.push(productHandle);
+        }
+    }
+
+    clear() {
+        this.history = [];
+    }
+
+    saveAndPush() {
+        try {
+            // 1. Write file
+            fs.writeFileSync(this.historyFile, JSON.stringify(this.history, null, 2));
+
+            // 2. Git Commit & Push (Only if in GitHub Actions or Local capable env)
+            if (process.env.CI) {
+                console.log("💾 Persisting history to GitHub...");
+                execSync('git config --global user.name "Klyora Bot"');
+                execSync('git config --global user.email "bot@klyora.com"');
+                execSync(`git add ${this.historyFile}`);
+                execSync('git commit -m "chore: Update social post history [skip ci]"');
+                execSync('git push');
+            } else {
+                console.log("💾 History saved locally.");
+            }
+        } catch (e) {
+            console.error("❌ Failed to save history:", e.message);
         }
     }
 }
 
-const gemini = new GeminiAI();
+// --- Caption Generator (Human Style) ---
+class HumanCaptionGenerator {
+    async generateCaption(productName) {
+        // High-quality, minimalist sentence fragments
+        const openers = [
+            "Effortless.",
+            "Just landed.",
+            "The moment.",
+            "Pure elegance.",
+            "Obsessed with this.",
+            "Textures.",
+            "Current mood.",
+            "Timeless."
+        ];
+
+        const middles = [
+            `The ${productName}.`,
+            `This silhouette. 🖤`,
+            `Details matter.`,
+            `Your new favorite.`,
+            `For the evening.`,
+            `Winter essential.`,
+            `Meet the ${productName}.`,
+            `Simplicity is key.`
+        ];
+
+        const closers = [
+            "Link in bio.",
+            "Shop the edit.",
+            "Available now.",
+            "Yours forever.",
+            "Discover more online.",
+            "Limited availability."
+        ];
+
+        const emojis = ["✨", "🖤", "🕯️", "🧥", "🌑", "🎞️"];
+        const hashtags = "#MaisonKlyora #QuietLuxury #Klyora #MinimalistStyle #OOTD";
+
+        // Randomly pick one from each category
+        const open = openers[Math.floor(Math.random() * openers.length)];
+        const mid = middles[Math.floor(Math.random() * middles.length)];
+        const close = closers[Math.floor(Math.random() * closers.length)];
+        const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+        // 20% chance to just be super short (2 parts)
+        if (Math.random() < 0.2) {
+            return `${mid} ${emoji}\n\n${hashtags}\n\nShop at: https://klyora-2.myshopify.com`;
+        }
+
+        // Standard 3-part structure
+        return `${open} ${mid} ${emoji}\n${close}\n\n${hashtags}\n\nShop at: https://klyora-2.myshopify.com`;
+    }
+}
+
+const gemini = new HumanCaptionGenerator(); // Renamed for compatibility, but uses local logic
 
 // --- Social Media Service ---
 class SocialMediaService {
@@ -103,26 +164,27 @@ class SocialMediaService {
 
         } catch (error) {
             console.error("   ↳ Instagram API Failed:", error.message);
-            throw error; // Re-throw to handle in main loop
+            throw error;
         }
     }
 }
 
 const socialService = new SocialMediaService();
 
-// Product Service
-async function getRandomProduct() {
+// --- Main Logic ---
+async function runAutoPoster() {
+    console.log("⚡ Starting Klyora Social Auto-Poster...");
+    const historyService = new HistoryService();
     try {
-        console.log("🔍 Fetching products from Shopify...");
-        // Fetch public JSON of products
+        historyService.load();
+    } catch (e) { console.log("Init history empty"); }
+    const logFile = path.join(__dirname, 'social_queue.log');
+
+    // 1. Fetch Products
+    let products = [];
+    try {
         const response = await fetch('https://klyora-2.myshopify.com/products.json');
         const data = await response.json();
-
-        if (!data.products || data.products.length === 0) {
-            throw new Error("No products found in store.");
-        }
-
-        // Check for duplicates in recent posts (Deep Check: Last 50 posts)
         products = data.products || [];
     } catch (e) {
         console.error("❌ Failed to fetch products:", e.message);
@@ -154,10 +216,17 @@ async function getRandomProduct() {
 
     // 5. Generate & Post
     try {
-        const caption = await gemini.generateCaption(product.title, "Premium Materials");
+        const caption = await gemini.generateCaption(product.title);
+        const timestamp = new Date().toISOString();
+
+        // Attempt Post
         const postId = await socialService.postToInstagram(caption, image);
 
         console.log(`✅ Posted! ID: ${postId}`);
+
+        // Log to file
+        const status = CONFIG.IS_LIVE_MODE ? "LIVE_POSTED" : "MOCK_POSTED";
+        fs.appendFileSync(logFile, `[${timestamp}] [${status}] ID:${postId} CAPTION: "${caption}"\n`);
 
         // 6. Update History
         if (CONFIG.IS_LIVE_MODE) {
@@ -168,7 +237,8 @@ async function getRandomProduct() {
     } catch (error) {
         console.error("❌ Failed to post:", error.message);
     }
+
+    console.log("----------------------------------------");
 }
 
 runAutoPoster();
-```
