@@ -20,15 +20,15 @@ const CONFIG = {
 // --- AI Service (Simulated) ---
 class GeminiAI {
     async generateCaption(productName, composition) {
-        const prompts = [
-            `Elegance redefined. The ${productName} in ${composition}. #MaisonKlyora`,
-            `Architectural silhouette: ${productName}. Crafted from ${composition}. Shop the winter collection.`,
-            `The art of the drape. ${productName}. Now available. #Klyora #Luxury`,
-            `Midnight textures. ${productName}. See it now on the runway aka your living room.`
+        const props = [
+            `Elegance redefined. The ${productName} in ${composition}. #MaisonKlyora\n\nShop at: https://klyora-2.myshopify.com`,
+            `Architectural silhouette: ${productName}. Crafted from ${composition}. Shop the winter collection at https://klyora-2.myshopify.com`,
+            `The art of the drape. ${productName}. Now available. #Klyora #Luxury\n\nAcquire yours: https://klyora-2.myshopify.com`,
+            `Midnight textures. ${productName}. See it now on the runway aka your living room.\n\nShop: https://klyora-2.myshopify.com`
         ];
         // Simulate network delay and AI "thinking"
         await new Promise(resolve => setTimeout(resolve, 800));
-        return prompts[Math.floor(Math.random() * prompts.length)];
+        return props[Math.floor(Math.random() * props.length)];
     }
 }
 
