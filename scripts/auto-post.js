@@ -1,5 +1,5 @@
-
 // scripts/auto-post.js
+import 'dotenv/config'; // Load .env file locally
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -9,9 +9,12 @@ const __dirname = path.dirname(__filename);
 
 // --- Configuration ---
 const CONFIG = {
-    IG_ACCESS_TOKEN: process.env.IG_ACCESS_TOKEN,
-    IG_USER_ID: process.env.IG_USER_ID,
-    IS_LIVE_MODE: !!(process.env.IG_ACCESS_TOKEN && process.env.IG_USER_ID)
+    // Support both standard and VITE_ prefixed variables for local dev compatibility
+    IG_ACCESS_TOKEN: process.env.IG_ACCESS_TOKEN || process.env.VITE_IG_ACCESS_TOKEN,
+    IG_USER_ID: process.env.IG_USER_ID || process.env.VITE_IG_USER_ID,
+    get IS_LIVE_MODE() {
+        return !!(this.IG_ACCESS_TOKEN && this.IG_USER_ID);
+    }
 };
 
 // --- AI Service (Simulated) ---
