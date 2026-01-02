@@ -114,6 +114,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove
                 <span className="text-lg font-serif italic font-bold">{currency}{subtotal.toLocaleString()}</span>
               </div>
               <p className="text-[9px] text-zinc-400 text-center">Shipping, taxes, and duty calculated at checkout.</p>
+              <div className="flex justify-center gap-4 text-[9px] text-zinc-500 uppercase tracking-wider items-center pt-2 border-t border-dashed border-zinc-200">
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-[#8ca67a] rounded-full"></span> Cash on Delivery Available</span>
+                <span className="flex items-center gap-1"><svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg> Secure Checkout</span>
+              </div>
             </div>
 
             <button

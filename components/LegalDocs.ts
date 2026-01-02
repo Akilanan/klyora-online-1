@@ -63,6 +63,11 @@ export const LEGAL_DOCS = {
                     <li><strong>Standard Shipping (USA/UK/CAN/AUS):</strong> 7-12 Business Days via Express Packet.</li>
                     <li><strong>International Shipping:</strong> 10-15 Business Days depending on local customs clearance.</li>
                 </ul>
+                <p class="mt-4 text-[10px] uppercase tracking-wider font-bold text-[#8ca67a]">Payment Methods</p>
+                <ul class="list-disc pl-5 space-y-1 mt-1">
+                    <li>Secure Credit Card & PayPal</li>
+                    <li><strong>Cash on Delivery (COD)</strong> is available for all domestic orders. Please ensure someone is available to receive the package.</li>
+                </ul>
                 <p class="mt-2 text-[#8ca67a]"><em>Complimentary fully tracked shipping is included with every order.</em></p>
 
                 <h4 class="text-white font-bold uppercase tracking-widest mt-6 mb-2">2. Returns & Exchanges</h4>
