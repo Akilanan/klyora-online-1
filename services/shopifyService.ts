@@ -61,12 +61,25 @@ export class ShopifyService {
    */
   async fetchProductsByCollection(handle: string): Promise<Product[]> {
     try {
-      const response = await fetch(`https://${this.shopDomain}/collections/${handle}/products.json`);
-      if (!response.ok) throw new Error(`Failed to fetch products for collection ${handle}`);
+      let allProducts: any[] = [];
+      let page = 1;
+      let hasMore = true;
 
-      const data = await response.json();
-      if (data.products && Array.isArray(data.products)) {
-        return this.mapShopifyProducts(data.products);
+      while (hasMore && page <= 5) {
+        const response = await fetch(`https://${this.shopDomain}/collections/${handle}/products.json?limit=50&page=${page}`);
+        if (!response.ok) break;
+
+        const data = await response.json();
+        if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+          allProducts = [...allProducts, ...data.products];
+          page++;
+        } else {
+          hasMore = false;
+        }
+      }
+
+      if (allProducts.length > 0) {
+        return this.mapShopifyProducts(allProducts);
       }
       return [];
     } catch (e) {
