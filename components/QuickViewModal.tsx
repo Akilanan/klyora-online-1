@@ -58,11 +58,75 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
       });
     }
     return Array.from(new Set(imgs)); // Extra safety
+    return Array.from(new Set(imgs)); // Extra safety
   }, [product]);
 
+  // SMART VARIANT PARSING
+  // Detect if variants are "Option1 / Option2" (e.g. Size / Color)
+  const variantStructure = React.useMemo(() => {
+    if (!product.variants || product.variants.length === 0) return { type: 'simple', options: [] };
+
+    const firstTitle = product.variants[0].title;
+    if (firstTitle.includes(' / ')) {
+      // Complex variants
+      return { type: 'complex' };
+    }
+    return { type: 'simple' };
+  }, [product]);
+
+  // Extract unique Sizes and Colors if complex
+  const variantOptions = React.useMemo(() => {
+    if (variantStructure.type === 'simple') return null;
+
+    const sizes = new Set<string>();
+    const colors = new Set<string>();
+
+    product.variants?.forEach(v => {
+      const parts = v.title.split(' / ');
+      if (parts.length >= 1) sizes.add(parts[0]);
+      if (parts.length >= 2) colors.add(parts[1]);
+    });
+
+    return {
+      sizes: Array.from(sizes),
+      colors: Array.from(colors)
+    };
+  }, [product, variantStructure]);
+
+  // State for separate selections
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
+  // Initialize selections when product opens
+  useEffect(() => {
+    if (variantStructure.type === 'complex' && product.variants?.length) {
+      const firstParts = product.variants[0].title.split(' / ');
+      setSelectedSize(firstParts[0]);
+      if (firstParts.length > 1) setSelectedColor(firstParts[1]);
+    }
+  }, [product, variantStructure]);
+
+  // Effect: Find the actual variant object when Size/Color changes
+  useEffect(() => {
+    if (variantStructure.type === 'complex' && selectedSize && selectedColor) {
+      const matchingVariant = product.variants?.find(v =>
+        v.title === `${selectedSize} / ${selectedColor}` ||
+        v.title === `${selectedSize} / ${selectedColor} /` // Handle potential trailing slack issues
+      );
+      if (matchingVariant) {
+        setSelectedVariant(matchingVariant);
+      }
+    }
+  }, [selectedSize, selectedColor, product]);
+
   const handleApplySize = (sizeTitle: string) => {
-    const variant = product.variants?.find(v => v.title === sizeTitle);
-    if (variant) setSelectedVariant(variant);
+    // Override for simple mode compatibility
+    if (variantStructure.type === 'simple') {
+      const variant = product.variants?.find(v => v.title === sizeTitle);
+      if (variant) setSelectedVariant(variant);
+    } else {
+      setSelectedSize(sizeTitle);
+    }
   };
 
   const [dealType, setDealType] = useState<'single' | 'bundle'>('bundle');
@@ -168,6 +232,18 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                     {product.lowStock ? 'Low Stock: Only 3 Left' : 'High Demand: Selling Fast'}
                   </p>
                 )}
+
+                {/* [TRUST] Visible Shipping & Security */}
+                <div className="flex flex-col items-end gap-1 mt-2">
+                  <div className="flex items-center gap-1.5 text-[10px] text-zinc-500">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+                    <span>Est. Delivery: 7-15 Days</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[9px] text-[#8ca67a] font-medium opacity-80">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0" /></svg>
+                    <span>Secure Checkout</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -187,16 +263,67 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 </button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {product.variants?.map(variant => (
-                  <button
-                    key={variant.id}
-                    onClick={() => variant.available && setSelectedVariant(variant)}
-                    disabled={!variant.available}
-                    className={`min-w-[3.5rem] h-10 px-3 border text-[10px] font-medium transition-all duration-300 flex items-center justify-center ${!variant.available ? 'opacity-30 cursor-not-allowed line-through bg-zinc-50 border-zinc-100' : selectedVariant?.id === variant.id ? 'bg-black text-white border-black' : 'border-zinc-200 hover:border-black text-black bg-transparent'}`}
-                  >
-                    {variant.title}
-                  </button>
-                )) || <span className="text-sm text-zinc-400 px-2 italic">Universal Fit</span>}
+                {variantStructure.type === 'simple' ? (
+                  // SIMPLE MODE (Original)
+                  product.variants?.map(variant => (
+                    <button
+                      key={variant.id}
+                      onClick={() => variant.available && setSelectedVariant(variant)}
+                      disabled={!variant.available}
+                      className={`min-w-[3.5rem] h-10 px-3 border text-[10px] font-medium transition-all duration-300 flex items-center justify-center ${!variant.available ? 'opacity-30 cursor-not-allowed line-through bg-zinc-50 border-zinc-100' : selectedVariant?.id === variant.id ? 'bg-black text-white border-black' : 'border-zinc-200 hover:border-black text-black bg-transparent'}`}
+                    >
+                      {variant.title}
+                    </button>
+                  )) || <span className="text-sm text-zinc-400 px-2 italic">Universal Fit</span>
+                ) : (
+                  // COMPLEX MODE (Split Color/Size)
+                  <div className="w-full space-y-6">
+                    {/* 1. Colors */}
+                    {variantOptions?.colors && variantOptions.colors.length > 0 && (
+                      <div className="space-y-2">
+                        <span className="text-[9px] uppercase tracking-widest text-zinc-400">Select Color: <span className="text-black font-bold">{selectedColor}</span></span>
+                        <div className="flex flex-wrap gap-2">
+                          {variantOptions.colors.map(color => (
+                            <button
+                              key={color}
+                              onClick={() => setSelectedColor(color)}
+                              className={`px-4 py-2 text-[10px] border transition-all ${selectedColor === color ? 'bg-black text-white border-black' : 'bg-white text-black border-zinc-200 hover:border-black'}`}
+                            >
+                              {color}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 2. Sizes */}
+                    <div className="space-y-2">
+                      <span className="text-[9px] uppercase tracking-widest text-zinc-400">Select Size: <span className="text-black font-bold">{selectedSize}</span></span>
+                      <div className="flex flex-wrap gap-2">
+                        {variantOptions?.sizes.map(size => {
+                          // Check availability for this size with CURRENTLY selected color
+                          const variantForCheck = product.variants?.find(v => v.title === `${size} / ${selectedColor}`);
+                          const isAvailable = variantForCheck?.available ?? false;
+
+                          return (
+                            <button
+                              key={size}
+                              onClick={() => setSelectedSize(size)}
+                              // disabled={!isAvailable} // Optional: we might want to just show it as OOS but selectable
+                              className={`min-w-[3rem] h-10 px-3 border text-[10px] font-medium transition-all flex items-center justify-center 
+                                                ${selectedSize === size ? 'bg-black text-white border-black' : 'bg-white text-black border-zinc-200 hover:border-black'}
+                                                ${!isAvailable ? 'opacity-50 relative overflow-hidden' : ''}
+                                            `}
+                            >
+                              {size}
+                              {!isAvailable && <span className="absolute inset-0 flex items-center justify-center"><div className="w-full h-[1px] bg-zinc-400 rotate-45"></div></span>}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -365,6 +492,14 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               <span>{selectedVariant ? `Add to Bag - ${currency}${(dealType === 'bundle' ? Math.round(product.price * 1.15) : product.price).toLocaleString()}` : 'Select Size'}</span>
               {selectedVariant && <span className="w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>}
             </button>
+
+            <div className="flex justify-center gap-4 mt-3 opacity-40">
+              {/* Simple SVG Placeholders for payment icons to reduce noise, or small text */}
+              <span className="text-[8px] uppercase tracking-widest font-bold">Encrypted via Shopify</span>
+              <span className="flex gap-2">
+                {['VISA', 'MC', 'AMEX'].map(c => <span key={c} className="text-[8px] font-serif italic">{c}</span>)}
+              </span>
+            </div>
           </div>
         </div>
       </div>

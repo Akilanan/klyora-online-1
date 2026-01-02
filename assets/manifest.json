@@ -1,0 +1,19 @@
+{
+    "name": "KLYORA | The Winter Collection",
+    "short_name": "KLYORA",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    {
+        "src": "klyora_logo.jpg",
+        "sizes": "192x192",
+        "type": "image/jpeg"
+    },
+    {
+        "src": "klyora_logo.jpg",
+        "sizes": "512x512",
+        "type": "image/jpeg"
+    }
+]
+}

@@ -99,7 +99,10 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: 'Inner Mongolia / Biella, Italy',
     shippingTier: 'White Glove Concierge',
     images: ['https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>Crafted from 100% Mongolian cashmere. A timeless staple featuring a structured shoulder and relaxed waist.</p>'
+    descriptionHtml: '<p>Crafted from 100% Mongolian cashmere. A timeless staple featuring a structured shoulder and relaxed waist.</p>',
+    rating: 5.0,
+    reviews: 0,
+    lowStock: false
   },
   {
     id: 'z7',
@@ -115,7 +118,10 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: 'London Atelier',
     shippingTier: 'White Glove Concierge',
     images: ['https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>The pinnacle of menswear. Sourced via Zen-Exclusive channels and tailored to architectural perfection.</p>'
+    descriptionHtml: '<p>The pinnacle of menswear. Sourced via Zen-Exclusive channels and tailored to architectural perfection.</p>',
+    rating: 5.0,
+    reviews: 0,
+    lowStock: true
   },
   {
     id: 'z3',
@@ -131,7 +137,10 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: 'Global Studio',
     shippingTier: 'Global Express (7 Days)',
     images: ['https://images.unsplash.com/photo-1544816153-199d82175e1e?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>Vegan leather tote with sharp, architectural lines. A Zendrop bestseller customized for the Klyora collection.</p>'
+    descriptionHtml: '<p>Vegan leather tote with sharp, architectural lines. A Zendrop bestseller customized for the Klyora collection.</p>',
+    rating: 5.0,
+    reviews: 0,
+    lowStock: false
   },
   {
     id: 'k9',
@@ -148,7 +157,10 @@ export const MOCK_PRODUCTS: Product[] = [
     inventoryStatus: 'Limited Edition',
     shippingTier: 'Secured White Glove',
     images: ['https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>A dramatic, floor-length gown with hand-applied sequins and layered Italian tulle. Designed for the most exclusive galas.</p>'
+    descriptionHtml: '<p>A dramatic, floor-length gown with hand-applied sequins and layered Italian tulle. Designed for the most exclusive galas.</p>',
+    rating: 5.0,
+    reviews: 0,
+    lowStock: true
   },
   {
     id: 'z4',
@@ -164,7 +176,10 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: 'Europe Studio',
     shippingTier: 'Global Express (7 Days)',
     images: ['https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>Deep black velvet with a subtle sheen. A versatile piece for the Klyora night collection, sourced through the Zendrop network.</p>'
+    descriptionHtml: '<p>Deep black velvet with a subtle sheen. A versatile piece for the Klyora night collection, sourced through the Zendrop network.</p>',
+    rating: 5.0,
+    reviews: 0,
+    lowStock: false
   },
   {
     id: 'k3',
@@ -179,7 +194,10 @@ export const MOCK_PRODUCTS: Product[] = [
     composition: '98% Virgin Wool, 2% Elastane',
     origin: 'Tuscany, Italy',
     images: ['https://images.unsplash.com/photo-1594932224828-b4b057bfe4ee?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>High-waisted silhouette with sharp architectural pleats. Italian virgin wool blend.</p>'
+    descriptionHtml: '<p>High-waisted silhouette with sharp architectural pleats. Italian virgin wool blend.</p>',
+    rating: 5.0,
+    reviews: 0,
+    lowStock: false
   },
   {
     id: 'z5',
@@ -195,7 +213,10 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: 'Resort Atelier',
     shippingTier: 'Global Express (7 Days)',
     images: ['https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>Structured linen shorts with a refined waistline. Perfect for seasonal resort wear, sourced via Zendrop fulfillment.</p>'
+    descriptionHtml: '<p>Structured linen shorts with a refined waistline. Perfect for seasonal resort wear, sourced via Zendrop fulfillment.</p>',
+    rating: 5.0,
+    reviews: 0,
+    lowStock: false
   },
   {
     id: 'k11',
@@ -210,7 +231,10 @@ export const MOCK_PRODUCTS: Product[] = [
     composition: 'Recycled Poly-Satin',
     origin: 'Tokyo, Japan',
     images: ['https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>Architectural pleating that creates a dynamic silhouette. Shimmering fabric that catches the light with every step.</p>'
+    descriptionHtml: '<p>Architectural pleating that creates a dynamic silhouette. Shimmering fabric that catches the light with every step.</p>',
+    rating: 5.0,
+    reviews: 0,
+    lowStock: false
   },
   {
     id: 'k4',
@@ -225,7 +249,10 @@ export const MOCK_PRODUCTS: Product[] = [
     composition: 'Cotton Velvet / Silk Satin Trims',
     origin: 'Paris, France',
     images: ['https://images.unsplash.com/photo-1555069519-03ef8088825d?q=80&w=1000&auto=format&fit=crop'],
-    descriptionHtml: '<p>Deep midnight velvet with silk-satin lapels. Engineered for a perfect evening silhouette.</p>'
+    descriptionHtml: '<p>Deep midnight velvet with silk-satin lapels. Engineered for a perfect evening silhouette.</p>',
+    rating: 5.0,
+    reviews: 0,
+    lowStock: true
   },
   {
     id: 'k10',

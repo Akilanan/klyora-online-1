@@ -17,18 +17,11 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ productName }) =
     const fetchReviews = async () => {
       setIsLoading(true);
 
-      // Load local reviews
+      // Load local reviews ONLY
       const saved = localStorage.getItem(`klyora_reviews_${productName}`);
       const localReviews = saved ? JSON.parse(saved) : [];
 
-      // Combine with mock data if we haven't loaded it yet (or just always append for demo)
-      // For this demo, if we have local reviews, we prioritize them, but let's mix them for fullness
-      const mockData = await geminiService.generateMockReviews(productName);
-
-      // Merge unique by ID (simple approach) or just show local + mock
-      // Ideally we'd have a real backend. Here we just ensure we show user's content.
-      setReviews([...localReviews, ...mockData]);
-
+      setReviews(localReviews);
       setIsLoading(false);
     };
     fetchReviews();

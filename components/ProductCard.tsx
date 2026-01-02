@@ -110,29 +110,38 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                     <h3 className="text-[13px] uppercase font-bold tracking-[0.3em] text-white/90">{product.name}</h3>
                     <div className="flex items-center gap-2 mt-2 opacity-60">
                         {/* Dynamic Stars */}
+                        {/* Dynamic Stars */}
+                        {/* Dynamic Stars */}
                         <div className="flex text-[#8ca67a] text-[8px]">
                             {(() => {
-                                // Calculate dynamic rating
+                                // Explicit Stats from Data
+                                const baseRating = (product as any).rating || 5.0;
+                                const baseCount = (product as any).reviews || 0;
+
+                                // Local overrides
                                 const saved = localStorage.getItem(`klyora_reviews_${product.name}`);
                                 const localReviews = saved ? JSON.parse(saved) : [];
-                                const totalReviews = ((product as any).reviews || 12) + localReviews.length;
+                                const totalCount = baseCount + localReviews.length;
 
-                                // Mock average for base (mostly 5s in luxury) + local variance
-                                let sum = ((product as any).reviews || 12) * 5;
+                                // Recalculate average with local reviews
+                                let sum = baseCount * baseRating;
                                 localReviews.forEach((r: any) => sum += r.rating);
-                                const avg = sum / totalReviews;
+                                const finalRating = totalCount > 0 ? sum / totalCount : 0;
+                                const displayRating = Math.min(5, Math.max(0, finalRating));
 
                                 return (
                                     <>
-                                        {'★'.repeat(Math.round(avg))}
-                                        <span className="text-zinc-600 ml-1">{'★'.repeat(5 - Math.round(avg))}</span>
+                                        <div className="flex relative">
+                                            <span className="text-zinc-600">★★★★★</span>
+                                            <span className="absolute left-0 top-0 overflow-hidden text-[#8ca67a]" style={{ width: `${(displayRating / 5) * 100}%` }}>★★★★★</span>
+                                        </div>
                                     </>
                                 );
                             })()}
                         </div>
                         {/* Count */}
                         <span className="text-[8px] uppercase tracking-widest text-zinc-500">
-                            ({((product as any).reviews || 12) + (localStorage.getItem(`klyora_reviews_${product.name}`) ? JSON.parse(localStorage.getItem(`klyora_reviews_${product.name}`)!).length : 0)})
+                            ({((product as any).reviews || 0) + (localStorage.getItem(`klyora_reviews_${product.name}`) ? JSON.parse(localStorage.getItem(`klyora_reviews_${product.name}`)!).length : 0)})
                         </span>
                     </div>
                     <p className="text-[8px] text-zinc-600 uppercase tracking-widest mt-3 flex items-center justify-between">

@@ -18,6 +18,7 @@ import { WinterPromoModal } from './components/WinterPromoModal';
 import { InfoModal } from './components/InfoModal';
 import { ReturnRequestModal } from './components/ReturnRequestModal';
 import { OrderTrackingModal } from './components/OrderTrackingModal';
+import { OrderTrackingSimulation } from './components/OrderTrackingSimulation';
 import { ConciergeChat } from './components/ConciergeChat';
 import { VipAccessModal } from './components/VipAccessModal';
 import { NewsletterModal } from './components/NewsletterModal';
@@ -26,6 +27,7 @@ import { InstagramFeed } from './components/InstagramFeed';
 import { LEGAL_DOCS } from './components/LegalDocs';
 import { geminiService } from './services/geminiService';
 import { CookieConsent } from './components/CookieConsent';
+import { TestimonialsSection } from './components/TestimonialsSection';
 import { MOCK_PRODUCTS } from './constants';
 
 const BACKGROUND_IMAGES = [
@@ -35,76 +37,7 @@ const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=2070&auto=format&fit=crop'
 ];
 
-const OrderTrackingSimulation: React.FC = () => {
-  const [step, setStep] = useState(0); // 0: Input, 1: Loading, 2: Result
-  const [orderId, setOrderId] = useState('');
 
-  const handleTrack = () => {
-    if (!orderId) return;
-    setStep(1);
-    setTimeout(() => setStep(2), 1500);
-  };
-
-  if (step === 0) return (
-    <div className="text-center py-8 animate-fade-in">
-      <p className="mb-4 font-serif italic text-lg">Locate Your Parcel</p>
-      <input
-        type="text"
-        value={orderId}
-        onChange={(e) => setOrderId(e.target.value)}
-        placeholder="ORDER # (e.g. KLY-8821)"
-        className="bg-transparent border-b border-white/30 text-center w-full py-2 mb-6 outline-none uppercase tracking-widest focus:border-white transition-colors"
-      />
-      <button onClick={handleTrack} className="px-8 py-3 bg-white text-black text-[10px] uppercase font-bold tracking-widest hover:bg-zinc-200 transition-colors">
-        Track Status
-      </button>
-    </div>
-  );
-
-  if (step === 1) return (
-    <div className="text-center py-12 animate-fade-in">
-      <div className="inline-block w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin mb-4"></div>
-      <p className="text-[10px] uppercase tracking-widest opacity-70">Retrieving Logistics Data...</p>
-    </div>
-  );
-
-  return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex justify-between items-end border-b border-white/10 pb-4">
-        <div>
-          <span className="block text-[9px] uppercase tracking-widest opacity-50 mb-1">Order Reference</span>
-          <span className="font-mono text-lg">{orderId}</span>
-        </div>
-        <div className="text-right">
-          <span className="block text-[9px] uppercase tracking-widest opacity-50 mb-1">Estimated Arrival</span>
-          <span className="font-serif italic text-lg">Tomorrow</span>
-        </div>
-      </div>
-
-      <div className="relative py-4">
-        <div className="absolute left-2 top-4 bottom-4 w-px bg-white/20"></div>
-        <div className="space-y-6">
-          <div className="relative pl-8 opacity-50">
-            <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full border border-white bg-black"></div>
-            <p className="text-[10px] uppercase tracking-widest font-bold">Order Placed</p>
-            <p className="text-[9px] opacity-70">Dec 26, 10:42 AM</p>
-          </div>
-          <div className="relative pl-8 opacity-50">
-            <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full border border-white bg-black"></div>
-            <p className="text-[10px] uppercase tracking-widest font-bold">Dispatched from Paris</p>
-            <p className="text-[9px] opacity-70">Dec 27, 09:15 AM</p>
-          </div>
-          <div className="relative pl-8">
-            <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-[#8ca67a] shadow-[0_0_10px_rgba(140,166,122,0.5)]"></div>
-            <p className="text-[10px] uppercase tracking-widest font-bold text-[#8ca67a]">In Transit</p>
-            <p className="text-[9px] opacity-70">Arriving at Local Depot</p>
-          </div>
-        </div>
-      </div>
-      <button onClick={() => setStep(0)} className="w-full text-[9px] uppercase tracking-widest opacity-50 hover:opacity-100 mt-4">Check Another</button>
-    </div>
-  );
-};
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -249,7 +182,7 @@ const App: React.FC = () => {
     }).join(',');
 
     // Redirect to real Shopify Checkout
-    const baseUrl = import.meta.env.DEV ? 'https://klyora-2.myshopify.com' : '';
+    const baseUrl = import.meta.env.DEV ? (import.meta.env.VITE_SHOPIFY_SHOP_URL || 'https://klyora-2.myshopify.com') : '';
     window.location.href = `${baseUrl}/cart/${items}`;
   };
 
@@ -484,6 +417,7 @@ const App: React.FC = () => {
           </div>
         </section>
 
+        <TestimonialsSection />
         <InstagramFeed />
         <JournalSection />
       </main>
@@ -587,11 +521,55 @@ const App: React.FC = () => {
               break;
             case 'heritage':
               content = (
-                <div className="space-y-6 leading-relaxed">
-                  <h3 className="text-2xl font-serif italic mb-2">The Atelier</h3>
-                  <p className="text-zinc-300">Born from a desire to redefine modern silhouettes, <strong className="text-white">Maison Klyora</strong> exists at the convergence of architectural precision and organic fluidity.</p>
-                  <p className="text-zinc-300">Every garment is conceived in our Paris studio, where sketches are translated into reality by fifth-generation artisans. We believe in the quiet authority of luxury—where the inside of a garment is finished as impeccably as the outside.</p>
-                  <p className="italic text-white border-l border-white/20 pl-4 my-4">"True luxury is not just what you see, but how it makes you feel against your skin."</p>
+                <div className="space-y-12">
+                  <div className="relative h-64 w-full overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=2574&auto=format&fit=crop"
+                      alt="Klyora Atelier Paris"
+                      className="absolute inset-0 w-full h-full object-cover grayscale opacity-80 hover:opacity-100 transition-opacity duration-700"
+                    />
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <h3 className="text-4xl font-serif italic text-white tracking-widest">The Atelier</h3>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div className="space-y-6 leading-relaxed">
+                      <p className="text-zinc-300"><strong className="text-white">Maison Klyora</strong> was born from a singular obsession: the architecture of the silhouette.</p>
+                      <p className="text-zinc-300">Located in the historic 3rd arrondissement of Paris, our digital-first studio bridges the gap between old-world craftsmanship and modern fluidity. We do not mass produce; we curate. Every collection is a dialogue between the fabric's natural drape and the wearer's movement.</p>
+                    </div>
+                    <div className="border-l border-white/20 pl-8 space-y-6">
+                      <p className="font-serif italic text-xl text-white">"True luxury is found in the silence of a perfect fit."</p>
+                      <div className="pt-4">
+                        <p className="text-[10px] uppercase tracking-widest text-[#8ca67a] font-bold mb-1">Creative Director</p>
+                        <p className="font-handwriting text-2xl text-white/60 rotate-[-5deg]">Elianne K.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-8 border-t border-white/10">
+                    <h4 className="text-[10px] uppercase tracking-[0.4em] font-bold text-center mb-8">Our Commitments</h4>
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mx-auto mb-4 hover:bg-white/5 transition-colors">
+                          <svg className="w-5 h-5 text-[#8ca67a]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" /></svg>
+                        </div>
+                        <p className="text-[9px] uppercase tracking-widest">Global Sourcing</p>
+                      </div>
+                      <div>
+                        <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mx-auto mb-4 hover:bg-white/5 transition-colors">
+                          <svg className="w-5 h-5 text-[#8ca67a]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0" /></svg>
+                        </div>
+                        <p className="text-[9px] uppercase tracking-widest">Slow Fashion</p>
+                      </div>
+                      <div>
+                        <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mx-auto mb-4 hover:bg-white/5 transition-colors">
+                          <svg className="w-5 h-5 text-[#8ca67a]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0" /></svg>
+                        </div>
+                        <p className="text-[9px] uppercase tracking-widest">Quality Assured</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               );
               break;

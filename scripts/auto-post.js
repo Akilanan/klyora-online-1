@@ -1,4 +1,4 @@
-// scripts/auto-post.js
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import 'dotenv/config'; // Load .env file locally
 import fs from 'fs';
 import path from 'path';
@@ -13,6 +13,8 @@ const CONFIG = {
     // Support both standard and VITE_ prefixed variables for local dev compatibility
     IG_ACCESS_TOKEN: process.env.IG_ACCESS_TOKEN || process.env.VITE_IG_ACCESS_TOKEN,
     IG_USER_ID: process.env.IG_USER_ID || process.env.VITE_IG_USER_ID,
+    SHOPIFY_SHOP_URL: process.env.VITE_SHOPIFY_SHOP_URL || 'https://klyora-2.myshopify.com',
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY,
     get IS_LIVE_MODE() {
         return !!(this.IG_ACCESS_TOKEN && this.IG_USER_ID);
     }
@@ -76,9 +78,41 @@ class HistoryService {
     }
 }
 
-// --- Caption Generator (Human Style) ---
-class HumanCaptionGenerator {
+// --- Caption Generator (AI Powered with Fallback) ---
+class AICaptionGenerator {
+    constructor() {
+        this.genAI = CONFIG.GEMINI_API_KEY ? new GoogleGenerativeAI(CONFIG.GEMINI_API_KEY) : null;
+    }
+
     async generateCaption(productName) {
+        if (this.genAI) {
+            try {
+                const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const prompt = `Write a short, ultra-luxury, minimalist Instagram caption for a fashion product called "${productName}". 
+                Tone: Editorial, mysterious, high-fashion. 
+                Include 2-3 relevant emojis but keep it elegant. 
+                Do not use hashtags in the main text, put them at the end.
+                End with "Shop at: ${CONFIG.SHOPIFY_SHOP_URL}"`;
+
+                const result = await model.generateContent(prompt);
+                const text = result.response.text();
+
+                // Safety check to ensure it has the shop link
+                if (!text.includes("http")) {
+                    return `${text}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
+                }
+                return text;
+            } catch (error) {
+                console.warn("⚠️ AI Generation Failed (using fallback):", error.message);
+            }
+        } else {
+            console.warn("⚠️ No API Key found (using fallback).");
+        }
+
+        return this.generateFallbackCaption(productName);
+    }
+
+    generateFallbackCaption(productName) {
         // EXPANDED DICTIONARY (3,000+ Combinations)
         const openers = [
             "Effortless.", "Just landed.", "The moment.", "Pure elegance.", "Obsessed with this.",
@@ -107,7 +141,6 @@ class HumanCaptionGenerator {
         const emojis = ["✨", "🖤", "🕯️", "🧥", "🌑", "🎞️", "🥃", "🗝️", "🦢"];
         const hashtags = "#MaisonKlyora #QuietLuxury #Klyora #MinimalistStyle #OOTD";
 
-        // Randomly pick one from each category
         const open = openers[Math.floor(Math.random() * openers.length)];
         const mid = middles[Math.floor(Math.random() * middles.length)];
         const close = closers[Math.floor(Math.random() * closers.length)];
@@ -116,19 +149,16 @@ class HumanCaptionGenerator {
         const template = Math.floor(Math.random() * 3);
 
         if (template === 0) {
-            // Super minimalist
-            return `${mid} ${emoji}\n\n${hashtags}\n\nShop at: https://klyora-2.myshopify.com`;
+            return `${mid} ${emoji}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
         } else if (template === 1) {
-            // Standard
-            return `${open} ${mid} ${emoji}\n${close}\n\n${hashtags}\n\nShop at: https://klyora-2.myshopify.com`;
+            return `${open} ${mid} ${emoji}\n${close}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
         } else {
-            // Editorial
-            return `${open}\n${mid}\n${close}\n\n${hashtags}\n\nShop at: https://klyora-2.myshopify.com`;
+            return `${open}\n${mid}\n${close}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
         }
     }
 }
 
-const gemini = new HumanCaptionGenerator();
+const gemini = new AICaptionGenerator();
 
 // --- Social Media Service ---
 class SocialMediaService {
@@ -208,7 +238,7 @@ async function runAutoPoster() {
     // 1. Fetch Products
     let products = [];
     try {
-        const response = await fetch('https://klyora-2.myshopify.com/products.json');
+        const response = await fetch(`${CONFIG.SHOPIFY_SHOP_URL}/products.json`);
         const data = await response.json();
         products = data.products || [];
     } catch (e) {
