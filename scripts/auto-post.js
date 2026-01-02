@@ -88,15 +88,16 @@ class AICaptionGenerator {
         if (this.genAI) {
             try {
                 const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                const prompt = `Write a very short, ultra-luxury, "Old Money" aesthetic Instagram caption for a fashion item called "${productName}".
+                const prompt = `Write a very short, ultra-luxury, "Quiet Luxury" aesthetic Instagram caption for a fashion item called "${productName}".
                 
                 Guidelines:
                 - Tone: Haughty, understated, exclusive, "if you know, you know".
-                - Keywords to invoke: Heritage, Estate, Legacy, Silence, Private.
+                - Keywords to invoke: Heritage, Estate, Legacy, Silence, Private, Atelier, 1990s.
                 - Length: Extremely concise (under 10 words).
                 - Formatting: Lowercase or Sentence case. No shouting.
-                - Emojis: Use strictly 1 or 2 monochrome/neutral emojis (e.g., 🦢, 🕯️, 🕰️, 🎞️).
-                - NO hashtaging in the sentence.
+                - Emojis: Use strictly 1 or 2 monochrome/neutral emojis (e.g., 🦢, 🕯️, 🕰️, 🎞️, 🥃).
+                - NO hashtags in the sentence.
+                - FORBIDDEN WORDS: Do NOT use the words "Old Money", "Wealth", or "Rich".
                 - End strictly with: "Shop at: ${CONFIG.SHOPIFY_SHOP_URL}"
                 `;
 
@@ -118,7 +119,7 @@ class AICaptionGenerator {
     }
 
     generateFallbackCaption(productName) {
-        // OLD MONEY DICTIONARY
+        // HERITAGE DICTIONARY (No "Old Money")
         const openers = [
             "The estate edit.", "Quiet Sundays.", "Inherited style.", "Private collection.",
             "Members only.", "For the club.", "Leisure class.", "Timeless silence.",
@@ -128,7 +129,7 @@ class AICaptionGenerator {
 
         const middles = [
             `${productName}.`, `Detailed: ${productName}.`, `Notes on the ${productName}.`,
-            `Wearing the ${productName}.`, `The texture of wealth.`, `Understated ${productName}.`,
+            `Wearing the ${productName}.`, `The texture of silence.`, `Understated ${productName}.`,
             `Simply the ${productName}.`, `Essential ${productName}.`
         ];
 
@@ -140,8 +141,8 @@ class AICaptionGenerator {
         // Monochrome & Classy Emojis
         const emojis = ["🦢", "🕰️", "🕯️", "♟️", "🎞️", "🥃", "🗝️", "🎻", "🌲", "🐎"];
 
-        // Niche Hashtags
-        const hashtags = "#OldMoney #QuietLuxury #LoroPianaInspired #HeritageStyle #MaisonKlyora #PrivateClient";
+        // Niche Hashtags (REMOVED #OldMoney)
+        const hashtags = "#QuietLuxury #LoroPianaInspired #HeritageStyle #MaisonKlyora #PrivateClient #Timeless #Atelier";
 
         const open = openers[Math.floor(Math.random() * openers.length)];
         const mid = middles[Math.floor(Math.random() * middles.length)];
