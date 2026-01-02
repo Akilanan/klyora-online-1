@@ -119,8 +119,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                                 const baseCount = (product as any).reviews || 0;
 
                                 // Local overrides
-                                const saved = localStorage.getItem(`klyora_reviews_${product.name}`);
-                                const localReviews = saved ? JSON.parse(saved) : [];
+                                let localReviews = [];
+                                try {
+                                    const saved = localStorage.getItem(`klyora_reviews_${product.name}`);
+                                    localReviews = saved ? JSON.parse(saved) : [];
+                                    if (!Array.isArray(localReviews)) localReviews = [];
+                                } catch (e) {
+                                    console.warn('Failed to parse local reviews', e);
+                                    localReviews = [];
+                                }
                                 const totalCount = baseCount + localReviews.length;
 
                                 // Recalculate average with local reviews

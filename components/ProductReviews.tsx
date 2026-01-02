@@ -18,8 +18,15 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ productName }) =
       setIsLoading(true);
 
       // Load local reviews ONLY
-      const saved = localStorage.getItem(`klyora_reviews_${productName}`);
-      const localReviews = saved ? JSON.parse(saved) : [];
+      let localReviews = [];
+      try {
+        const saved = localStorage.getItem(`klyora_reviews_${productName}`);
+        localReviews = saved ? JSON.parse(saved) : [];
+        if (!Array.isArray(localReviews)) localReviews = [];
+      } catch (e) {
+        console.warn("Corrupt review data", e);
+        localReviews = [];
+      }
 
       setReviews(localReviews);
       setIsLoading(false);
