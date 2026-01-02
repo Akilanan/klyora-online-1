@@ -97,6 +97,11 @@ const App: React.FC = () => {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState<string>('relevance');
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(12);
+
+  useEffect(() => {
+    setVisibleCount(12); // Reset when filters/category change
+  }, [activeCategory, searchQuery, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy]);
 
   useEffect(() => {
     // @ts-ignore
@@ -437,7 +442,7 @@ const App: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40">
-            {filteredProducts.map((product) => (
+            {filteredProducts.slice(0, visibleCount).map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
@@ -448,6 +453,20 @@ const App: React.FC = () => {
               />
             ))}
           </div>
+
+          {visibleCount < filteredProducts.length && (
+            <div className="mt-32 text-center animate-fade-in">
+              <button
+                onClick={() => setVisibleCount(prev => prev + 12)}
+                className="group relative px-12 py-4 border border-white/20 hover:bg-white hover:text-black transition-all duration-500"
+              >
+                <span className="text-[9px] uppercase tracking-[0.4em] font-bold">View More Collection</span>
+                <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[8px] text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  {filteredProducts.length - visibleCount} items remaining
+                </span>
+              </button>
+            </div>
+          )}
         </section>
 
         <TestimonialsSection />

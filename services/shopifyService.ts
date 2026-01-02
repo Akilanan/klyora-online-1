@@ -11,15 +11,26 @@ export class ShopifyService {
    */
   async fetchLiveCatalog(): Promise<Product[]> {
     try {
-      // Fetch from the public Shopify products.json endpoint
-      const response = await fetch(`https://${this.shopDomain}/products.json`);
-      if (!response.ok) throw new Error('Failed to fetch from Shopify');
+      let allProducts: any[] = [];
+      let page = 1;
+      let hasMore = true;
 
-      const data = await response.json();
+      // Safety limit: Fetch up to 5 pages (approx 150-250 products) to prevent infinite loops
+      while (hasMore && page <= 5) {
+        const response = await fetch(`https://${this.shopDomain}/products.json?limit=50&page=${page}`);
+        if (!response.ok) break;
 
-      if (data.products && Array.isArray(data.products)) {
-        // Map Shopify JSON to our internal Product interface
-        return this.mapShopifyProducts(data.products);
+        const data = await response.json();
+        if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+          allProducts = [...allProducts, ...data.products];
+          page++;
+        } else {
+          hasMore = false;
+        }
+      }
+
+      if (allProducts.length > 0) {
+        return this.mapShopifyProducts(allProducts);
       }
 
       console.warn("Klyora: No products found in Shopify response.");
