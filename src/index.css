@@ -1,0 +1,5 @@
+/* Base styles for Maison Klyora */
+/* Note: Main styling uses Tailwind CDN in theme.liquid */
+body {
+    margin: 0;
+}
