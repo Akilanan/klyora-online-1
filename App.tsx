@@ -43,6 +43,10 @@ const BACKGROUND_IMAGES = [
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [collections, setCollections] = useState<{ id: string, title: string, handle: string }[]>([]);
+  const [aiCategories, setAiCategories] = useState<Record<string, string[]> | null>(null);
+  const [activeAiCategory, setActiveAiCategory] = useState<string | null>(null);
+  const [productsPerPage] = useState(12);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isStoreSynced, setIsStoreSynced] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -100,8 +104,31 @@ const App: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState(12);
 
   useEffect(() => {
-    setVisibleCount(12); // Reset when filters/category change
-  }, [activeCategory, searchQuery, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy]);
+    setCurrentPage(1); // Reset page when filters change
+  }, [activeCategory, activeAiCategory, searchQuery, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy]);
+
+  // AI Categorization Effect
+  useEffect(() => {
+    if (products.length > 0 && !aiCategories && !isSyncing) {
+      const runAiSort = async () => {
+        // Check local storage first to save API calls
+        const cached = localStorage.getItem('klyora_ai_cats');
+        if (cached) {
+          setAiCategories(JSON.parse(cached));
+          return;
+        }
+
+        console.log("Running AI Categorization...");
+        const cats = await geminiService.categorizeProducts(products);
+        if (Object.keys(cats).length > 0) {
+          setAiCategories(cats);
+          localStorage.setItem('klyora_ai_cats', JSON.stringify(cats));
+        }
+      };
+      // Small delay to let UI settle
+      setTimeout(runAiSort, 2000);
+    }
+  }, [products, isSyncing]);
 
   useEffect(() => {
     // @ts-ignore
@@ -220,8 +247,11 @@ const App: React.FC = () => {
       // Text Search
       if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
 
-      // Category Filter - handled by server fetch now, but keep purely for display safeguards if needed
-      // if (activeCategory && p.category !== activeCategory) return false;
+      // Category Filter (Standard or AI)
+      if (activeCategory && p.category !== activeCategory) return false;
+      if (activeAiCategory && aiCategories) {
+        if (!aiCategories[activeAiCategory]?.includes(p.id)) return false;
+      }
 
       // Price Filter
       if (priceRange) {
@@ -407,23 +437,30 @@ const App: React.FC = () => {
 
         {/* Boutique Grid */}
         <section id="collection-grid" className="max-w-[1600px] mx-auto px-10 py-48">
-          <div className="mb-32 flex flex-col md:flex-row items-baseline justify-between border-b border-white/5 pb-16 gap-10">
-            <div>
-              <h2 className="text-3xl uppercase tracking-[0.6em] font-bold text-white font-serif italic">Explore Our Premium Clothing Collection</h2>
-              <p className="text-[9px] text-zinc-600 uppercase tracking-widest mt-6">Hand-selected for the Klyora silhouette</p>
-            </div>
-            <div className="flex items-center gap-14 overflow-x-auto pb-4 md:pb-0">
+          <div className="flex items-center gap-14 overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
               <button
-                onClick={async () => {
+                onClick={() => {
                   setActiveCategory(null);
-                  const allProducts = await shopifyService.fetchLiveCatalog();
-                  setProducts(allProducts);
+                  setActiveAiCategory(null);
                 }}
-                className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeCategory === null ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+                className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${!activeCategory && !activeAiCategory ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
               >
                 All
               </button>
-              {collections.map(col => (
+              
+              {/* AI Categories (Priority) */}
+              {aiCategories && Object.keys(aiCategories).map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => { setActiveAiCategory(cat); setActiveCategory(null); }}
+                  className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeAiCategory === cat ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+                >
+                  {cat}
+                </button>
+              ))}
+
+              {/* Standard Collections (Fallback if AI fails or user wants specific sync) */}
+              {(!aiCategories) && collections.map(col => (
                 <button
                   key={col.id}
                   onClick={async () => {
@@ -441,8 +478,8 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40">
-            {filteredProducts.slice(0, visibleCount).map((product) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40 min-h-[500px]">
+            {filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
@@ -454,16 +491,35 @@ const App: React.FC = () => {
             ))}
           </div>
 
-          {visibleCount < filteredProducts.length && (
-            <div className="mt-32 text-center animate-fade-in">
+          {/* Pagination Controls */}
+          {filteredProducts.length > productsPerPage && (
+            <div className="mt-32 flex justify-center items-center gap-4 animate-fade-in">
               <button
-                onClick={() => setVisibleCount(prev => prev + 12)}
-                className="group relative px-12 py-4 border border-white/20 hover:bg-white hover:text-black transition-all duration-500"
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-6 py-3 border border-white/10 text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-white hover:text-black transition-all"
               >
-                <span className="text-[9px] uppercase tracking-[0.4em] font-bold">View More Collection</span>
-                <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[8px] text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                  {filteredProducts.length - visibleCount} items remaining
-                </span>
+                Previous
+              </button>
+              
+              <div className="flex gap-2">
+                {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`w-8 h-8 flex items-center justify-center text-[10px] border transition-all ${currentPage === i + 1 ? 'bg-white text-black border-white' : 'border-white/10 hover:border-white'}`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredProducts.length / productsPerPage), p + 1))}
+                disabled={currentPage === Math.ceil(filteredProducts.length / productsPerPage)}
+                className="px-6 py-3 border border-white/10 text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-white hover:text-black transition-all"
+              >
+                Next
               </button>
             </div>
           )}
@@ -786,57 +842,67 @@ const App: React.FC = () => {
         onSortChange={setSortBy}
       />
 
-      {isCartOpen && (
-        <CartDrawer
-          items={cart}
-          onClose={() => setIsCartOpen(false)}
-          onRemove={(id, vId) => setCart(prev => prev.filter(i => !(i.id === id && i.selectedVariant.id === vId)))}
-          onCheckout={handleCheckout}
-          currency={currency}
-        />
-      )}
+      {
+    isCartOpen && (
+      <CartDrawer
+        items={cart}
+        onClose={() => setIsCartOpen(false)}
+        onRemove={(id, vId) => setCart(prev => prev.filter(i => !(i.id === id && i.selectedVariant.id === vId)))}
+        onCheckout={handleCheckout}
+        currency={currency}
+      />
+    )
+  }
 
-      {isWishlistOpen && (
-        <WishlistDrawer
-          items={wishlistItems}
-          onClose={() => setIsWishlistOpen(false)}
-          onRemove={(id) => handleToggleWishlist(id)}
-          onMoveToBag={(product) => { setIsWishlistOpen(false); setSelectedQuickView(product); }}
-          currency={currency}
-        />
-      )}
+  {
+    isWishlistOpen && (
+      <WishlistDrawer
+        items={wishlistItems}
+        onClose={() => setIsWishlistOpen(false)}
+        onRemove={(id) => handleToggleWishlist(id)}
+        onMoveToBag={(product) => { setIsWishlistOpen(false); setSelectedQuickView(product); }}
+        currency={currency}
+      />
+    )
+  }
 
-      {isArchiveOpen && (
-        <ArchiveDrawer
-          products={products}
-          onClose={() => setIsArchiveOpen(false)}
-          onSelectProduct={(product) => { setIsArchiveOpen(false); setSelectedQuickView(product); }}
-          currency={currency}
-        />
-      )}
+  {
+    isArchiveOpen && (
+      <ArchiveDrawer
+        products={products}
+        onClose={() => setIsArchiveOpen(false)}
+        onSelectProduct={(product) => { setIsArchiveOpen(false); setSelectedQuickView(product); }}
+        currency={currency}
+      />
+    )
+  }
 
-      {selectedQuickView && (
-        <QuickViewModal
-          product={selectedQuickView}
-          allProducts={products}
-          onClose={() => setSelectedQuickView(null)}
-          onAddToCart={handleAddToCart}
-          currency={currency}
-          isSaved={wishlist.includes(selectedQuickView.id)}
-          onToggleSave={() => handleToggleWishlist(selectedQuickView.id)}
-        />
-      )}
+  {
+    selectedQuickView && (
+      <QuickViewModal
+        product={selectedQuickView}
+        allProducts={products}
+        onClose={() => setSelectedQuickView(null)}
+        onAddToCart={handleAddToCart}
+        currency={currency}
+        isSaved={wishlist.includes(selectedQuickView.id)}
+        onToggleSave={() => handleToggleWishlist(selectedQuickView.id)}
+      />
+    )
+  }
 
-      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+  <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
 
-      {infoModal && (
-        <InfoModal
-          isOpen={infoModal.isOpen}
-          onClose={() => setInfoModal(null)}
-          title={infoModal.title}
-          content={infoModal.content}
-        />
-      )}
+  {
+    infoModal && (
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal(null)}
+        title={infoModal.title}
+        content={infoModal.content}
+      />
+    )
+  }
 
       <BackToTop />
       <WinterPromoModal />
@@ -848,8 +914,8 @@ const App: React.FC = () => {
       }} />
       <ConciergeChat />
       <NewsletterModal />
-      {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
-    </div>
+  { notification && <Notification message={notification.message} onClose={() => setNotification(null)} /> }
+    </div >
   );
 };
 

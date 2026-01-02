@@ -223,6 +223,43 @@ export class GeminiService {
   async generateEditorialCaption(productName: string): Promise<string> {
     return `An exploration of silhouette and textile. ${productName} by Maison Klyora.`;
   }
+  async categorizeProducts(products: { id: string; title: string }[]): Promise<Record<string, string[]>> {
+    const apiKey = this._getApiKey();
+    if (!apiKey) return {};
+
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        generationConfig: { responseMimeType: "application/json" }
+      });
+
+      // Batch process to avoid token limits (max 50 at a time if needed, but 200 titles fit in context)
+      const simplifiedList = products.map(p => ({ id: p.id, title: p.title }));
+
+      const prompt = `
+        You are a luxury fashion curator. Categorize these products into 5 distinct "Old Money" aesthetic collections.
+        Collections:
+        1. "The Estate" (Outerwear, heavy knits, country style)
+        2. "Evening" (Dresses, formal wear, silk)
+        3. "Leisure" (Casual, lounge, cotton)
+        4. "Atelier" (Tailored, office, structure)
+        5. "Essentials" (Basics, accessories, other)
+
+        Return strictly a JSON object where keys are the Collection Names (exact) and values are Arrays of Product IDs.
+        Example: { "The Estate": ["id1", "id2"], "Evening": ["id3"] }
+
+        Products: ${JSON.stringify(simplifiedList)}
+      `;
+
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
+      return JSON.parse(text);
+    } catch (error) {
+      console.warn("AI Categorization failed:", error);
+      return {};
+    }
+  }
 }
 
 export const geminiService = new GeminiService();
