@@ -11,18 +11,142 @@ export class ShopifyService {
    */
   async fetchLiveCatalog(): Promise<Product[]> {
     try {
-      // @ts-ignore
-      const config = window.KlyoraConfig;
+      // Fetch from the public Shopify products.json endpoint
+      const response = await fetch(`https://${this.shopDomain}/products.json`);
+      if (!response.ok) throw new Error('Failed to fetch from Shopify');
 
-      if (config && config.products) {
-        return config.products;
+      const data = await response.json();
+
+      if (data.products && Array.isArray(data.products)) {
+        // Map Shopify JSON to our internal Product interface
+        return this.mapShopifyProducts(data.products);
       }
 
-      console.warn("Klyora Atelier: Using internal collection archive (Local Env).");
+      console.warn("Klyora: No products found in Shopify response.");
       return MOCK_PRODUCTS;
     } catch (e) {
+      console.warn("Klyora: Failed to fetch live catalog, falling back to mock.", e);
       return MOCK_PRODUCTS;
     }
+  }
+
+  /**
+   * Fetches all public collections from the store.
+   */
+  async fetchCollections(): Promise<{ id: string, title: string, handle: string }[]> {
+    try {
+      const response = await fetch(`https://${this.shopDomain}/collections.json`);
+      if (!response.ok) throw new Error('Failed to fetch collections');
+      const data = await response.json();
+      return data.collections || [];
+    } catch (e) {
+      console.warn("Klyora: Failed to fetch collections", e);
+      return [];
+    }
+  }
+
+  /**
+   * Fetches products for a specific collection.
+   */
+  async fetchProductsByCollection(handle: string): Promise<Product[]> {
+    try {
+      const response = await fetch(`https://${this.shopDomain}/collections/${handle}/products.json`);
+      if (!response.ok) throw new Error(`Failed to fetch products for collection ${handle}`);
+
+      const data = await response.json();
+      if (data.products && Array.isArray(data.products)) {
+        return this.mapShopifyProducts(data.products);
+      }
+      return [];
+    } catch (e) {
+      console.warn(`Klyora: Failed to fetch products for collection ${handle}`, e);
+      return [];
+    }
+  }
+
+  private mapShopifyProducts(shopifyProducts: any[]): Product[] {
+    return shopifyProducts.map((sp: any) => {
+      const rawDescription = sp.body_html ? sp.body_html.replace(/<[^>]*>?/gm, '\n') : '';
+      const { description, composition, features } = this.cleanDescription(rawDescription);
+
+      return {
+        id: sp.id.toString(),
+        shopifyId: `gid://shopify/Product/${sp.id}`,
+        handle: sp.handle,
+        name: sp.title,
+        // PRICE CORRECTION LOGIC REMOVED
+        // Store is now native INR. We trust the API to return correct values.
+        let rawPrice = sp.variants && sp.variants.length > 0 ? parseFloat(sp.variants[0].price) : 0;
+
+        // If price is 0, it might be a draft or error, but we don't auto-multiply anymore.
+
+        return {
+          id: sp.id.toString(),
+          shopifyId: `gid://shopify/Product/${sp.id}`,
+          handle: sp.handle,
+          name: sp.title,
+          price: rawPrice, // Use corrected price
+          description: description,
+          category: sp.product_type || 'Uncategorized',
+          image: sp.images && sp.images.length > 0 ? sp.images[0].src : '',
+          relatedIds: [],
+          composition: composition,
+          origin: 'Imported',
+          shippingTier: 'Standard',
+          images: sp.images ? sp.images.map((img: any) => img.src) : [],
+          descriptionHtml: sp.body_html || '', // Keep original HTML for specific UI areas if needed, or clean it too
+          rating: 0,
+          reviews: 0,
+          lowStock: false,
+          variants: sp.variants ? sp.variants.map((v: any) => ({
+            id: `gid://shopify/ProductVariant/${v.id}`,
+            title: v.title,
+            price: parseFloat(v.price), // Native INR
+            available: v.available
+          })) : []
+        };
+      });
+  }
+
+  /**
+   * Cleans raw supplier descriptions to match the "Old Money" aesthetic.
+   * Removes technical jargon, mass-market terms, and formatting noise.
+   */
+  private cleanDescription(raw: string): { description: string, composition: string, features: string[] } {
+    const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    const cleanLines: string[] = [];
+    let composition = "Premium Blend"; // Default luxury fallback
+
+    // keywords to strip out
+    const junkPatterns = [
+      /^fabric name/i, /^main fabric/i, /^supply category/i,
+      /^style/i, /^pattern/i, /^source/i, /^inventory/i,
+      /^weight/i, /^size/i, /^color/i, /^skirt length/i,
+      /polyester/i, /spandex/i, /nylon/i // Hide synthetic words for "Quiet Luxury" illusion
+    ];
+
+    for (const line of lines) {
+      // Check if line contains "polyester" or other synthetics to update composition silently
+      if (/polyester/i.test(line) || /fiber/i.test(line)) {
+        // Don't add to description, but maybe update internal composition tracking?
+        // We'll just skip adding it to the visible text.
+        continue;
+      }
+
+      if (junkPatterns.some(p => p.test(line))) {
+        continue;
+      }
+
+      cleanLines.push(line);
+    }
+
+    // specific replacements for better tone
+    let description = cleanLines.join(' ').trim();
+    if (description.length < 10) {
+      description = "An essential addition to the modern wardrobe, featuring a timeless silhouette and refined detailing.";
+    }
+
+    return { description, composition, features: [] };
   }
 
   /**

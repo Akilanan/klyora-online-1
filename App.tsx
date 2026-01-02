@@ -10,6 +10,7 @@ import { StylistChat } from './components/StylistChat';
 import { SearchOverlay } from './components/SearchOverlay';
 import { shopifyService } from './services/shopifyService';
 import { ProductCard } from './components/ProductCard';
+import { ShopTheLook } from './components/ShopTheLook';
 import { LoginModal } from './components/LoginModal';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { ArchiveDrawer } from './components/ArchiveDrawer';
@@ -41,6 +42,7 @@ const BACKGROUND_IMAGES = [
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [collections, setCollections] = useState<{ id: string, title: string, handle: string }[]>([]);
   const [isStoreSynced, setIsStoreSynced] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -142,14 +144,21 @@ const App: React.FC = () => {
 
   const syncStore = async () => {
     setIsSyncing(true);
-    const storeProducts = await shopifyService.fetchLiveCatalog();
+    const [storeProducts, storeCollections] = await Promise.all([
+      shopifyService.fetchLiveCatalog(),
+      shopifyService.fetchCollections()
+    ]);
 
     // Fallback to Luxury Mock Data if store is empty (New Store Scenario)
+    // Real Mode: Strict Shopify Sync
     if (storeProducts && storeProducts.length > 0) {
       setProducts(storeProducts);
     } else {
-      console.log("Using Klyora Luxury Mock Data");
-      setProducts(MOCK_PRODUCTS);
+      console.log("Klyora: Real Mode Active - No Mock Data loaded.");
+    }
+
+    if (storeCollections) {
+      setCollections(storeCollections.filter(c => c.products_count > 0));
     }
 
     setIsStoreSynced(true);
@@ -206,8 +215,8 @@ const App: React.FC = () => {
       // Text Search
       if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
 
-      // Category Filter
-      if (activeCategory && p.category !== activeCategory) return false;
+      // Category Filter - handled by server fetch now, but keep purely for display safeguards if needed
+      // if (activeCategory && p.category !== activeCategory) return false;
 
       // Price Filter
       if (priceRange) {
@@ -383,6 +392,12 @@ const App: React.FC = () => {
           </div>
         </section>
 
+        {/* Shop The Look Editorial */}
+        <ShopTheLook
+          products={products}
+          onProductClick={(p) => setSelectedQuickView(p)}
+        />
+
         {/* Boutique Grid */}
         <section id="collection-grid" className="max-w-[1600px] mx-auto px-10 py-48">
           <div className="mb-32 flex flex-col md:flex-row items-baseline justify-between border-b border-white/5 pb-16 gap-10">
@@ -390,14 +405,30 @@ const App: React.FC = () => {
               <h2 className="text-3xl uppercase tracking-[0.6em] font-bold text-white font-serif italic">Explore Our Premium Clothing Collection</h2>
               <p className="text-[9px] text-zinc-600 uppercase tracking-widest mt-6">Hand-selected for the Klyora silhouette</p>
             </div>
-            <div className="flex items-center gap-14">
-              {['Women', 'Men', 'Atelier Exclusive'].map(cat => (
+            <div className="flex items-center gap-14 overflow-x-auto pb-4 md:pb-0">
+              <button
+                onClick={async () => {
+                  setActiveCategory(null);
+                  const allProducts = await shopifyService.fetchLiveCatalog();
+                  setProducts(allProducts);
+                }}
+                className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeCategory === null ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+              >
+                All
+              </button>
+              {collections.map(col => (
                 <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat.includes('Exclusive') ? 'Exclusive' : cat)}
-                  className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all ${activeCategory === (cat.includes('Exclusive') ? 'Exclusive' : cat) ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+                  key={col.id}
+                  onClick={async () => {
+                    setActiveCategory(col.title);
+                    setIsSyncing(true);
+                    const colProducts = await shopifyService.fetchProductsByCollection(col.handle);
+                    setProducts(colProducts);
+                    setIsSyncing(false);
+                  }}
+                  className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeCategory === col.title ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
                 >
-                  {cat}
+                  {col.title}
                 </button>
               ))}
             </div>

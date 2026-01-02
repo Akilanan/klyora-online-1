@@ -88,16 +88,21 @@ class AICaptionGenerator {
         if (this.genAI) {
             try {
                 const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                const prompt = `Write a short, ultra-luxury, minimalist Instagram caption for a fashion product called "${productName}". 
-                Tone: Editorial, mysterious, high-fashion. 
-                Include 2-3 relevant emojis but keep it elegant. 
-                Do not use hashtags in the main text, put them at the end.
-                End with "Shop at: ${CONFIG.SHOPIFY_SHOP_URL}"`;
+                const prompt = `Write a very short, ultra-luxury, "Old Money" aesthetic Instagram caption for a fashion item called "${productName}".
+                
+                Guidelines:
+                - Tone: Haughty, understated, exclusive, "if you know, you know".
+                - Keywords to invoke: Heritage, Estate, Legacy, Silence, Private.
+                - Length: Extremely concise (under 10 words).
+                - Formatting: Lowercase or Sentence case. No shouting.
+                - Emojis: Use strictly 1 or 2 monochrome/neutral emojis (e.g., 🦢, 🕯️, 🕰️, 🎞️).
+                - NO hashtaging in the sentence.
+                - End strictly with: "Shop at: ${CONFIG.SHOPIFY_SHOP_URL}"
+                `;
 
                 const result = await model.generateContent(prompt);
                 const text = result.response.text();
 
-                // Safety check to ensure it has the shop link
                 if (!text.includes("http")) {
                     return `${text}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
                 }
@@ -113,47 +118,45 @@ class AICaptionGenerator {
     }
 
     generateFallbackCaption(productName) {
-        // EXPANDED DICTIONARY (3,000+ Combinations)
+        // OLD MONEY DICTIONARY
         const openers = [
-            "Effortless.", "Just landed.", "The moment.", "Pure elegance.", "Obsessed with this.",
-            "Textures.", "Current mood.", "Timeless.", "In focus.", "Daily driver.",
-            "Visual noise.", "Quiet confidence.", "Art form.", "The upgrade.", "Next level.",
-            "Soft touch.", "Structured.", "Flow state.", "Iconic.", "Rare find.",
-            "Modern classic.", "Essential.", "Refined.", "Polished.", "Mood."
+            "The estate edit.", "Quiet Sundays.", "Inherited style.", "Private collection.",
+            "Members only.", "For the club.", "Leisure class.", "Timeless silence.",
+            "Heritage piece.", "Modern nobility.", "The unspoken code.", "Subtle power.",
+            "Alpine weekends.", "Riviera standard.", "Legacy in form."
         ];
 
         const middles = [
-            `The ${productName}.`, `This silhouette. 🖤`, `Details matter.`, `Your new favorite.`,
-            `For the evening.`, `Winter essential.`, `Meet the ${productName}.`, `Simplicity is key.`,
-            `Cannot get enough of the ${productName}.`, `The ${productName} requires no introduction.`,
-            `Wearing the ${productName} on repeat.`, `A masterclass in style.`, `Designed to last.`,
-            `The perfect cut.`, `Feels as good as it looks.`, `Elevated everyday.`,
-            `Made for you.`, `The ${productName} speaks for itself.`
+            `${productName}.`, `Detailed: ${productName}.`, `Notes on the ${productName}.`,
+            `Wearing the ${productName}.`, `The texture of wealth.`, `Understated ${productName}.`,
+            `Simply the ${productName}.`, `Essential ${productName}.`
         ];
 
         const closers = [
-            "Link in bio.", "Shop the edit.", "Available now.", "Yours forever.",
-            "Discover more online.", "Limited availability.", "Tap to view.", "Secure yours.",
-            "Klyora.com", "Online now.", "Don't miss out.", "New season.",
-            "Shipping worldwide.", "See the details."
+            "Acquire now.", "View the archive.", "Limited release.", "For the few.",
+            "Maison Klyora.", "Exclusively online.", "Personal shopper link in bio."
         ];
 
-        const emojis = ["✨", "🖤", "🕯️", "🧥", "🌑", "🎞️", "🥃", "🗝️", "🦢"];
-        const hashtags = "#MaisonKlyora #QuietLuxury #Klyora #MinimalistStyle #OOTD";
+        // Monochrome & Classy Emojis
+        const emojis = ["🦢", "🕰️", "🕯️", "♟️", "🎞️", "🥃", "🗝️", "🎻", "🌲", "🐎"];
+
+        // Niche Hashtags
+        const hashtags = "#OldMoney #QuietLuxury #LoroPianaInspired #HeritageStyle #MaisonKlyora #PrivateClient";
 
         const open = openers[Math.floor(Math.random() * openers.length)];
         const mid = middles[Math.floor(Math.random() * middles.length)];
         const close = closers[Math.floor(Math.random() * closers.length)];
         const emoji = emojis[Math.floor(Math.random() * emojis.length)];
 
+        // Minimalist structures
         const template = Math.floor(Math.random() * 3);
 
         if (template === 0) {
-            return `${mid} ${emoji}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
+            return `${open} ${mid}\n\n${emoji}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
         } else if (template === 1) {
-            return `${open} ${mid} ${emoji}\n${close}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
+            return `${mid} ${emoji}\n${close}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
         } else {
-            return `${open}\n${mid}\n${close}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
+            return `${open}\n${mid}\n\n${emoji}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
         }
     }
 }

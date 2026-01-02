@@ -339,10 +339,11 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                     <input type="radio" name="bundle" checked={dealType === 'single'} onChange={() => setDealType('single')} className="accent-black" />
                     <span className="text-xs uppercase tracking-wide">Standard Shipping</span>
                   </div>
-                  <span className="text-xs font-bold">{currency}{product.price}</span>
+                  <span className="text-xs font-bold">Free</span>
                 </label>
 
-                {/* Option 2: The Winner (Bundle) */}
+                  // Option 2: The Winner (Bundle)
+                // Fixed VIP Price: 499
                 <label onClick={() => setDealType('bundle')} className={`flex items-center justify-between p-4 border cursor-pointer transition-all ${dealType === 'bundle' ? 'border-black bg-white shadow-lg scale-105 z-10' : 'border-black/10 bg-white/50 opacity-80 hover:opacity-100 scale-100'}`}>
                   <div className="flex items-center gap-3">
                     <input type="radio" name="bundle" checked={dealType === 'bundle'} onChange={() => setDealType('bundle')} className="accent-black" />
@@ -352,8 +353,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="block text-xs font-bold">{currency}{Math.round(product.price * 1.15)}</span>
-                    <span className="text-[10px] line-through text-zinc-400">{currency}{Math.round(product.price * 1.3)}</span>
+                    {/* Fixed price 499 */}
+                    <span className="block text-xs font-bold">{currency}{product.price + 499}</span>
+                    <span className="text-[10px] line-through text-zinc-400">{currency}{product.price + 999}</span>
                   </div>
                 </label>
               </div>
@@ -463,13 +465,13 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                     const insuranceProduct: any = {
                       id: 'service-vip-protection',
                       name: 'VIP Protection & Priority Dispath',
-                      price: Math.round(product.price * 0.15),
+                      price: 499, // FIXED PRICE
                       image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop', // Abstract/Premium image
                       category: 'Exclusive',
                       description: 'Insured shipping and priority handling.',
                       descriptionHtml: '<p>Priority Handling</p>',
                       images: [],
-                      variants: [{ id: 'vip-service', title: 'Service', price: Math.round(product.price * 0.15), available: true }]
+                      variants: [{ id: 'vip-service', title: 'Service', price: 499, available: true }]
                     };
                     // Add with a small delay to ensure order in simulated cart
                     setTimeout(() => {
@@ -480,7 +482,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   analytics.addToCart({
                     id: product.id,
                     name: product.name,
-                    price: dealType === 'bundle' ? Math.round(product.price * 1.15) : product.price,
+                    price: dealType === 'bundle' ? product.price + 499 : product.price,
                     variant: selectedVariant.title + (dealType === 'bundle' ? ' (+ VIP Service)' : ''),
                     currency: currency === '$' ? 'USD' : currency === '€' ? 'EUR' : 'GBP'
                   });
@@ -489,7 +491,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               disabled={!selectedVariant}
               className="w-full bg-black text-white py-4 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
             >
-              <span>{selectedVariant ? `Add to Bag - ${currency}${(dealType === 'bundle' ? Math.round(product.price * 1.15) : product.price).toLocaleString()}` : 'Select Size'}</span>
+              <span>{selectedVariant ? `Add to Bag - ${currency}${(dealType === 'bundle' ? product.price + 499 : product.price).toLocaleString()}` : 'Select Size'}</span>
               {selectedVariant && <span className="w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>}
             </button>
 

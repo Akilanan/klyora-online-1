@@ -64,7 +64,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                         <BoutiqueImage
                             src={img}
                             alt={`${product.name} - View ${idx + 1}`}
-                            className="group-hover:scale-110 transition-transform duration-[3s]"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[3s]"
                         />
                     </div>
                 ))}

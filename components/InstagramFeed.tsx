@@ -4,12 +4,12 @@ import React from 'react';
 export const InstagramFeed: React.FC = () => {
     // Default Mock Data (Fallback)
     const mockPosts = [
-        { id: '1', handle: '@sophieturner', img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000', permalink: '#' },
-        { id: '2', handle: '@emilyinparis', img: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1000', permalink: '#' },
-        { id: '3', handle: '@vogue_nyc', img: 'https://images.unsplash.com/photo-1550614000-4b9519e07d0f?q=80&w=1000', permalink: '#' },
-        { id: '4', handle: '@london.style', img: 'https://images.unsplash.com/photo-1549576490-b0b4831ef60a?q=80&w=1000', permalink: '#' },
-        { id: '5', handle: '@milan.menswear', img: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=1000', permalink: '#' },
-        { id: '6', handle: '@klyora_official', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000', permalink: '#' }
+        { id: '1', handle: '@heritage_club', img: 'https://images.unsplash.com/photo-1577900232427-18219b9115a3?q=80&w=1000', permalink: '#' }, // Tennis
+        { id: '2', handle: '@oldmoney_society', img: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1000', permalink: '#' }, // Classic Car
+        { id: '3', handle: '@aspen_ledger', img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1000', permalink: '#' }, // Winter/Ski
+        { id: '4', handle: '@the.gentlemans.private', img: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=1000', permalink: '#' }, // Black Tie
+        { id: '5', handle: '@equestrian.life', img: 'https://images.unsplash.com/photo-1551884831-bbf3ddd77535?q=80&w=1000', permalink: '#' }, // Horse
+        { id: '6', handle: '@paris_architect', img: 'https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=1000', permalink: '#' } // Architecture
     ];
 
     const [posts, setPosts] = React.useState(mockPosts);

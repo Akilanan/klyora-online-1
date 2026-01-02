@@ -7,6 +7,36 @@ export const COLORS = {
   BRAND_LIGHT: '#ffffff',
 };
 
+export const EXCHANGE_RATES: Record<string, number> = {
+  'United States': 0.012, // 1 INR = ~0.012 USD
+  'United Kingdom': 0.0095,
+  'Canada': 0.016,
+  'Australia': 0.018,
+  'France': 0.011,
+  'Germany': 0.011,
+  'Italy': 0.011,
+  'Spain': 0.011,
+  'India': 1,       // BASE CURRENCY
+  'United Arab Emirates': 0.044,
+  'Japan': 1.78,
+  'Singapore': 0.016
+};
+
+export const CURRENCY_SYMBOLS: Record<string, string> = {
+  'United States': '$',
+  'United Kingdom': '£',
+  'Canada': 'CA$',
+  'Australia': 'AU$',
+  'France': '€',
+  'Germany': '€',
+  'Italy': '€',
+  'Spain': '€',
+  'India': '₹',
+  'United Arab Emirates': 'AED ',
+  'Japan': '¥',
+  'Singapore': 'S$'
+};
+
 export const MOCK_PRODUCTS: Product[] = [
   // --- BLAZERS & OUTERWEAR ---
   {
