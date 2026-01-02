@@ -258,8 +258,8 @@
               relatedIds: [], // Populated by AI or Tags in future
               shippingTier: "Global Tracked (7-15 Days)",
               composition: "Premium Source",
-              rating: 4.8, // Default starting rating
-              reviews: 12
+              rating: 4.8,
+              reviews: 0
             }{%- unless forloop.last -%},{%- endunless -%}
           {%- endfor -%}
         ]
@@ -282,6 +282,7 @@
       </div>
     </noscript>
     <!-- Klyora React App Assets -->
+    <link rel="stylesheet" href="{{ 'klyora.css' | asset_url }}">
     <script src="{{ 'klyora.js' | asset_url }}" type="module" defer></script>
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
