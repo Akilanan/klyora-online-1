@@ -326,7 +326,7 @@ const App: React.FC = () => {
           <div className="relative z-10 text-center px-6">
             <span className="text-[9px] uppercase tracking-[1.2em] text-white/30 block mb-12 animate-fade-in-up">MAISON KLYORA</span>
             <h1 className="editorial-heading font-serif tracking-tighter mb-16 animate-fade-scale text-white/90 text-4xl md:text-6xl lg:text-7xl">
-              Premium Fashion <br /> <span className="italic">Designed for Modern Style</span>
+              Timeless Heritage <br /> <span className="italic">Modern Silence</span>
             </h1>
             <div className="flex flex-col md:flex-row justify-center items-center gap-12">
               <button

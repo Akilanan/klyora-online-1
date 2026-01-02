@@ -71,23 +71,24 @@ export const LEGAL_DOCS = {
                 <p class="mt-2 text-[#8ca67a]"><em>Complimentary fully tracked shipping is included with every order.</em></p>
 
                 <h4 class="text-white font-bold uppercase tracking-widest mt-6 mb-2">2. Returns & Exchanges</h4>
-                <p>Our commitment is to your absolute satisfaction. However, as a sustainability-focused atelier, we operate a strict return policy to minimize carbon footprint.</p>
+                <p>Our commitment is to your absolute satisfaction. In line with our sustainability ethos, we offer a curated return process.</p>
                 
                 <div class="border-l-2 border-white/20 pl-4 mt-4 my-4">
-                    <p class="text-white font-medium">Return Conditions:</p>
+                    <p class="text-white font-medium">Return Eligibility:</p>
                     <ul class="list-disc pl-5 space-y-1 mt-1">
-                        <li>Items must be returned within <strong>14 days</strong> of delivery.</li>
-                        <li>Items must be unworn, unwashed, and in original packaging with all tags attached.</li>
-                        <li><strong>Sale Items:</strong> All items purchased on "Sale" or during promotional events (including use of discount codes) are <strong>FINAL SALE</strong> and cannot be returned.</li>
+                        <li><strong>Damaged / Incorrect Item:</strong> Immediate Replacement or Full Refund.</li>
+                        <li><strong>Size / Fit Issue:</strong> Exchange for Store Credit.</li>
+                        <li><strong>Change of Mind:</strong> Exchange for Store Credit.</li>
                     </ul>
+                    <p class="mt-2 text-[#8ca67a]"><em>Items must be reported within 14 days of delivery in original condition.</em></p>
                 </div>
 
                 <h4 class="text-white font-bold uppercase tracking-widest mt-6 mb-2">3. Refunds</h4>
-                <p>Once your return is received and inspected, we will send you an email to notify you that we have received your returned item. We will also notify you of the approval or rejection of your refund.</p>
-                <p>If approved, your refund will be processed in the form of <strong>Store Credit</strong> valid for 12 months. Original shipping costs are non-refundable.</p>
+                <p>To reduce waste and carbon footprint, we prioritize exchanges and store credit over monetary refunds for non-defective returns.</p>
+                <p>If your item arrives damaged, please contact our Concierge within 48 hours for an instant priority resolution.</p>
 
                 <h4 class="text-white font-bold uppercase tracking-widest mt-6 mb-2">4. Damaged Items</h4>
-                <p>In the unlikely event that your order arrives damaged, please contact our Concierge immediately (within 48 hours) with photographic evidence. We will arrange a priority replacement at no cost to you.</p>
+                <p>In the unlikely event that your order arrives damaged, please contact our Concierge immediately with photographic evidence. We will arrange a priority replacement at no cost to you.</p>
             </div>
         `
     }
