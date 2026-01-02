@@ -129,7 +129,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
     }
   };
 
-  const [dealType, setDealType] = useState<'single' | 'bundle'>('bundle');
+
 
   const [openSection, setOpenSection] = useState<string | null>('senses');
 
@@ -327,40 +327,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               </div>
             </div>
 
-            {/* DECOY EFFECT: Bundle Offers */}
-            <div className="bg-zinc-50 p-6 border border-black/5 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 bg-black text-white text-[9px] px-3 py-1 uppercase tracking-widest font-bold">Best Value</div>
-              <h4 className="font-serif italic text-lg mb-4">Upgrade Your Experience</h4>
-
-              <div className="space-y-3">
-                {/* Option 1: Decoy (Single Item) */}
-                <label onClick={() => setDealType('single')} className={`flex items-center justify-between p-3 border cursor-pointer transition-all ${dealType === 'single' ? 'border-black bg-white opacity-100' : 'border-black/10 bg-white/50 opacity-60 hover:opacity-100'}`}>
-                  <div className="flex items-center gap-3">
-                    <input type="radio" name="bundle" checked={dealType === 'single'} onChange={() => setDealType('single')} className="accent-black" />
-                    <span className="text-xs uppercase tracking-wide">Standard Shipping</span>
-                  </div>
-                  <span className="text-xs font-bold">Free</span>
-                </label>
-
-                  // Option 2: The Winner (Bundle)
-                // Fixed VIP Price: 499
-                <label onClick={() => setDealType('bundle')} className={`flex items-center justify-between p-4 border cursor-pointer transition-all ${dealType === 'bundle' ? 'border-black bg-white shadow-lg scale-105 z-10' : 'border-black/10 bg-white/50 opacity-80 hover:opacity-100 scale-100'}`}>
-                  <div className="flex items-center gap-3">
-                    <input type="radio" name="bundle" checked={dealType === 'bundle'} onChange={() => setDealType('bundle')} className="accent-black" />
-                    <div>
-                      <span className="text-xs uppercase tracking-wide font-bold block">VIP Protection (Priority + Insurance)</span>
-                      <span className="text-[9px] text-[#8ca67a] uppercase tracking-wider">Most Popular</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    {/* Fixed price 499 */}
-                    <span className="block text-xs font-bold">{currency}{product.price + 499}</span>
-                    <span className="text-[10px] line-through text-zinc-400">{currency}{product.price + 999}</span>
-                  </div>
-                </label>
-              </div>
-            </div>
-
             {/* Accordion Details */}
             <div className="space-y-0 border-t border-black/10">
               {/* Senses */}
@@ -457,33 +423,14 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             <button
               onClick={() => {
                 if (selectedVariant) {
-                  // 1. Add Main Product
+                  // Add Main Product
                   onAddToCart(product, selectedVariant);
-
-                  // 2. If Service Bundle Selected, Add Insurance Product
-                  if (dealType === 'bundle') {
-                    const insuranceProduct: any = {
-                      id: 'service-vip-protection',
-                      name: 'VIP Protection & Priority Dispath',
-                      price: 499, // FIXED PRICE
-                      image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop', // Abstract/Premium image
-                      category: 'Exclusive',
-                      description: 'Insured shipping and priority handling.',
-                      descriptionHtml: '<p>Priority Handling</p>',
-                      images: [],
-                      variants: [{ id: 'vip-service', title: 'Service', price: 499, available: true }]
-                    };
-                    // Add with a small delay to ensure order in simulated cart
-                    setTimeout(() => {
-                      onAddToCart(insuranceProduct, insuranceProduct.variants[0]);
-                    }, 100);
-                  }
 
                   analytics.addToCart({
                     id: product.id,
                     name: product.name,
-                    price: dealType === 'bundle' ? product.price + 499 : product.price,
-                    variant: selectedVariant.title + (dealType === 'bundle' ? ' (+ VIP Service)' : ''),
+                    price: product.price,
+                    variant: selectedVariant.title,
                     currency: currency === '$' ? 'USD' : currency === '€' ? 'EUR' : 'GBP'
                   });
                 }
@@ -491,7 +438,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               disabled={!selectedVariant}
               className="w-full bg-black text-white py-4 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
             >
-              <span>{selectedVariant ? `Add to Bag - ${currency}${(dealType === 'bundle' ? product.price + 499 : product.price).toLocaleString()}` : 'Select Size'}</span>
+              <span>{selectedVariant ? `Add to Bag - ${currency}${product.price.toLocaleString()}` : 'Select Size'}</span>
               {selectedVariant && <span className="w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>}
             </button>
 
