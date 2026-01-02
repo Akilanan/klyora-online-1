@@ -14,6 +14,7 @@ const CONFIG = {
     IG_ACCESS_TOKEN: process.env.IG_ACCESS_TOKEN || process.env.VITE_IG_ACCESS_TOKEN,
     IG_USER_ID: process.env.IG_USER_ID || process.env.VITE_IG_USER_ID,
     SHOPIFY_SHOP_URL: process.env.VITE_SHOPIFY_SHOP_URL || 'https://klyora-2.myshopify.com',
+    DISPLAY_SHOP_URL: 'https://Klyoraofficial.com',
     GEMINI_API_KEY: process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY,
     get IS_LIVE_MODE() {
         return !!(this.IG_ACCESS_TOKEN && this.IG_USER_ID);
@@ -98,14 +99,14 @@ class AICaptionGenerator {
                 - Emojis: Use strictly 1 or 2 monochrome/neutral emojis (e.g., 🦢, 🕯️, 🕰️, 🎞️, 🥃).
                 - NO hashtags in the sentence.
                 - FORBIDDEN WORDS: Do NOT use the words "Old Money", "Wealth", or "Rich".
-                - End strictly with: "Shop at: ${CONFIG.SHOPIFY_SHOP_URL}"
+                - End strictly with: "Shop at: ${CONFIG.DISPLAY_SHOP_URL}"
                 `;
 
                 const result = await model.generateContent(prompt);
                 const text = result.response.text();
 
                 if (!text.includes("http")) {
-                    return `${text}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
+                    return `${text}\n\nShop at: ${CONFIG.DISPLAY_SHOP_URL}`;
                 }
                 return text;
             } catch (error) {
@@ -153,11 +154,11 @@ class AICaptionGenerator {
         const template = Math.floor(Math.random() * 3);
 
         if (template === 0) {
-            return `${open} ${mid}\n\n${emoji}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
+            return `${open} ${mid}\n\n${emoji}\n\n${hashtags}\n\nShop at: ${CONFIG.DISPLAY_SHOP_URL}`;
         } else if (template === 1) {
-            return `${mid} ${emoji}\n${close}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
+            return `${mid} ${emoji}\n${close}\n\n${hashtags}\n\nShop at: ${CONFIG.DISPLAY_SHOP_URL}`;
         } else {
-            return `${open}\n${mid}\n\n${emoji}\n\n${hashtags}\n\nShop at: ${CONFIG.SHOPIFY_SHOP_URL}`;
+            return `${open}\n${mid}\n\n${emoji}\n\n${hashtags}\n\nShop at: ${CONFIG.DISPLAY_SHOP_URL}`;
         }
     }
 }
