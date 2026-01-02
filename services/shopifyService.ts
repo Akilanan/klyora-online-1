@@ -93,43 +93,34 @@ export class ShopifyService {
       const rawDescription = sp.body_html ? sp.body_html.replace(/<[^>]*>?/gm, '\n') : '';
       const { description, composition, features } = this.cleanDescription(rawDescription);
 
+      const rawPrice = sp.variants && sp.variants.length > 0 ? parseFloat(sp.variants[0].price) : 0;
+
       return {
         id: sp.id.toString(),
         shopifyId: `gid://shopify/Product/${sp.id}`,
         handle: sp.handle,
         name: sp.title,
-        // PRICE CORRECTION LOGIC REMOVED
-        // Store is now native INR. We trust the API to return correct values.
-        let rawPrice = sp.variants && sp.variants.length > 0 ? parseFloat(sp.variants[0].price) : 0;
-
-        // If price is 0, it might be a draft or error, but we don't auto-multiply anymore.
-
-        return {
-          id: sp.id.toString(),
-          shopifyId: `gid://shopify/Product/${sp.id}`,
-          handle: sp.handle,
-          name: sp.title,
-          price: rawPrice, // Use corrected price
-          description: description,
-          category: sp.product_type || 'Uncategorized',
-          image: sp.images && sp.images.length > 0 ? sp.images[0].src : '',
-          relatedIds: [],
-          composition: composition,
-          origin: 'Imported',
-          shippingTier: 'Standard',
-          images: sp.images ? sp.images.map((img: any) => img.src) : [],
-          descriptionHtml: sp.body_html || '', // Keep original HTML for specific UI areas if needed, or clean it too
-          rating: 0,
-          reviews: 0,
-          lowStock: false,
-          variants: sp.variants ? sp.variants.map((v: any) => ({
-            id: `gid://shopify/ProductVariant/${v.id}`,
-            title: v.title,
-            price: parseFloat(v.price), // Native INR
-            available: v.available
-          })) : []
-        };
-      });
+        price: rawPrice,
+        description: description,
+        category: sp.product_type || 'Uncategorized',
+        image: sp.images && sp.images.length > 0 ? sp.images[0].src : '',
+        relatedIds: [],
+        composition: composition,
+        origin: 'Imported',
+        shippingTier: 'Standard',
+        images: sp.images ? sp.images.map((img: any) => img.src) : [],
+        descriptionHtml: sp.body_html || '',
+        rating: 0,
+        reviews: 0,
+        lowStock: false,
+        variants: sp.variants ? sp.variants.map((v: any) => ({
+          id: `gid://shopify/ProductVariant/${v.id}`,
+          title: v.title,
+          price: parseFloat(v.price), // Native INR
+          available: v.available
+        })) : []
+      };
+    });
   }
 
   /**

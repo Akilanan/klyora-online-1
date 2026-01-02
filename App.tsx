@@ -438,45 +438,45 @@ const App: React.FC = () => {
         {/* Boutique Grid */}
         <section id="collection-grid" className="max-w-[1600px] mx-auto px-10 py-48">
           <div className="flex items-center gap-14 overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
-              <button
-                onClick={() => {
-                  setActiveCategory(null);
-                  setActiveAiCategory(null);
-                }}
-                className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${!activeCategory && !activeAiCategory ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
-              >
-                All
-              </button>
-              
-              {/* AI Categories (Priority) */}
-              {aiCategories && Object.keys(aiCategories).map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => { setActiveAiCategory(cat); setActiveCategory(null); }}
-                  className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeAiCategory === cat ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
-                >
-                  {cat}
-                </button>
-              ))}
+            <button
+              onClick={() => {
+                setActiveCategory(null);
+                setActiveAiCategory(null);
+              }}
+              className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${!activeCategory && !activeAiCategory ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+            >
+              All
+            </button>
 
-              {/* Standard Collections (Fallback if AI fails or user wants specific sync) */}
-              {(!aiCategories) && collections.map(col => (
-                <button
-                  key={col.id}
-                  onClick={async () => {
-                    setActiveCategory(col.title);
-                    setIsSyncing(true);
-                    const colProducts = await shopifyService.fetchProductsByCollection(col.handle);
-                    setProducts(colProducts);
-                    setIsSyncing(false);
-                  }}
-                  className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeCategory === col.title ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
-                >
-                  {col.title}
-                </button>
-              ))}
-            </div>
+            {/* AI Categories (Priority) */}
+            {aiCategories && Object.keys(aiCategories).map(cat => (
+              <button
+                key={cat}
+                onClick={() => { setActiveAiCategory(cat); setActiveCategory(null); }}
+                className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeAiCategory === cat ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+              >
+                {cat}
+              </button>
+            ))}
+
+            {/* Standard Collections (Fallback if AI fails or user wants specific sync) */}
+            {(!aiCategories) && collections.map(col => (
+              <button
+                key={col.id}
+                onClick={async () => {
+                  setActiveCategory(col.title);
+                  setIsSyncing(true);
+                  const colProducts = await shopifyService.fetchProductsByCollection(col.handle);
+                  setProducts(colProducts);
+                  setIsSyncing(false);
+                }}
+                className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeCategory === col.title ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+              >
+                {col.title}
+              </button>
+            ))}
           </div>
+
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40 min-h-[500px]">
             {filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).map((product) => (
@@ -501,7 +501,7 @@ const App: React.FC = () => {
               >
                 Previous
               </button>
-              
+
               <div className="flex gap-2">
                 {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }).map((_, i) => (
                   <button
@@ -843,66 +843,66 @@ const App: React.FC = () => {
       />
 
       {
-    isCartOpen && (
-      <CartDrawer
-        items={cart}
-        onClose={() => setIsCartOpen(false)}
-        onRemove={(id, vId) => setCart(prev => prev.filter(i => !(i.id === id && i.selectedVariant.id === vId)))}
-        onCheckout={handleCheckout}
-        currency={currency}
-      />
-    )
-  }
+        isCartOpen && (
+          <CartDrawer
+            items={cart}
+            onClose={() => setIsCartOpen(false)}
+            onRemove={(id, vId) => setCart(prev => prev.filter(i => !(i.id === id && i.selectedVariant.id === vId)))}
+            onCheckout={handleCheckout}
+            currency={currency}
+          />
+        )
+      }
 
-  {
-    isWishlistOpen && (
-      <WishlistDrawer
-        items={wishlistItems}
-        onClose={() => setIsWishlistOpen(false)}
-        onRemove={(id) => handleToggleWishlist(id)}
-        onMoveToBag={(product) => { setIsWishlistOpen(false); setSelectedQuickView(product); }}
-        currency={currency}
-      />
-    )
-  }
+      {
+        isWishlistOpen && (
+          <WishlistDrawer
+            items={wishlistItems}
+            onClose={() => setIsWishlistOpen(false)}
+            onRemove={(id) => handleToggleWishlist(id)}
+            onMoveToBag={(product) => { setIsWishlistOpen(false); setSelectedQuickView(product); }}
+            currency={currency}
+          />
+        )
+      }
 
-  {
-    isArchiveOpen && (
-      <ArchiveDrawer
-        products={products}
-        onClose={() => setIsArchiveOpen(false)}
-        onSelectProduct={(product) => { setIsArchiveOpen(false); setSelectedQuickView(product); }}
-        currency={currency}
-      />
-    )
-  }
+      {
+        isArchiveOpen && (
+          <ArchiveDrawer
+            products={products}
+            onClose={() => setIsArchiveOpen(false)}
+            onSelectProduct={(product) => { setIsArchiveOpen(false); setSelectedQuickView(product); }}
+            currency={currency}
+          />
+        )
+      }
 
-  {
-    selectedQuickView && (
-      <QuickViewModal
-        product={selectedQuickView}
-        allProducts={products}
-        onClose={() => setSelectedQuickView(null)}
-        onAddToCart={handleAddToCart}
-        currency={currency}
-        isSaved={wishlist.includes(selectedQuickView.id)}
-        onToggleSave={() => handleToggleWishlist(selectedQuickView.id)}
-      />
-    )
-  }
+      {
+        selectedQuickView && (
+          <QuickViewModal
+            product={selectedQuickView}
+            allProducts={products}
+            onClose={() => setSelectedQuickView(null)}
+            onAddToCart={handleAddToCart}
+            currency={currency}
+            isSaved={wishlist.includes(selectedQuickView.id)}
+            onToggleSave={() => handleToggleWishlist(selectedQuickView.id)}
+          />
+        )
+      }
 
-  <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
 
-  {
-    infoModal && (
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal(null)}
-        title={infoModal.title}
-        content={infoModal.content}
-      />
-    )
-  }
+      {
+        infoModal && (
+          <InfoModal
+            isOpen={infoModal.isOpen}
+            onClose={() => setInfoModal(null)}
+            title={infoModal.title}
+            content={infoModal.content}
+          />
+        )
+      }
 
       <BackToTop />
       <WinterPromoModal />
@@ -914,7 +914,7 @@ const App: React.FC = () => {
       }} />
       <ConciergeChat />
       <NewsletterModal />
-  { notification && <Notification message={notification.message} onClose={() => setNotification(null)} /> }
+      {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
     </div >
   );
 };

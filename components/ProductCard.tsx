@@ -55,7 +55,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <div className="relative mb-12 overflow-hidden bg-zinc-900 aspect-[3/4]">
+            <div className="relative mb-4 overflow-hidden bg-zinc-900 aspect-[3/4]">
                 {allImages.map((img, idx) => (
                     <div
                         key={img}
@@ -82,7 +82,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
 
                 {/* Save Button */}
                 <button
-                    onClick={onToggleSave}
+                    onClick={(e) => { e.stopPropagation(); onToggleSave && onToggleSave(e); }}
                     className="absolute top-4 right-4 z-30 p-2 text-white/50 hover:text-white transition-opacity opacity-0 group-hover:opacity-100"
                 >
                     {isSaved ? (
@@ -109,8 +109,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                 <div className="flex-1">
                     <h3 className="text-[13px] uppercase font-bold tracking-[0.3em] text-white/90">{product.name}</h3>
                     <div className="flex items-center gap-2 mt-2 opacity-60">
-                        {/* Dynamic Stars */}
-                        {/* Dynamic Stars */}
                         {/* Dynamic Stars */}
                         <div className="flex text-[#8ca67a] text-[8px]">
                             {(() => {
@@ -166,5 +164,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                     </div>
                 </div>
             </div>
-            );
+        </div>
+    );
 };
