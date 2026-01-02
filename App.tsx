@@ -319,6 +319,8 @@ const App: React.FC = () => {
             <img
               key={img}
               src={img}
+              srcSet={`${img.replace('w=2070', 'w=800')} 800w, ${img} 2070w`}
+              sizes="(max-width: 768px) 800px, 100vw"
               alt={`Maison Klyora Premium Fashion Campaign - Look ${idx + 1}`}
               className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[3000ms] ease-in-out"
               loading={idx === 0 ? "eager" : "lazy"}
