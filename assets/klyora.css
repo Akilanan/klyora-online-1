@@ -1,0 +1,6 @@
+/* Main Klyora Styles */
+/* Note: Most styling is handled via Tailwind CDN in theme.liquid */
+body {
+    background-color: #000;
+    color: #fff;
+}
