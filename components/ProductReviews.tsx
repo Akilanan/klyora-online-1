@@ -137,6 +137,12 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ productName }) =
       )}
 
       <div className="space-y-16">
+        {/* APP INTEGRATION WIDGETS */}
+        {/* Judge.me Widget */}
+        <div id="judgeme_product_reviews" className="jdgm-widget jdgm-review-widget" data-product-title={productName} data-id={productName}></div>
+        {/* Loox Widget */}
+        <div id="looxReviews" data-product-id="" className="loox-reviews-default"></div>
+
         {isLoading ? (
           <div className="space-y-12">
             {[1, 2].map((_, i) => (

@@ -70,15 +70,6 @@ export const TestimonialsSection: React.FC = () => {
                         </div>
                     ))}
                 </div>
-
-                {/* Trust Strip */}
-                <div className="mt-16 pt-8 border-t border-black/5 flex flex-wrap justify-center gap-12 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-                    {/* Simple Text Logos as Mock Press/Partners */}
-                    <span className="font-serif text-xl italic">VOGUE</span>
-                    <span className="font-serif text-xl italic">Harper's BAZAAR</span>
-                    <span className="font-serif text-xl italic">ELLE</span>
-                    <span className="font-serif text-xl italic">Vanity Fair</span>
-                </div>
             </div>
         </section>
     );

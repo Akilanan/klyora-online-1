@@ -126,11 +126,15 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
 
                     <div className="flex flex-col items-end gap-4">
                         <div className="flex gap-8">
-                            {['Instagram', 'Pinterest', 'TikTok'].map(social => (
-                                <a key={social} href="#" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
-                                    {social}
-                                </a>
-                            ))}
+                            <a href="https://instagram.com/klyoraofficial" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
+                                Instagram
+                            </a>
+                            <a href="https://pinterest.com/klyoraofficial" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
+                                Pinterest
+                            </a>
+                            <a href="https://tiktok.com/@klyoraofficial" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
+                                TikTok
+                            </a>
                         </div>
 
                         {/* Region Selector */}

@@ -5,27 +5,27 @@ export const JournalSection: React.FC = () => {
     const articles = [
         {
             id: 1,
-            category: 'Atelier Notes',
-            title: 'The Architecture of Silk',
-            excerpt: 'Exploring the structural integrity of organic fibers in modern drape design.',
-            date: 'Dec 28, 2025',
-            image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000'
+            category: 'Campaign',
+            title: 'The Resort Edit: 2026',
+            excerpt: 'Lightweight linens and neutral tones designed for the quiet moments of the season.',
+            date: 'Jan 02, 2026',
+            image: 'https://images.unsplash.com/photo-1549298916-f52d724204b4?q=80&w=1000'
         },
         {
             id: 2,
-            category: 'Global Trends',
-            title: 'Monochrome: A Study in Depth',
-            excerpt: 'Why single-color palettes are dominating the luxury landscape of Paris Fashion Week.',
-            date: 'Dec 20, 2025',
-            image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1000'
+            category: 'Atelier',
+            title: 'Fabric Care: The Guide',
+            excerpt: 'How to maintain the structure and softness of your premium knits for decades to come.',
+            date: 'Dec 28, 2025',
+            image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=1000'
         },
         {
             id: 3,
-            category: 'Sustainability',
-            title: 'Traceability from Source to Skin',
-            excerpt: 'Our commitment to ethical sourcing and transparency in the supply chain.',
-            date: 'Dec 15, 2025',
-            image: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1000'
+            category: 'Styling',
+            title: 'The Art of the Silhouette',
+            excerpt: 'Why tailored fits and structured shoulders are the defining elements of modern heritage.',
+            date: 'Dec 20, 2025',
+            image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1000'
         }
     ];
 

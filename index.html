@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KLYORA | The Winter Collection</title>
-  <link rel="icon" type="image/jpeg" href="/klyora_logo.jpg" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/klyora_logo.jpg" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#000000" />
@@ -32,6 +32,15 @@
   </script>
   <!-- End Meta Pixel Code -->
 
+  <!-- Google Analytics 4 (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-PLACEHOLDER');
+  </script>
+
   <!-- OpenGraph for Social Sharing -->
   <meta property="og:title" content="KLYORA | Official Premium Boutique">
   <meta property="og:description"
@@ -43,6 +52,9 @@
 
   <!-- Canonical Link -->
   <link rel="canonical" href="https://Klyoraofficial.com" />
+
+  <!-- Performance: Preconnect to Shopify API/CDN -->
+  <link rel="preconnect" href="https://cdn.shopify.com" />
 
   <!-- LCP Optimization: Preload Hero Image -->
   <link rel="preload" as="image"

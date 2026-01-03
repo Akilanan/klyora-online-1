@@ -160,7 +160,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                     </p>
                     <div className="flex justify-between items-center mt-3 border-t border-black/5 pt-3">
                         <span className="text-[15px] font-bold font-serif italic">{product.formattedPrice || `${currency}${product.price.toLocaleString()}`}</span>
-                        <span className="text-[9px] uppercase tracking-widest text-[#8ca67a] font-medium border border-[#8ca67a]/30 px-2 py-1">COD Available</span>
+
                     </div>
                 </div>
             </div>

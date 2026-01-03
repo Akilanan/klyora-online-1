@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Header } from './components/Header';
 import { Product, CartItem, ProductVariant } from './types';
@@ -22,6 +21,9 @@ import { OrderTrackingModal } from './components/OrderTrackingModal';
 import { OrderTrackingSimulation } from './components/OrderTrackingSimulation';
 import { ConciergeChat } from './components/ConciergeChat';
 import { VipAccessModal } from './components/VipAccessModal';
+import { PressSection } from './components/PressSection';
+import { AnnouncementBar } from './components/AnnouncementBar';
+import { SizeRecommenderModal } from './components/SizeRecommenderModal';
 import { NewsletterModal } from './components/NewsletterModal';
 import { JournalSection } from './components/JournalSection';
 import { InstagramFeed } from './components/InstagramFeed';
@@ -38,8 +40,6 @@ const BACKGROUND_IMAGES = [
   'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=2070&auto=format&fit=crop'
 ];
 
-
-
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [collections, setCollections] = useState<{ id: string, title: string, handle: string }[]>([]);
@@ -49,6 +49,7 @@ const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isStoreSynced, setIsStoreSynced] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [cart, setCart] = useState<CartItem[]>([]);
 
   const [wishlist, setWishlist] = useState<string[]>(() => {
@@ -59,10 +60,6 @@ const App: React.FC = () => {
       return [];
     }
   });
-
-  useEffect(() => {
-    localStorage.setItem('klyora_wishlist', JSON.stringify(wishlist));
-  }, [wishlist]);
 
   const [loyaltyPoints, setLoyaltyPoints] = useState(1250);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -88,12 +85,7 @@ const App: React.FC = () => {
   const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
 
-  const animateParallax = () => {
-    setSmoothScrollY(prev => prev + (scrollY - prev) * 0.1);
-    requestRef.current = requestAnimationFrame(animateParallax);
-  };
-
-  /* New state for currency */
+  // New Filters
   const [currency, setCurrency] = useState('$');
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
@@ -103,21 +95,28 @@ const App: React.FC = () => {
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(12);
 
+  const animateParallax = () => {
+    setSmoothScrollY(prev => prev + (scrollY - prev) * 0.1);
+    requestRef.current = requestAnimationFrame(animateParallax);
+  };
+
   useEffect(() => {
-    setCurrentPage(1); // Reset page when filters change
+    localStorage.setItem('klyora_wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
+
+  useEffect(() => {
+    setCurrentPage(1);
   }, [activeCategory, activeAiCategory, searchQuery, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy]);
 
-  // AI Categorization Effect
+  // AI Categorization
   useEffect(() => {
     if (products.length > 0 && !aiCategories && !isSyncing) {
       const runAiSort = async () => {
-        // Check local storage first to save API calls
         const cached = localStorage.getItem('klyora_ai_cats');
         if (cached) {
           setAiCategories(JSON.parse(cached));
           return;
         }
-
         console.log("Running AI Categorization...");
         const cats = await geminiService.categorizeProducts(products);
         if (Object.keys(cats).length > 0) {
@@ -125,24 +124,50 @@ const App: React.FC = () => {
           localStorage.setItem('klyora_ai_cats', JSON.stringify(cats));
         }
       };
-      // Small delay to let UI settle
       setTimeout(runAiSort, 2000);
     }
   }, [products, isSyncing]);
 
+  // Deep Linking
+  useEffect(() => {
+    if (products.length > 0 && !selectedQuickView) {
+      const params = new URLSearchParams(window.location.search);
+      const productHandle = params.get('product');
+      if (productHandle) {
+        const found = products.find(p =>
+          p.id === productHandle ||
+          p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') === productHandle.toLowerCase()
+        );
+        if (found) setSelectedQuickView(found);
+      }
+    }
+  }, [products]);
+
+  useEffect(() => {
+    if (selectedQuickView) {
+      const handle = selectedQuickView.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const newUrl = `${window.location.pathname}?product=${handle}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      document.title = `${selectedQuickView.name} | Maison Klyora`;
+    } else {
+      const newUrl = window.location.pathname;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      document.title = "Maison Klyora | Curated Luxury";
+    }
+  }, [selectedQuickView]);
+
+  // Init & Sync
   useEffect(() => {
     // @ts-ignore
     if (window.KlyoraConfig) {
       // @ts-ignore
       const config = window.KlyoraConfig;
       if (config.currency) setCurrency(config.currency);
-
       if (config.customer) {
-        // Simple logic: 1 point per dollar spent
         setLoyaltyPoints(Math.floor(config.customer.totalSpent || 0));
         setCustomerName(config.customer.name);
       } else {
-        setLoyaltyPoints(0); // Guest starts at 0
+        setLoyaltyPoints(0);
         setCustomerName(null);
       }
     }
@@ -163,43 +188,38 @@ const App: React.FC = () => {
     };
   }, [scrollY]);
 
-  /* SEO: Dynamic Title Management */
-  useEffect(() => {
-    if (selectedQuickView) {
-      document.title = `${selectedQuickView.name} | Maison Klyora`;
-    } else if (activeCategory) {
-      document.title = `${activeCategory} Collection | Maison Klyora`;
-    } else {
-      document.title = "Maison Klyora | Curated Luxury";
-    }
-  }, [selectedQuickView, activeCategory]);
-
+  // Actions
   const syncStore = async () => {
     setIsSyncing(true);
     const [storeProducts, storeCollections] = await Promise.all([
       shopifyService.fetchLiveCatalog(),
       shopifyService.fetchCollections()
     ]);
-
-    // Fallback to Luxury Mock Data if store is empty (New Store Scenario)
-    // Real Mode: Strict Shopify Sync
     if (storeProducts && storeProducts.length > 0) {
       setProducts(storeProducts);
     } else {
       console.log("Klyora: Real Mode Active - No Mock Data loaded.");
     }
-
     if (storeCollections) {
       setCollections(storeCollections.filter(c => c.products_count > 0));
     }
-
     setIsStoreSynced(true);
     setIsSyncing(false);
+    setIsLoading(false);
   };
 
   const showNotification = (message: string) => setNotification({ message });
 
   const handleAddToCart = (product: Product, variant: ProductVariant) => {
+    if ((window as any).fbq) {
+      (window as any).fbq('track', 'AddToCart', {
+        content_name: product.name,
+        content_ids: [product.id],
+        content_type: 'product',
+        value: product.price,
+        currency: currency
+      });
+    }
     setCart(prev => {
       const existing = prev.find(i => i.id === product.id && i.selectedVariant.id === variant.id);
       if (existing) {
@@ -213,16 +233,18 @@ const App: React.FC = () => {
 
   const handleCheckout = () => {
     if (cart.length === 0) return;
-
-    // Construct Cart Permalink
-    // Format: /cart/{variant_id}:{quantity},{variant_id}:{quantity}
+    if ((window as any).fbq) {
+      (window as any).fbq('track', 'InitiateCheckout', {
+        value: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+        currency: currency,
+        content_ids: cart.map(i => i.id),
+        num_items: cart.length
+      });
+    }
     const items = cart.map(item => {
-      // Extract numeric ID if it's a GID
       const variantId = item.selectedVariant.id.toString().split('/').pop();
       return `${variantId}:${item.quantity}`;
     }).join(',');
-
-    // Redirect to real Shopify Checkout
     const baseUrl = import.meta.env.DEV ? (import.meta.env.VITE_SHOPIFY_SHOP_URL || 'https://klyora-2.myshopify.com') : '';
     window.location.href = `${baseUrl}/cart/${items}`;
   };
@@ -238,59 +260,37 @@ const App: React.FC = () => {
     });
   };
 
-  /* Full filtering logic */
   const filteredProducts = useMemo(() => {
     let result = products.filter(p => {
-      // Visual Search
       if (visualSearchIds && !visualSearchIds.includes(p.id)) return false;
-
-      // Text Search
       if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-
-      // Category Filter (Standard or AI)
       if (activeCategory && p.category !== activeCategory) return false;
       if (activeAiCategory && aiCategories) {
         if (!aiCategories[activeAiCategory]?.includes(p.id)) return false;
       }
-
-      // Price Filter
       if (priceRange) {
         const [min, max] = priceRange;
         if (p.price < min || (max < 10000 && p.price > max)) return false;
         if (max === 10000 && p.price < 1000) return false;
       }
-
-      // Material Filter
       if (selectedMaterial) {
         if (!p.composition?.toLowerCase().includes(selectedMaterial.toLowerCase())) return false;
       }
-
-      // Color Filter
       if (selectedColor) {
         const hasColor = p.variants?.some(v => v.title.toLowerCase().includes(selectedColor.toLowerCase()));
         if (!hasColor && !p.description.toLowerCase().includes(selectedColor.toLowerCase())) return false;
       }
-
-      // Availability Filter
       if (inStockOnly) {
         if (!p.variants?.some(v => v.available)) return false;
       }
-
       return true;
     });
 
-    // Sorting
-    if (sortBy === 'price-asc') {
-      result.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-desc') {
-      result.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'name-asc') {
-      result.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortBy === 'name-desc') {
-      result.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (sortBy === 'newest') {
-      result.sort((a, b) => b.id.localeCompare(a.id));
-    }
+    if (sortBy === 'price-asc') result.sort((a, b) => a.price - b.price);
+    else if (sortBy === 'price-desc') result.sort((a, b) => b.price - a.price);
+    else if (sortBy === 'name-asc') result.sort((a, b) => a.name.localeCompare(b.name));
+    else if (sortBy === 'name-desc') result.sort((a, b) => b.name.localeCompare(a.name));
+    else if (sortBy === 'newest') result.sort((a, b) => b.id.localeCompare(a.id));
 
     return result;
   }, [products, activeCategory, searchQuery, visualSearchIds, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy]);
@@ -298,14 +298,11 @@ const App: React.FC = () => {
   const allMaterials = useMemo(() => {
     const materials = new Set<string>();
     products.forEach(p => {
-      // Extract main material from composition or mock it if empty
-      // Example composition: "100% Cashmere" -> "Cashmere"
       if (p.composition) {
-        const simpleMat = p.composition.replace(/[0-9%]/g, '').trim().split(' ')[0]; // Very naive extraction
+        const simpleMat = p.composition.replace(/[0-9%]/g, '').trim().split(' ')[0];
         if (simpleMat) materials.add(simpleMat);
       }
     });
-    // Fallback/Mock list if extraction is too messy for now to ensure UI looks populated
     return Array.from(materials).length > 0 ? Array.from(materials) : ['Silk', 'Cotton', 'Wool', 'Cashmere', 'Linen', 'Velvet'];
   }, [products]);
 
@@ -329,9 +326,9 @@ const App: React.FC = () => {
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const wishlistItems = useMemo(() => products.filter(p => wishlist.includes(p.id)), [products, wishlist]);
 
-
   return (
     <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black">
+      <AnnouncementBar />
       <Header
         cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
         wishlistCount={wishlist.length}
@@ -390,6 +387,9 @@ const App: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* Press / As Seen In */}
+        <PressSection />
 
         {/* Trust Signals Bar */}
         <div className="bg-white border-b border-black/5 py-8">
@@ -479,16 +479,32 @@ const App: React.FC = () => {
 
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40 min-h-[500px]">
-            {filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                currency={currency}
-                onClick={() => setSelectedQuickView(product)}
-                isSaved={wishlist.includes(product.id)}
-                onToggleSave={(e) => { e?.stopPropagation(); handleToggleWishlist(product.id); }}
-              />
-            ))}
+            {(isLoading || isSyncing) ? (
+              // Skeleton Loader (Noir Theme)
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-[3/4.5] w-full bg-zinc-100 mb-6 relative overflow-hidden">
+                    <div className="absolute inset-0 skeleton-noir opacity-10"></div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="h-3 bg-zinc-100 w-1/3"></div>
+                    <div className="h-4 bg-zinc-100 w-3/4"></div>
+                    <div className="h-3 bg-zinc-100 w-1/4"></div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  currency={currency}
+                  onClick={() => setSelectedQuickView(product)}
+                  isSaved={wishlist.includes(product.id)}
+                  onToggleSave={(e) => { e?.stopPropagation(); handleToggleWishlist(product.id); }}
+                />
+              ))
+            )}
           </div>
 
           {/* Pagination Controls */}
@@ -913,6 +929,7 @@ const App: React.FC = () => {
         setActiveCategory('Atelier Exclusive');
       }} />
       <ConciergeChat />
+      <CookieConsent />
       <NewsletterModal />
       {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
     </div >

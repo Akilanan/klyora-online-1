@@ -139,6 +139,29 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[500] flex items-center justify-center p-0 md:p-8 font-sans">
+      {/* SEO: Rich Snippets (Structured Data) */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org/",
+          "@type": "Product",
+          "name": product.name,
+          "image": product.images || [product.image],
+          "description": product.description || `Luxury ${product.name} from Maison Klyora.`,
+          "brand": {
+            "@type": "Brand",
+            "name": "Maison Klyora"
+          },
+          "offers": {
+            "@type": "Offer",
+            "url": window.location.href,
+            "priceCurrency": currency === '$' ? 'USD' : currency === '€' ? 'EUR' : 'GBP',
+            "price": product.price,
+            "availability": (product.variants?.some(v => v.available) ?? true) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "itemCondition": "https://schema.org/NewCondition"
+          }
+        })}
+      </script>
+
       <div className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-fade-in" onClick={onClose} />
 
       <div className="relative w-full max-w-5xl bg-white shadow-2xl animate-fade-scale flex flex-col md:flex-row overflow-hidden h-full md:h-[75vh] md:max-h-[700px] md:rounded-sm">
