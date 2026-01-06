@@ -14,6 +14,19 @@ interface HeaderProps {
   customerName?: string | null;
   onLoginClick?: () => void;
   onPriveClick?: () => void;
+  onShopClick: () => void;
+  onLoyaltyClick: () => void;
+  // Translations
+  t?: {
+    bag: string;
+    collection: string;
+    concierge: string;
+    discover: string;
+    heroTitle: string;
+    heroSubtitle: string;
+    waitlist: string;
+    addToBag: string;
+  };
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,7 +41,10 @@ export const Header: React.FC<HeaderProps> = ({
   customerName,
   onLoginClick,
   onConciergeClick,
-  onPriveClick
+  onPriveClick,
+  onShopClick,
+  onLoyaltyClick,
+  t
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -45,10 +61,11 @@ export const Header: React.FC<HeaderProps> = ({
     <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-1000 ${scrolled ? 'bg-black/95 backdrop-blur-2xl border-b border-white/5 py-5 px-10 shadow-2xl' : 'bg-transparent py-10 px-12'}`}>
       <div className="flex items-center justify-between text-white">
         <nav className="hidden md:flex gap-14 text-[9px] uppercase tracking-[0.6em] font-bold">
+          <button onClick={onShopClick} className="hover:opacity-40 transition-opacity">{t?.collection || 'Collection'}</button>
           <button onClick={onPriveClick} className="hover:opacity-40 transition-opacity text-[#8ca67a]">Privé</button>
           <button onClick={onArchiveClick} className="hover:opacity-40 transition-opacity">Archive</button>
           {customerName ? (
-            <a href="/account" className="hover:opacity-40 transition-opacity">Account</a>
+            <button onClick={onLoyaltyClick} className="hover:opacity-40 transition-opacity">Account</button>
           ) : (
             <button onClick={onLoginClick} className="hover:opacity-40 transition-opacity">Login</button>
           )}
@@ -85,7 +102,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="text-xs uppercase tracking-widest hover:text-zinc-400 transition-colors"
             aria-label="Concierge AI"
           >
-            Concierge
+            {t?.concierge || 'Concierge'}
           </button>
           <button
             onClick={onWishlistClick}
@@ -104,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="text-xs uppercase tracking-widest hover:text-zinc-400 transition-colors relative"
             aria-label="View Cart"
           >
-            Cart ({cartCount})
+            {t?.bag || 'Bag'} ({cartCount})
           </button>
         </div>
       </div>
@@ -119,6 +136,12 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         <nav className="flex flex-col gap-12">
+          <button
+            onClick={() => { setIsMobileMenuOpen(false); onShopClick(); }}
+            className="text-4xl font-serif italic text-black text-left"
+          >
+            Collection
+          </button>
           <button
             onClick={() => { setIsMobileMenuOpen(false); onConciergeClick(); }}
             className="text-4xl font-serif italic text-black text-left"
@@ -150,7 +173,7 @@ export const Header: React.FC<HeaderProps> = ({
             Archive
           </button>
           {customerName ? (
-            <a href="/account" className="text-sm uppercase tracking-widest mt-10">Account</a>
+            <button onClick={() => { setIsMobileMenuOpen(false); onLoyaltyClick(); }} className="text-sm uppercase tracking-widest mt-10 text-left">Account</button>
           ) : (
             <button
               onClick={() => { setIsMobileMenuOpen(false); onLoginClick?.(); }}

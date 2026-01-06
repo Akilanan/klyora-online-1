@@ -213,6 +213,14 @@ export class GeminiService {
   }
 
   async generateMockReviews(productName: string): Promise<Review[]> {
+    const STORAGE_KEY = `klyora_reviews_${productName.replace(/\s+/g, '_')}`;
+
+    // 1. Check Persistence
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch (e) { console.warn("Review Cache Error", e); }
+
     try {
       const apiKey = this._getApiKey();
       if (!apiKey) return [];
@@ -228,7 +236,12 @@ export class GeminiService {
       const prompt = `Generate 3 authentic luxury client reviews for "${productName}". Include mentions of drape and texture. Return Array of {id, name, rating, comment, date}`;
       const result = await model.generateContent(prompt);
       const text = result.response.text();
-      return JSON.parse(text);
+      const reviews = JSON.parse(text);
+
+      // 2. Save Persistence
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
+      return reviews;
+
     } catch (error) {
       return [];
     }
@@ -284,6 +297,142 @@ export class GeminiService {
     } catch (error) {
       console.warn("AI Categorization failed:", error);
       return {};
+    }
+  }
+
+  /**
+   * AI Styling: Accepts a product and the full catalog, returns a complete look.
+   */
+  async styleProduct(mainProduct: Product, catalog: Product[]): Promise<{ main: Product, secondary: Product, accessory: Product | null, rationale: string } | null> {
+    const apiKey = this._getApiKey();
+    if (!apiKey) return null;
+
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        generationConfig: { responseMimeType: "application/json" }
+      });
+
+      // Simplified catalog context (id, name, type) to save tokens
+      const catalogContext = catalog.map(p => ({ id: p.id, name: p.name, category: p.category }));
+
+      const prompt = `
+        You are a luxury stylist.
+        Main Item: ${mainProduct.name} (${mainProduct.category}).
+        Task: Select matching items from the Catalog to create a "Old Money" outfit.
+        Catalog: ${JSON.stringify(catalogContext)}
+
+        Return JSON:
+        {
+          "secondaryId": "id of pants/skirt/outerwear",
+          "accessoryId": "id of bag/shoes/jewelry (optional)",
+          "rationale": "One sentence poetic explanation of the pairing."
+        }
+      `;
+
+      const result = await model.generateContent(prompt);
+      const data = JSON.parse(result.response.text());
+
+      const secondary = catalog.find(p => p.id === data.secondaryId);
+      const accessory = catalog.find(p => p.id === data.accessoryId) || null;
+
+      if (!secondary) return null;
+
+      return {
+        main: mainProduct,
+        secondary,
+        accessory,
+        rationale: data.rationale
+      };
+
+    } catch (e) {
+      console.warn("AI Styling failed", e);
+      return null;
+    }
+  }
+
+  /**
+   * AI Visual Search: Matches uploaded image to catalog products.
+   */
+  async findVisualMatch(imageBase64: string, catalog: Product[]): Promise<string[]> {
+    const apiKey = this._getApiKey();
+    if (!apiKey) return [];
+
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        generationConfig: { responseMimeType: "application/json" }
+      });
+
+      // Context
+      const catalogContext = catalog.map(p => ({ id: p.id, name: p.name, desc: p.description }));
+
+      const prompt = `
+        Task: Analyze the image and find the visually similar products from the Catalog.
+        Catalog: ${JSON.stringify(catalogContext)}
+        
+        Return JSON: { "matchedIds": ["id1", "id2"] }
+      `;
+
+      const result = await model.generateContent([
+        prompt,
+        { inlineData: { data: imageBase64, mimeType: "image/jpeg" } }
+      ]);
+      const data = JSON.parse(result.response.text());
+      return data.matchedIds || [];
+
+    } catch (e) {
+      console.warn("Visual search failed", e);
+      return [];
+    }
+  }
+  /**
+   * AI Semantic Search: Find products based on "vibe" or description.
+   */
+  async semanticSearch(query: string, products: Product[]): Promise<Product[]> {
+    const apiKey = this._getApiKey();
+    if (!apiKey) return [];
+
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        generationConfig: { responseMimeType: "application/json" }
+      });
+
+      // Context: Light version to save tokens
+      const productList = products.map(p => ({
+        id: p.id,
+        name: p.name,
+        category: p.category,
+        desc: p.description
+      }));
+
+      const prompt = `
+        You are a luxury concierge.
+        User Query: "${query}"
+        Task: Select products from the Catalog that match the INTENT or VIBE of the query.
+        Catalog: ${JSON.stringify(productList)}
+        
+        Rules:
+        - If query is "summer wedding", find dresses/silk.
+        - If query is "winter coat", find wool/outerwear.
+        - Be smart. "Dark academia" -> Tweed/Wool.
+        
+        Return JSON: { "productIds": ["id1", "id2"] }
+      `;
+
+      const result = await model.generateContent(prompt);
+      const data = JSON.parse(result.response.text());
+
+      const matchedIds = data.productIds || [];
+      return products.filter(p => matchedIds.includes(p.id));
+
+    } catch (e) {
+      console.warn("Semantic Fallback", e);
+      return [];
     }
   }
 }

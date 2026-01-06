@@ -4,10 +4,30 @@ export const OrderTrackingSimulation: React.FC = () => {
     const [step, setStep] = useState(0); // 0: Input, 1: Loading, 2: Result
     const [orderId, setOrderId] = useState('');
 
+    React.useEffect(() => {
+        const saved = localStorage.getItem('klyora_tracking_state');
+        if (saved) {
+            const data = JSON.parse(saved);
+            if (data.orderId) {
+                setOrderId(data.orderId);
+                setStep(2); // Restore to result state
+            }
+        }
+    }, []);
+
     const handleTrack = () => {
         if (!orderId) return;
         setStep(1);
-        setTimeout(() => setStep(2), 1500);
+        setTimeout(() => {
+            setStep(2);
+            localStorage.setItem('klyora_tracking_state', JSON.stringify({ orderId, timestamp: Date.now() }));
+        }, 1500);
+    };
+
+    const clearTracking = () => {
+        setStep(0);
+        setOrderId('');
+        localStorage.removeItem('klyora_tracking_state');
     };
 
     if (step === 0) return (
@@ -66,7 +86,7 @@ export const OrderTrackingSimulation: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <button onClick={() => setStep(0)} className="w-full text-[9px] uppercase tracking-widest opacity-50 hover:opacity-100 mt-4">Check Another</button>
+            <button onClick={clearTracking} className="w-full text-[9px] uppercase tracking-widest opacity-50 hover:opacity-100 mt-4">Check Another</button>
         </div>
     );
 };

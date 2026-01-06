@@ -1,5 +1,5 @@
 
-import { Product } from '../types';
+import { Product, Article } from '../types';
 import { MOCK_PRODUCTS } from '../constants';
 
 export class ShopifyService {
@@ -53,12 +53,31 @@ export class ShopifyService {
       }
 
       console.warn("Klyora: No products found in Shopify response.");
-      return MOCK_PRODUCTS;
+      return this._getSeededFallback();
     } catch (e) {
-      console.warn("Klyora: Failed to fetch live catalog, falling back to mock.", e);
+      console.warn("Klyora: Failed to fetch live catalog, falling back to seeded cache.", e);
       // Try to return stale cache if available
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) return JSON.parse(cached).data;
+      return this._getSeededFallback();
+    }
+  }
+
+  /**
+   * Returns a persistent "Offline Catalog" seeded from constants but saved to local storage.
+   * This allows the "Mock" data to be editable or persistent if we were to build an admin editor.
+   */
+  private _getSeededFallback(): Product[] {
+    const SEED_KEY = 'klyora_seed_catalog';
+    try {
+      const saved = localStorage.getItem(SEED_KEY);
+      if (saved) return JSON.parse(saved);
+
+      // Initialize Seed
+      console.log("Klyora: Initializing Offline Catalog...");
+      localStorage.setItem(SEED_KEY, JSON.stringify(MOCK_PRODUCTS));
+      return MOCK_PRODUCTS;
+    } catch (e) {
       return MOCK_PRODUCTS;
     }
   }

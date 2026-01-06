@@ -81,16 +81,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                 )}
 
                 {/* Save Button */}
-                <button
-                    onClick={(e) => { e.stopPropagation(); onToggleSave && onToggleSave(e); }}
-                    className="absolute top-4 right-4 z-30 p-2 text-white/50 hover:text-white transition-opacity opacity-0 group-hover:opacity-100"
-                >
-                    {isSaved ? (
-                        <svg className="w-5 h-5 text-red-500 fill-current" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" /></svg>
-                    ) : (
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                    )}
-                </button>
+                <div className="absolute top-4 right-4 z-30 flex gap-2 transition-opacity opacity-0 group-hover:opacity-100">
+                    {/* Pinterest Button */}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.href)}&media=${encodeURIComponent(product.image)}&description=${encodeURIComponent(product.name)}`, '_blank');
+                        }}
+                        className="w-8 h-8 rounded-full bg-white text-[#E60023] flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                        title="Pin to Moodboard"
+                    >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.399.165-1.487-.69-2.432-2.864-2.432-4.632 0-3.77 2.748-7.229 7.951-7.229 4.173 0 7.41 2.967 7.41 6.923 0 4.133-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.367 18.62 0 12.017 0z" /></svg>
+                    </button>
+
+                    {/* Wishlist Button */}
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onToggleSave && onToggleSave(e); }}
+                        className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                    >
+                        {isSaved ? (
+                            <svg className="w-4 h-4 text-black fill-current" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" /></svg>
+                        ) : (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                        )}
+                    </button>
+                </div>
 
                 {/* Slideshow Progress Indicators */}
                 {isHovered && allImages.length > 1 && (
@@ -160,7 +175,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                     </p>
                     <div className="flex justify-between items-center mt-3 border-t border-black/5 pt-3">
                         <span className="text-[15px] font-bold font-serif italic">{product.formattedPrice || `${currency}${product.price.toLocaleString()}`}</span>
-
+                        <div className="text-[8px] text-right">
+                            <span className="text-zinc-400 block uppercase tracking-widest">Est. Archive Value</span>
+                            <span className="font-serif italic text-zinc-500">{currency}{Math.round(product.price * 0.85).toLocaleString()}</span>
+                        </div>
                     </div>
                 </div>
             </div>

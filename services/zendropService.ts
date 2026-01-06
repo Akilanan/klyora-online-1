@@ -14,7 +14,10 @@ export class ZendropService {
     // In a real app, this would fetch from https://api.zendrop.com/v1/products
     // For now, we simulate the data to show the "Link" is active.
 
-    private mockDatabase: Record<string, ZendropData> = {
+    private DB_KEY = 'klyora_zendrop_inventory';
+
+    // Initial "Seed" Data
+    private seedDatabase: Record<string, ZendropData> = {
         'default': {
             supplierId: 'ZD-8842',
             shippingTime: '7-12 Days',
@@ -33,13 +36,26 @@ export class ZendropService {
         }
     };
 
+    private _getDb(): Record<string, ZendropData> {
+        try {
+            const saved = localStorage.getItem(this.DB_KEY);
+            if (saved) return JSON.parse(saved);
+        } catch (e) { console.warn("Zendrop DB Read Error", e); }
+
+        // Initialize if empty
+        localStorage.setItem(this.DB_KEY, JSON.stringify(this.seedDatabase));
+        return this.seedDatabase;
+    }
+
+    private _saveDb(db: Record<string, ZendropData>) {
+        localStorage.setItem(this.DB_KEY, JSON.stringify(db));
+    }
+
     async getSupplierInfo(product: Product): Promise<ZendropData> {
-        // 1. Try to read from real Shopify Tags (synced by Zendrop)
-        // Format: "shipping:7-12 Days", "verified_supplier"
+        // 1. Live Tag Override
         if (product && product.tags) {
             const shippingTag = product.tags.find(t => t.toLowerCase().startsWith('shipping:'));
             const isVerified = product.tags.some(t => t.toLowerCase().includes('zendrop') || t.toLowerCase().includes('verified'));
-
             if (shippingTag) {
                 return {
                     supplierId: 'REAL-ZD',
@@ -52,18 +68,34 @@ export class ZendropService {
             }
         }
 
-        // 2. Fallback to Mock Database (Simulation Mode)
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 500));
-        return this.mockDatabase[product.id] || this.mockDatabase['default'];
+        // 2. Persistent Simulation
+        await new Promise(resolve => setTimeout(resolve, 300)); // Minimal network latency
+        const db = this._getDb();
+        return db[product.id] || db['default'];
     }
 
     /**
-     * Checks if a product is viable for dropshipping based on margin.
-     * Rule: Retail Price > 2.5x Cost
+     * Simulation: Decrement stock when user "buys" item.
+     * Call this from App.tsx handleCheckout or similar.
      */
+    async decrementStock(productId: string, quantity: number): Promise<boolean> {
+        const db = this._getDb();
+        const data = db[productId] || db['default'];
+
+        if (data.stockLevel < quantity) return false;
+
+        // Update DB
+        const newData = { ...data, stockLevel: data.stockLevel - quantity };
+
+        // If it was using default, we must now instantiate a specific record for this product
+        db[productId] = newData;
+
+        this._saveDb(db);
+        console.log(`[Zendrop] Stock decremented for ${productId}. New Level: ${newData.stockLevel}`);
+        return true;
+    }
+
     checkMarginHealth(product: Product): boolean {
-        // This would be used in an Admin Dashboard
         return true;
     }
 }

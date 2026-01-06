@@ -1,32 +1,20 @@
 
 import React, { useState, useEffect } from 'react';
 import { shopifyService } from '../services/shopifyService';
+import { leadService } from '../services/leadService';
 
 export const NewsletterModal: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    useEffect(() => {
-        // Check if already seen
-        const hasSeen = localStorage.getItem('klyora_newsletter_seen');
-        if (!hasSeen) {
-            const timer = setTimeout(() => {
-                setIsOpen(true);
-            }, 5000); // Show after 5 seconds
-            return () => clearTimeout(timer);
-        }
-    }, []);
-
-    const handleClose = () => {
-        setIsOpen(false);
-        localStorage.setItem('klyora_newsletter_seen', 'true');
-    };
-
+    // ... existing code ...
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+
+        // Save locally
+        leadService.saveLead('newsletter', { email });
 
         await shopifyService.subscribeToNewsletter(email);
 

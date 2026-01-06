@@ -14,6 +14,15 @@ import { LoginModal } from './components/LoginModal';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { ArchiveDrawer } from './components/ArchiveDrawer';
 import { Footer } from './components/Footer';
+import { LoyaltyDashboard } from './components/LoyaltyDashboard';
+import { AdminDashboardModal } from './components/AdminDashboardModal';
+import { StyleQuizModal } from './components/StyleQuizModal';
+import { PressPortalModal } from './components/PressPortalModal';
+import { ExitIntentModal } from './components/ExitIntentModal';
+import { SocialProofToast } from './components/SocialProofToast';
+import { SoundController } from './components/SoundController';
+import { ArchiveLoginModal } from './components/ArchiveLoginModal';
+import { CinematicPreloader } from './components/CinematicPreloader';
 
 import { InfoModal } from './components/InfoModal';
 import { ReturnRequestModal } from './components/ReturnRequestModal';
@@ -66,6 +75,7 @@ const App: React.FC = () => {
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isLoyaltyOpen, setIsLoyaltyOpen] = useState(false);
   const [infoModal, setInfoModal] = useState<{ isOpen: boolean; title: string; content: React.ReactNode } | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -84,6 +94,11 @@ const App: React.FC = () => {
   const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'info' } | null>(null);
   const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isStyleQuizOpen, setIsStyleQuizOpen] = useState(false);
+  const [isPressOpen, setIsPressOpen] = useState(false);
+  const [isArchiveLoginOpen, setIsArchiveLoginOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'editorial'>('grid');
 
   // New Filters
   const [currency, setCurrency] = useState('$');
@@ -94,6 +109,31 @@ const App: React.FC = () => {
   const [sortBy, setSortBy] = useState<string>('relevance');
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(12);
+  const [language, setLanguage] = useState<'EN' | 'FR'>('EN');
+
+  // Translations Dictionary
+  const t = useMemo(() => ({
+    EN: {
+      bag: 'Bag',
+      collection: 'Collection',
+      concierge: 'Concierge',
+      discover: 'Discover the Collection',
+      heroTitle: 'Elegance in Motion',
+      heroSubtitle: 'The New Season',
+      waitlist: 'Join Waitlist',
+      addToBag: 'Add to Bag'
+    },
+    FR: {
+      bag: 'Panier',
+      collection: 'Le Vestiaire',
+      concierge: 'Conciergerie',
+      discover: 'Découvrir la Collection',
+      heroTitle: 'Élégance en Mouvement',
+      heroSubtitle: 'La Nouvelle Saison',
+      waitlist: 'Rejoindre la File',
+      addToBag: 'Ajouter au Panier'
+    }
+  })[language], [language]);
 
   const animateParallax = () => {
     setSmoothScrollY(prev => prev + (scrollY - prev) * 0.1);
@@ -184,16 +224,34 @@ const App: React.FC = () => {
   // Init & Sync
   useEffect(() => {
     // @ts-ignore
+    // @ts-ignore
     if (window.KlyoraConfig) {
       // @ts-ignore
       const config = window.KlyoraConfig;
       if (config.currency) setCurrency(config.currency);
+
       if (config.customer) {
         setLoyaltyPoints(Math.floor(config.customer.totalSpent || 0));
         setCustomerName(config.customer.name);
       } else {
-        setLoyaltyPoints(0);
-        setCustomerName(null);
+        // Fallback to LocalStorage for "Mock" practicality
+        const localUser = localStorage.getItem('klyora_user');
+        if (localUser) {
+          const u = JSON.parse(localUser);
+          setCustomerName(u.name);
+          setLoyaltyPoints(u.tier === 'Gold' ? 2500 : 500);
+        } else {
+          setLoyaltyPoints(0);
+          setCustomerName(null);
+        }
+      }
+    } else {
+      // Also check here if KlyoraConfig is totally missing (dev mode)
+      const localUser = localStorage.getItem('klyora_user');
+      if (localUser) {
+        const u = JSON.parse(localUser);
+        setCustomerName(u.name);
+        setLoyaltyPoints(u.tier === 'Gold' ? 2500 : 500);
       }
     }
 
@@ -267,8 +325,10 @@ const App: React.FC = () => {
     showNotification(`${product.name} Added to Bag.`);
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cart.length === 0) return;
+
+    // 1. Analytics
     if ((window as any).fbq) {
       (window as any).fbq('track', 'InitiateCheckout', {
         value: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
@@ -277,7 +337,19 @@ const App: React.FC = () => {
         num_items: cart.length
       });
     }
-    // Klaviyo: Initiate Checkout (Started Checkout)
+
+    // 2. Persistent Inventory Simulation
+    // We update the local mock database to reflect these items being 'purchased'
+    for (const item of cart) {
+      // In a real app we'd await this, but for UX speed/optimistic UI we can run it
+      // However, since we redirect, we should probably await a tiny bit or just fire and hope (localStorage is sync)
+      // localStorage is synchronous, so this is safe!
+      await import('./services/zendropService').then(({ zendropService }) => {
+        zendropService.decrementStock(item.id, item.quantity);
+      });
+    }
+
+    // 3. Klaviyo Tracking
     const _learnq = (window as any)._learnq || [];
     _learnq.push(['track', 'Started Checkout', {
       $event_id: Date.now() + Math.random().toString(), // Unique ID
@@ -291,6 +363,8 @@ const App: React.FC = () => {
         ImageURL: item.image
       }))
     }]);
+
+    // 4. Redirect
     const items = cart.map(item => {
       const variantId = item.selectedVariant.id.toString().split('/').pop();
       return `${variantId}:${item.quantity}`;
@@ -310,10 +384,54 @@ const App: React.FC = () => {
     });
   };
 
+  /* 
+   * Semantic Search Logic
+   * ---------------------
+   * 1. If we have exact text matches, prioritize those (shallow).
+   * 2. If no text matches OR we want recommendations, check AI results.
+   */
+  const [semanticMatches, setSemanticMatches] = useState<string[] | null>(null);
+  const [isAiSearching, setIsAiSearching] = useState(false);
+
+  useEffect(() => {
+    // Debounce Intent Analysis
+    if (!searchQuery || searchQuery.length < 3) {
+      setSemanticMatches(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsAiSearching(true);
+      // "Do Deep Search" logic
+      const results = await geminiService.semanticSearch(searchQuery, products);
+      if (results.length > 0) {
+        setSemanticMatches(results.map(p => p.id));
+      } else {
+        setSemanticMatches(null);
+      }
+      setIsAiSearching(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, products]);
+
   const filteredProducts = useMemo(() => {
     let result = products.filter(p => {
+      // 0. Visual Search Override
       if (visualSearchIds && !visualSearchIds.includes(p.id)) return false;
-      if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+
+      // 1. Text Search (Hybrid: Precise + Semantic)
+      if (searchQuery) {
+        const lowerQ = searchQuery.toLowerCase();
+        const preciseMatch = p.name.toLowerCase().includes(lowerQ) || p.description.toLowerCase().includes(lowerQ);
+
+        // If we have semantic matches, allow them even if text doesn't match
+        const semanticMatch = semanticMatches ? semanticMatches.includes(p.id) : false;
+
+        if (!preciseMatch && !semanticMatch) return false;
+      }
+
+      // 2. Filters
       if (activeCategory && p.category !== activeCategory) return false;
       if (activeAiCategory && aiCategories) {
         if (!aiCategories[activeAiCategory]?.includes(p.id)) return false;
@@ -343,7 +461,7 @@ const App: React.FC = () => {
     else if (sortBy === 'newest') result.sort((a, b) => b.id.localeCompare(a.id));
 
     return result;
-  }, [products, activeCategory, searchQuery, visualSearchIds, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy]);
+  }, [products, activeCategory, searchQuery, visualSearchIds, priceRange, selectedMaterial, selectedColor, inStockOnly, sortBy, semanticMatches]);
 
   const allMaterials = useMemo(() => {
     const materials = new Set<string>();
@@ -378,12 +496,14 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black">
+      <CinematicPreloader />
       <AnnouncementBar />
       <Header
         cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
         wishlistCount={wishlist.length}
         loyaltyPoints={loyaltyPoints}
         onPriveClick={() => setIsVipModalOpen(true)}
+        onArchiveClick={() => setIsArchiveLoginOpen(true)}
         onCartClick={() => setIsCartOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
         onWishlistClick={() => setIsWishlistOpen(true)}
@@ -392,47 +512,78 @@ const App: React.FC = () => {
         isSynced={isStoreSynced}
         customerName={customerName}
         onLoginClick={() => setIsLoginOpen(true)}
+        onShopClick={() => {
+          setActiveCategory(null);
+          setIsSearchOpen(true);
+        }}
+        onLoyaltyClick={() => setIsLoyaltyOpen(true)}
+        t={t}
+      />
+
+      {/* Search Overlay Injection */}
+      <SearchOverlay
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+        priceRange={priceRange}
+        onPriceRangeChange={setPriceRange}
+        selectedMaterial={selectedMaterial}
+        onMaterialChange={setSelectedMaterial}
+        allMaterials={allMaterials}
+        resultsCount={filteredProducts.length}
+        catalog={products}
+        results={filteredProducts}
+        currency={currency}
+        onVisualResults={setVisualSearchIds}
+        selectedColor={selectedColor}
+        onColorChange={setSelectedColor}
+        allColors={allColors}
+        inStockOnly={inStockOnly}
+        onInStockChange={setInStockOnly}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        /* @ts-ignore - passing extra prop */
+        isAiAnalyzing={isAiSearching}
       />
 
       <main>
-        {/* Editorial Hero */}
+        {/* Editorial Hero (Cinematic Video) */}
         <section className="relative h-[100vh] w-full overflow-hidden flex items-center justify-center">
-          {BACKGROUND_IMAGES.map((img, idx) => (
-            <img
-              key={img}
-              src={img}
-              srcSet={`${img.replace('w=2070', 'w=800')} 800w, ${img} 2070w`}
-              sizes="(max-width: 768px) 800px, 100vw"
-              alt={`Maison Klyora Premium Fashion Campaign - Look ${idx + 1}`}
-              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[3000ms] ease-in-out"
-              loading={idx === 0 ? "eager" : "lazy"}
-              decoding={idx === 0 ? "sync" : "async"}
-              // @ts-ignore - React 18 type definition gap
-              fetchPriority={idx === 0 ? "high" : "low"}
-              style={{
-                opacity: idx === bgIndex ? 0.4 : 0,
-                transform: `scale(${1 + smoothScrollY * 0.0001})`
-              }}
-            />
-          ))}
+          {/* Cinematic Video Background */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-[3000ms] ease-in-out"
+            style={{ transform: `scale(${1 + smoothScrollY * 0.0001})` }}
+          >
+            <source src="https://videos.pexels.com/video-files/5709669/5709669-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+            {/* Fallback to images if video fails (simple logic: video covers images) */}
+          </video>
+
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
           <div className="relative z-10 text-center px-6">
-            <span className="text-[9px] uppercase tracking-[1.2em] text-white/30 block mb-12 animate-fade-in-up">MAISON KLYORA</span>
+            <span className="text-[9px] uppercase tracking-[1.2em] text-white/30 block mb-12 animate-fade-in-up">{t.collection.toUpperCase()}</span>
             <h1 className="editorial-heading font-serif tracking-tighter mb-16 animate-fade-scale text-white/90 text-4xl md:text-6xl lg:text-7xl">
-              Timeless Heritage <br /> <span className="italic">Modern Silence</span>
+              {t.heroTitle} <br /> <span className="italic">{t.heroSubtitle}</span>
             </h1>
             <div className="flex flex-col md:flex-row justify-center items-center gap-12">
               <button
                 onClick={() => setIsChatOpen(true)}
                 className="group relative px-20 py-7 bg-white text-black text-[9px] font-bold uppercase tracking-[0.5em] hover:bg-zinc-200 transition-all"
               >
-                AI Concierge
+                {t.concierge}
               </button>
               <button
-                onClick={() => document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-white text-[8px] uppercase tracking-[0.6em] font-bold border-b border-white/10 pb-2 hover:border-white transition-all"
+                onClick={() => setIsStyleQuizOpen(true)}
+                className="text-white text-[8px] uppercase tracking-[0.6em] font-bold border-b border-white/10 pb-2 hover:border-white transition-all flex items-center gap-2"
               >
-                Shop Collections
+                <span className="w-2 h-2 rounded-full bg-[#8ca67a] animate-pulse"></span>
+                Style DNA
               </button>
             </div>
           </div>
@@ -528,7 +679,12 @@ const App: React.FC = () => {
           </div>
 
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40 min-h-[500px]">
+          <div className="flex justify-end mb-8 gap-4 px-2">
+            <button onClick={() => setViewMode('grid')} className={`text-[9px] uppercase tracking-widest ${viewMode === 'grid' ? 'text-white border-b border-white' : 'text-zinc-500'}`}>Grid View</button>
+            <button onClick={() => setViewMode('editorial')} className={`text-[9px] uppercase tracking-widest ${viewMode === 'editorial' ? 'text-white border-b border-white' : 'text-zinc-500'}`}>Editorial View</button>
+          </div>
+
+          <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40' : 'flex flex-col gap-32'} min-h-[500px]`}>
             {(isLoading || isSyncing) ? (
               // Skeleton Loader (Noir Theme)
               Array.from({ length: 6 }).map((_, i) => (
@@ -544,15 +700,30 @@ const App: React.FC = () => {
                 </div>
               ))
             ) : (
-              filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  currency={currency}
-                  onClick={() => setSelectedQuickView(product)}
-                  isSaved={wishlist.includes(product.id)}
-                  onToggleSave={(e) => { e?.stopPropagation(); handleToggleWishlist(product.id); }}
-                />
+              filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).map((product, idx) => (
+                viewMode === 'grid' ? (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    currency={currency}
+                    onClick={() => setSelectedQuickView(product)}
+                    isSaved={wishlist.includes(product.id)}
+                    onToggleSave={(e) => { e?.stopPropagation(); handleToggleWishlist(product.id); }}
+                  />
+                ) : (
+                  // Editorial View Item
+                  <div key={product.id} className={`flex flex-col md:flex-row items-center gap-16 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`} onClick={() => setSelectedQuickView(product)}>
+                    <div className="flex-1 w-full aspect-[3/4.5] relative group cursor-pointer overflow-hidden">
+                      <img src={product.image} alt={product.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" />
+                    </div>
+                    <div className="flex-1 space-y-8 text-center md:text-left">
+                      <span className="text-[9px] uppercase tracking-[0.4em] text-zinc-500">Collection No. {idx + 1}</span>
+                      <h3 className="text-4xl font-serif italic">{product.name}</h3>
+                      <p className="max-w-md text-zinc-400 text-sm leading-loose md:mx-0 mx-auto">{product.description || 'A timeless piece of modern luxury, designed for the contemporary silhouette.'}</p>
+                      <button className="text-[9px] uppercase tracking-[0.3em] border text-white border-white/20 px-8 py-4 hover:bg-white hover:text-black transition-colors">View Piece</button>
+                    </div>
+                  </div>
+                )
               ))
             )}
           </div>
@@ -617,6 +788,13 @@ const App: React.FC = () => {
       <Footer
         onConciergeClick={() => setIsChatOpen(true)}
         onLinkClick={(title, type) => {
+          if (type === 'press') {
+            setIsPressOpen(true);
+            return;
+          }
+          // The original instruction had an incomplete else if block here.
+          // Assuming the intent is to proceed with the switch for other types.
+
           let content;
           switch (type) {
             case 'return-refund':
@@ -649,6 +827,11 @@ const App: React.FC = () => {
               );
               break;
             case 'size-guide':
+            // ...
+            case 'track-order':
+              setIsTrackingModalOpen(true);
+              return;
+            case 'heritage':
               content = (
                 <div className="space-y-6">
                   <p>Our sizing is tailored to fit the modern silhouette. Please refer to the chart below.</p>
@@ -825,29 +1008,29 @@ const App: React.FC = () => {
                 </div>
               );
               break;
-            case 'press':
-              content = (
-                <div className="space-y-8">
-                  <div className="space-y-6">
-                    <blockquote className="border-l-2 border-white/20 pl-6 py-2">
-                      <p className="font-serif italic text-lg mb-4">"Maison Klyora is redefining the quiet luxury movement with silhouettes that feel like liquid architecture."</p>
-                      <footer className="text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">— Vogue Scandinavia, Oct 2025</footer>
-                    </blockquote>
-                    <blockquote className="border-l-2 border-white/20 pl-6 py-2">
-                      <p className="font-serif italic text-lg mb-4">"The commitment to traceability is not just a marketing note; it is the foundation of every seam."</p>
-                      <footer className="text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">— The Gentlewoman</footer>
-                    </blockquote>
-                    <blockquote className="border-l-2 border-white/20 pl-6 py-2">
-                      <p className="font-serif italic text-lg mb-4">"A digital boutique that feels more intimate than a physical salon."</p>
-                      <footer className="text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">— Wallpaper*</footer>
-                    </blockquote>
-                  </div>
-                  <div className="text-center pt-6">
-                    <span className="text-[9px] uppercase tracking-widest text-zinc-500">For inquiries: press@klyora.com</span>
-                  </div>
-                </div>
-              );
-              break;
+            // case 'press': // This case is now handled by the if condition above
+            //   content = (
+            //     <div className="space-y-8">
+            //       <div className="space-y-6">
+            //         <blockquote className="border-l-2 border-white/20 pl-6 py-2">
+            //           <p className="font-serif italic text-lg mb-4">"Maison Klyora is redefining the quiet luxury movement with silhouettes that feel like liquid architecture."</p>
+            //           <footer className="text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">— Vogue Scandinavia, Oct 2025</footer>
+            //         </blockquote>
+            //         <blockquote className="border-l-2 border-white/20 pl-6 py-2">
+            //           <p className="font-serif italic text-lg mb-4">"The commitment to traceability is not just a marketing note; it is the foundation of every seam."</p>
+            //           <footer className="text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">— The Gentlewoman</footer>
+            //         </blockquote>
+            //         <blockquote className="border-l-2 border-white/20 pl-6 py-2">
+            //           <p className="font-serif italic text-lg mb-4">"A digital boutique that feels more intimate than a physical salon."</p>
+            //           <footer className="text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">— Wallpaper*</footer>
+            //         </blockquote>
+            //       </div>
+            //       <div className="text-center pt-6">
+            //         <span className="text-[9px] uppercase tracking-widest text-zinc-500">For inquiries: press@klyora.com</span>
+            //       </div>
+            //     </div>
+            //   );
+            //   break;
             case 'contact':
               content = (
                 <div className="text-center py-6">
@@ -995,7 +1178,99 @@ const App: React.FC = () => {
       <VipAccessModal isOpen={isVipModalOpen} onClose={() => setIsVipModalOpen(false)} onAccessGranted={() => {
         showNotification("Welcome to the Inner Circle. Exclusive access granted.");
         setActiveCategory('Atelier Exclusive');
+        setLoyaltyPoints(5000); // Instant Collector Status
+
+        // Inject Secret Product
+        const secretProduct: Product = {
+          id: 'secret-1',
+          name: 'The Membership Jacket',
+          price: 12000,
+          image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1936&auto=format&fit=crop',
+          description: "The ultimate symbol of the Klyora Inner Circle. Hand-stitched in Florence. Only available to members.",
+          category: 'Atelier Exclusive',
+          variants: [
+            { id: 's-1', title: 'Bespoke Fit / Midnight', price: 12000, available: true },
+            { id: 's-2', title: 'Bespoke Fit / Onyx', price: 12000, available: true }
+          ],
+          images: ['https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1936&auto=format&fit=crop'],
+          tags: ['exclusive', 'jacket', 'membership'],
+          reviews: 0,
+          rating: 5
+        };
+        setProducts(prev => [secretProduct, ...prev]);
       }} />
+      <LoyaltyDashboard
+        isOpen={isLoyaltyOpen}
+        onClose={() => setIsLoyaltyOpen(false)}
+        points={loyaltyPoints}
+        customerName={customerName}
+      />
+
+      {/* Search Overlay with Admin Trigger */}
+      {isSearchOpen && (
+        <SearchOverlay
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          onSearch={(q) => {
+            if (q.toLowerCase() === '/admin') {
+              setIsSearchOpen(false);
+              setIsAdminOpen(true);
+            } else {
+              setSearchQuery(q);
+              setActiveCategory(null);
+              setIsSearchOpen(false);
+              document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+          onVisualSearch={async (file) => {
+            setIsSearchOpen(false);
+            const results = await geminiService.findVisualMatch(file, products);
+            setVisualSearchIds(results);
+            setActiveCategory(null);
+            setSearchQuery('');
+            document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' });
+            showNotification("Visual Search Complete. Showing similar styles.");
+          }}
+        />
+      )}
+
+      {/* Admin Dashboard */}
+      {/* I need to add the import and state for this to work. */}
+      {/* Assuming I will add state in next step. */}
+      <AdminDashboardModal isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
+
+      <StyleQuizModal
+        isOpen={isStyleQuizOpen}
+        onClose={() => setIsStyleQuizOpen(false)}
+        onComplete={(persona) => {
+          setIsStyleQuizOpen(false);
+          showNotification(`Style Persona Verified: ${persona}. Curating collection...`);
+          setTimeout(() => {
+            // Mock sorting: Just reverse or shuffle to show effect
+            setProducts(prev => [...prev].reverse());
+            document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' });
+          }, 1500);
+        }}
+      />
+
+      <PressPortalModal isOpen={isPressOpen} onClose={() => setIsPressOpen(false)} />
+
+      <ExitIntentModal />
+
+      <SocialProofToast />
+      <SoundController />
+
+      <ArchiveLoginModal
+        isOpen={isArchiveLoginOpen}
+        onClose={() => setIsArchiveLoginOpen(false)}
+        onUnlock={() => {
+          setIsArchiveLoginOpen(false);
+          showNotification("Archive Unlocked. Welcome to the vault.");
+          setActiveCategory('Archive'); // Assuming this filters properly or I need to handle it
+          document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' });
+        }}
+      />
+
       <ConciergeChat products={filteredProducts} />
       <CookieConsent />
       <NewsletterModal />

@@ -18,20 +18,18 @@ export const SizeRecommenderModal: React.FC<SizeRecommenderModalProps> = ({ isOp
 
     const handleCalculate = async () => {
         setIsLoading(true);
-        // Mock local calculation simulation for speed, or call API
-        setTimeout(async () => {
-            const rec = await geminiService.getSizeRecommendation({
-                height: parseInt(measurements.height),
-                weight: parseInt(measurements.weight),
-                chest: 0,
-                waist: 0,
-                preferredFit: measurements.preference as 'tight' | 'regular' | 'loose'
-            }, { name: productName });
 
-            setRecommendation(rec);
-            setIsLoading(false);
-            setStep(2);
-        }, 1500);
+        const rec = await geminiService.getSizeRecommendation({
+            height: parseInt(measurements.height),
+            weight: parseInt(measurements.weight),
+            chest: 0,
+            waist: 0,
+            preferredFit: measurements.preference as 'tight' | 'regular' | 'loose'
+        }, { name: productName });
+
+        setRecommendation(rec);
+        setIsLoading(false);
+        setStep(2);
     };
 
     return (

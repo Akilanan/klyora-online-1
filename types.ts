@@ -54,3 +54,15 @@ export interface UserState {
   loyaltyPoints: number;
   wishlist: string[];
 }
+
+export interface Article {
+  id: string;
+  title: string;
+  handle: string;
+  publishedAt: string;
+  image: string;
+  excerpt: string;
+  author: string;
+  category: string;
+  url: string;
+}

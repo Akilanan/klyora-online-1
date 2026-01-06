@@ -4,9 +4,11 @@ interface FooterProps {
     onConciergeClick: () => void;
     onLinkClick: (title: string, type: 'shipping' | 'size-guide' | 'gift-card' | 'fabric-care' | 'track-order' | 'heritage' | 'sustainability' | 'careers' | 'legal' | 'press' | 'return-refund' | 'coming-soon') => void;
     onSubscribe: (email: string) => void;
+    language: 'EN' | 'FR';
+    setLanguage: (lang: 'EN' | 'FR') => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, onSubscribe }) => {
+export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, onSubscribe, language, setLanguage }) => {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'success'>('idle');
     const [isSubscribed, setIsSubscribed] = useState(false);
@@ -151,12 +153,56 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                                 ))}
                             </div>
                         </div>
+
+                        {/* Language Toggle */}
+                        <div className="flex gap-2 text-[10px] uppercase tracking-widest border-l border-white/20 pl-4 ml-4">
+                            <button
+                                onClick={() => setLanguage('EN')}
+                                className={`transition-colors ${language === 'EN' ? 'text-white font-bold' : 'text-zinc-500 hover:text-white'}`}
+                            >
+                                EN
+                            </button>
+                            <span className="text-zinc-600">/</span>
+                            <button
+                                onClick={() => setLanguage('FR')}
+                                className={`transition-colors ${language === 'FR' ? 'text-white font-bold' : 'text-zinc-500 hover:text-white'}`}
+                            >
+                                FR
+                            </button>
+                        </div>
                     </div>
 
                     <p className="text-[9px] uppercase tracking-widest text-zinc-600">
                         © 2025 Maison Klyora. All Rights Reserved.
                     </p>
                 </div >
+
+                {/* Atmospheric Sound Toggle (Fixed) */}
+                <div className="fixed bottom-6 left-6 z-[49] animate-fade-in hidden md:block">
+                    <button
+                        onClick={() => {
+                            const audio = document.getElementById('bg-audio') as HTMLAudioElement;
+                            if (audio) {
+                                if (audio.paused) {
+                                    audio.play().catch(() => { });
+                                    audio.volume = 0.2;
+                                } else {
+                                    audio.pause();
+                                }
+                                setIsSubscribed(prev => !prev); // HACK: reusing state to force re-render or just toggle button visual
+                            }
+                        }}
+                        className="group flex items-center gap-3 bg-white/5 backdrop-blur px-4 py-2 rounded-full border border-white/5 hover:bg-white/10 transition-all cursor-pointer"
+                    >
+                        <div className="flex gap-0.5 items-end h-3">
+                            <div className="w-0.5 bg-white h-2 animate-pulse" style={{ animationDuration: '1s' }}></div>
+                            <div className="w-0.5 bg-white h-3 animate-pulse" style={{ animationDuration: '1.2s' }}></div>
+                            <div className="w-0.5 bg-white h-1 animate-pulse" style={{ animationDuration: '0.8s' }}></div>
+                        </div>
+                        <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-300 group-hover:text-white transition-colors">Soundscape</span>
+                    </button>
+                    <audio id="bg-audio" loop src="https://cdn.shopify.com/s/files/1/0663/7921/9195/files/rain-ambience-loop.mp3?v=123" />
+                </div>
 
             </div >
         </footer >

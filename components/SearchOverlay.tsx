@@ -1,7 +1,7 @@
-
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Product } from '../types';
 import { BoutiqueImage } from './BoutiqueImage';
+import { geminiService } from '../services/geminiService';
 
 interface SearchOverlayProps {
   isOpen: boolean;
@@ -27,6 +27,7 @@ interface SearchOverlayProps {
   onInStockChange: (inStock: boolean) => void;
   sortBy: string;
   onSortChange: (sort: string) => void;
+  isAiAnalyzing?: boolean;
 }
 
 const CATEGORIES = ['Women', 'Men', 'Seasonal', 'Exclusive'];
@@ -54,8 +55,13 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
   inStockOnly,
   onInStockChange,
   sortBy,
-  onSortChange
+  onSortChange,
+  isAiAnalyzing
 }) => {
+  const [isVisualAnalyzing, setIsVisualAnalyzing] = useState(false);
+  const isAnalyzing = isVisualAnalyzing || isAiAnalyzing;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const PRICE_TIERS: { label: string; range: [number, number] | null }[] = [
     { label: 'All Prices', range: null },
     { label: `Under 500 ${currency}`, range: [0, 500] },
@@ -91,7 +97,8 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
               <input
                 autoFocus
                 type="text"
-                placeholder="Find anything..."
+                placeholder={isAnalyzing ? "Analyzing visual patterns..." : "Find anything..."}
+                disabled={isAnalyzing}
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 onKeyDown={(e) => {
@@ -102,9 +109,42 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
                     }
                   }
                 }}
-                className="w-full text-2xl md:text-3xl font-serif italic bg-transparent outline-none placeholder:text-zinc-300 border-b border-black/10 pb-4 focus:border-black transition-all group-hover:border-black/30"
+                className={`w-full text-2xl md:text-3xl font-serif italic bg-transparent outline-none placeholder:text-zinc-300 border-b pb-4 transition-all ${isAnalyzing ? 'border-black/50 opacity-50' : 'border-black/10 focus:border-black group-hover:border-black/30'}`}
               />
-              <span className="absolute right-0 bottom-4 text-zinc-400 text-[10px] uppercase tracking-widest pointer-events-none">Search</span>
+
+              <div className="absolute right-0 bottom-4 flex items-center gap-4">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+
+                    setIsVisualAnalyzing(true);
+                    const reader = new FileReader();
+                    reader.onloadend = async () => {
+                      const base64 = (reader.result as string).split(',')[1];
+                      const matchedIds = await geminiService.findVisualMatch(base64, catalog);
+                      onVisualResults(matchedIds);
+                      setIsVisualAnalyzing(false);
+                    };
+                    reader.readAsDataURL(file);
+                  }}
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="text-zinc-400 hover:text-black transition-colors"
+                  title="Visual Search"
+                >
+                  <svg className={`w-5 h-5 ${isAnalyzing ? 'animate-pulse text-black' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </button>
+                <span className="text-zinc-400 text-[10px] uppercase tracking-widest pointer-events-none">Search</span>
+              </div>
             </div>
 
             {/* Recent Searches */}
@@ -191,7 +231,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
             <div className="space-y-4">
               <h3 className="text-xs font-serif italic text-zinc-500">Textile Palette</h3>
               <div className="grid grid-cols-6 gap-3">
-                {allColors.map(color => (
+                {allColors?.map(color => (
                   <button
                     key={color}
                     onClick={() => onColorChange(selectedColor === color ? null : color)}
@@ -252,7 +292,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
             </div>
 
             {/* Grid */}
-            {results.length > 0 ? (
+            {results && results.length > 0 ? (
               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
                 {results.map(product => (
                   <div key={product.id} className="group cursor-pointer flex flex-col gap-4 animate-fade-in-up" onClick={onClose}>

@@ -13,6 +13,20 @@ interface CartDrawerProps {
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove, onCheckout, currency: defaultCurrency }) => {
   const [selectedCountry, setSelectedCountry] = React.useState('United States');
+  const [isGift, setIsGift] = React.useState(false);
+  const [giftMessage, setGiftMessage] = React.useState('');
+  const [isCheckingOut, setIsCheckingOut] = React.useState(false);
+  const [checkoutStep, setCheckoutStep] = React.useState('Verifying Inventory');
+
+  const handleCheckout = () => {
+    setIsCheckingOut(true);
+
+    // Ritual Sequence
+    setTimeout(() => setCheckoutStep('Reserving Stock'), 1000);
+    setTimeout(() => setCheckoutStep('Structuring Parcel'), 2500);
+    setTimeout(() => setCheckoutStep('Redirecting to Secure Checkout'), 4000);
+    setTimeout(() => onCheckout(), 5000);
+  };
 
   // Currency Logic
   const rate = EXCHANGE_RATES[selectedCountry] || 1;
@@ -149,42 +163,93 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove
                 </div>
               </div>
 
-              {/* Restriction Warning */}
-              {isShippingRestricted && (
-                <div className="bg-[#8ca67a]/10 border border-[#8ca67a]/30 p-4 animate-fade-in">
-                  <div className="flex gap-3">
-                    <svg className="w-4 h-4 text-[#8ca67a] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" /></svg>
-                    <div className="space-y-1">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-[#8ca67a]">Made to Order</p>
-                      <p className="text-[10px] text-zinc-600 leading-relaxed">
-                        This piece is drafted specially for you. Estimated delivery: 7-12 Business Days.
-                      </p>
-                    </div>
-                  </div>
+            </div>
+          </div>
+        )}
+
+        {/* Unboxing Preview */}
+        <div className="pt-4 border-t border-black/5">
+          <details className="group cursor-pointer">
+            <summary className="flex items-center justify-between list-none text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500 hover:text-black transition-colors mb-2">
+              <span>The Unboxing Experience</span>
+              <span className="text-lg font-light transition-transform group-open:rotate-45">+</span>
+            </summary>
+            <div className="space-y-2 animate-fade-in">
+              <div className="aspect-video w-full bg-zinc-100 overflow-hidden relative">
+                <img
+                  src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?q=80&w=1992&auto=format&fit=crop"
+                  alt="Signature Packaging"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span className="bg-white/10 backdrop-blur px-3 py-1 text-[8px] uppercase tracking-widest text-white border border-white/20">Signature Box</span>
                 </div>
-              )}
-
-              <div className="flex justify-between items-baseline pt-4 border-t border-black/5">
-                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500">Subtotal</span>
-                <span className="text-lg font-serif italic font-bold">{currencySymbol}{convertedSubtotal.toLocaleString()}</span>
               </div>
-              <p className="text-[9px] text-zinc-400 text-center">Shipping, taxes, and duty calculated at checkout.</p>
+              <p className="text-[9px] text-zinc-500 italic">Every order arrives in our scented, sustainable signature packaging.</p>
+            </div>
+          </details>
+        </div>
 
-              <div className="flex justify-center gap-4 text-[9px] text-zinc-500 uppercase tracking-wider items-center pt-2 border-t border-dashed border-zinc-200">
-                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-[#8ca67a] rounded-full"></span> Cash on Delivery Available</span>
-                <span className="flex items-center gap-1"><svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg> Secure Checkout</span>
+        {/* Gift Option */}
+        <div className="pt-4 border-t border-black/5">
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <div className={`w-4 h-4 border transition-colors flex items-center justify-center ${isGift ? 'bg-black border-black' : 'border-zinc-300 group-hover:border-black'}`}>
+              {isGift && <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>}
+            </div>
+            <input type="checkbox" className="hidden" checked={isGift} onChange={(e) => setIsGift(e.target.checked)} />
+            <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-600 group-hover:text-black transition-colors">This is a gift</span>
+          </label>
+
+          {isGift && (
+            <div className="mt-3 animate-fade-in space-y-2">
+              <textarea
+                className="w-full bg-white border border-black/10 p-3 text-xs font-serif italic focus:outline-none focus:border-black transition-colors resize-none placeholder:text-zinc-300"
+                placeholder="Add a personal note for the recipient..."
+                rows={3}
+                value={giftMessage}
+                onChange={(e) => setGiftMessage(e.target.value)}
+              />
+              <p className="text-[8px] uppercase tracking-widest text-zinc-400 text-right">Complimentary Gift Wrapping Included</p>
+            </div>
+          )}
+        </div>
+
+        {/* Checkout Ritual Overlay */}
+        {isCheckingOut && (
+          <div className="absolute inset-0 z-50 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center animate-fade-in">
+            <div className="w-16 h-16 border border-black/10 flex items-center justify-center mb-8 relative">
+              <div className="absolute inset-0 bg-black/5 animate-ping"></div>
+              <div className="w-12 h-12 bg-black flex items-center justify-center">
+                <h3 className="text-white font-serif italic text-2xl">K</h3>
               </div>
             </div>
 
-            <button
-              onClick={onCheckout}
-              className="w-full bg-black text-white py-4 text-[11px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all active:scale-[0.99]"
-            >
-              Proceed to Checkout
-            </button>
+            <h3 className="text-xl font-serif italic mb-2 animate-pulse">{checkoutStep}</h3>
+            <p className="text-[9px] uppercase tracking-[0.3em] text-zinc-500">Please wait</p>
+
+            <div className="w-48 h-[1px] bg-black/10 mt-8 overflow-hidden">
+              <div className="h-full bg-black w-1/3 animate-slide-right-infinite"></div>
+            </div>
           </div>
         )}
+
+        {/* Footer Actions */}
+        <div className="p-8 bg-zinc-50 border-t border-black/5 space-y-6">
+          <div className="flex justify-between items-baseline pt-4 border-t border-black/5">
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500">Subtotal</span>
+            <span className="text-lg font-serif italic font-bold">{currencySymbol}{convertedSubtotal.toLocaleString()}</span>
+          </div>
+          <p className="text-[9px] text-zinc-400 text-center">Shipping, taxes, and duty calculated at checkout.</p>
+
+          <button
+            onClick={handleCheckout}
+            disabled={items.length === 0}
+            className="w-full bg-black text-white py-4 text-[11px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Proceed to Checkout
+          </button>
+        </div>
       </div>
-    </div >
+    </div>
   );
 };

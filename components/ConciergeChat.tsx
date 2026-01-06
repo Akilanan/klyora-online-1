@@ -87,9 +87,14 @@ export const ConciergeChat: React.FC<ConciergeChatProps> = ({ products = [] }) =
                             <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400">Concierge</p>
                             <p className="font-serif italic text-lg">Elianne</p>
                         </div>
-                        <button onClick={() => setIsOpen(false)} className="text-zinc-400 hover:text-white transition-colors">
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7" /></svg>
-                        </button>
+                        <div className="flex gap-4 items-center">
+                            <button onClick={() => window.open('https://calendly.com', '_blank')} className="text-[9px] uppercase tracking-widest border border-white/20 px-3 py-1 hover:bg-white hover:text-black transition-colors rounded">
+                                Book Live
+                            </button>
+                            <button onClick={() => setIsOpen(false)} className="text-zinc-400 hover:text-white transition-colors">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                        </div>
                     </div>
 
                     {/* Messages */}
@@ -97,8 +102,8 @@ export const ConciergeChat: React.FC<ConciergeChatProps> = ({ products = [] }) =
                         {messages.map((msg, idx) => (
                             <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`max-w-[80%] p-3 text-sm leading-relaxed ${msg.role === 'user'
-                                        ? 'bg-black text-white rounded-l-xl rounded-tr-xl'
-                                        : 'bg-white border border-zinc-100 text-black rounded-r-xl rounded-tl-xl shadow-sm'
+                                    ? 'bg-black text-white rounded-l-xl rounded-tr-xl'
+                                    : 'bg-white border border-zinc-100 text-black rounded-r-xl rounded-tl-xl shadow-sm'
                                     }`}>
                                     {msg.text}
                                 </div>
@@ -118,6 +123,17 @@ export const ConciergeChat: React.FC<ConciergeChatProps> = ({ products = [] }) =
 
                     {/* Input */}
                     <div className="p-4 bg-white border-t border-zinc-100">
+                        {/* WhatsApp Trigger */}
+                        <a
+                            href="https://wa.me/1555019988?text=I%20am%20inquiring%20about%20Maison%20Klyora%20access."
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-[#25D366] text-white text-[10px] uppercase font-bold tracking-widest flex items-center justify-center gap-2 py-2 mb-3 rounded-md hover:opacity-90 transition-opacity"
+                        >
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-8.68-2.03-.967-.272-.297-.471-.421-.909-.421-.446 0-.966.173-1.47.723-.496.545-1.89 1.77-1.89 4.318 0 2.548 1.845 4.974 2.103 5.321.258.348 3.597 5.755 8.847 7.822 3.545 1.739 4.706 1.341 5.448 1.217.742-.124 2.375-.967 2.722-1.922.347-.955.347-1.782.248-1.956z" /></svg>
+                            Direct WhatsApp Access
+                        </a>
+
                         <form
                             onSubmit={(e) => { e.preventDefault(); handleSend(); }}
                             className="flex gap-2"

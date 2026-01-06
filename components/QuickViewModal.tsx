@@ -443,27 +443,45 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 
           {/* 3. Fixed Footer */}
           <div className="p-6 bg-white border-t border-black/5 z-20 shrink-0">
-            <button
-              onClick={() => {
-                if (selectedVariant) {
-                  // Add Main Product
-                  onAddToCart(product, selectedVariant);
+            {selectedVariant && !selectedVariant.available ? (
+              <button
+                onClick={() => {
+                  const email = prompt("Enter your email to be notified when this piece returns to the atelier:");
+                  if (email) {
+                    const existing = JSON.parse(localStorage.getItem('klyora_waitlist') || '[]');
+                    existing.push({ email, product: product.name, date: new Date().toISOString() });
+                    localStorage.setItem('klyora_waitlist', JSON.stringify(existing));
+                    alert(`You have been added to the priority waitlist for ${product.name}. We will contact you at ${email}.`);
+                  }
+                }}
+                className="w-full bg-zinc-900/50 text-white py-4 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-900 transition-all rounded-none flex items-center justify-center gap-3 backdrop-blur-md"
+              >
+                <span>Join Waitlist</span>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0" /></svg>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  if (selectedVariant) {
+                    // Add Main Product
+                    onAddToCart(product, selectedVariant);
 
-                  analytics.addToCart({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    variant: selectedVariant.title,
-                    currency: currency === '$' ? 'USD' : currency === '€' ? 'EUR' : 'GBP'
-                  });
-                }
-              }}
-              disabled={!selectedVariant}
-              className="w-full bg-black text-white py-4 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
-            >
-              <span>{selectedVariant ? `Add to Bag - ${currency}${product.price.toLocaleString()}` : 'Select Size'}</span>
-              {selectedVariant && <span className="w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>}
-            </button>
+                    analytics.addToCart({
+                      id: product.id,
+                      name: product.name,
+                      price: product.price,
+                      variant: selectedVariant.title,
+                      currency: currency === '$' ? 'USD' : currency === '€' ? 'EUR' : 'GBP'
+                    });
+                  }
+                }}
+                disabled={!selectedVariant}
+                className="w-full bg-black text-white py-4 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
+              >
+                <span>{selectedVariant ? `Add to Bag - ${currency}${product.price.toLocaleString()}` : 'Select Size'}</span>
+                {selectedVariant && <span className="w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>}
+              </button>
+            )}
 
             <div className="flex justify-center gap-4 mt-3 opacity-40">
               {/* Simple SVG Placeholders for payment icons to reduce noise, or small text */}
