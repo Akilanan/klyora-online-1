@@ -14,7 +14,7 @@ import { LoginModal } from './components/LoginModal';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { ArchiveDrawer } from './components/ArchiveDrawer';
 import { Footer } from './components/Footer';
-import { WinterPromoModal } from './components/WinterPromoModal';
+
 import { InfoModal } from './components/InfoModal';
 import { ReturnRequestModal } from './components/ReturnRequestModal';
 import { OrderTrackingModal } from './components/OrderTrackingModal';
@@ -989,7 +989,7 @@ const App: React.FC = () => {
       }
 
       <BackToTop />
-      <WinterPromoModal />
+
       <ReturnRequestModal isOpen={isReturnModalOpen} onClose={() => setIsReturnModalOpen(false)} />
       <OrderTrackingModal isOpen={isTrackingModalOpen} onClose={() => setIsTrackingModalOpen(false)} />
       <VipAccessModal isOpen={isVipModalOpen} onClose={() => setIsVipModalOpen(false)} onAccessGranted={() => {
