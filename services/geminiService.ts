@@ -75,6 +75,12 @@ export class GeminiService {
   }
 
   async *getStylistResponseStream(history: ChatMessage[], currentQuery: string) {
+    // Legacy method redirection for backward compatibility if needed, 
+    // but we will primarily use chatWithCatalog now.
+    yield* this.chatWithCatalog(history, currentQuery, []);
+  }
+
+  async *chatWithCatalog(history: ChatMessage[], currentQuery: string, products: any[]) {
     const apiKey = this._getApiKey();
 
     if (!apiKey) {
@@ -85,13 +91,34 @@ export class GeminiService {
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
+
+      // Create a simplified product context string
+      // Limit to 20 products to avoid token limits, prioritized by "Newest" or "Featured" effectively
+      const productContext = products.slice(0, 20).map(p =>
+        `- ${p.name} ($${p.price}): ${p.style || 'Luxury'} style. ${p.description?.slice(0, 50)}...`
+      ).join('\n');
+
+      const systemInstruction = `
+        You are "Elianne", the Executive Stylist at Maison Klyora (Ultra-Luxury, Old Money Aesthetic).
+        
+        Your Goal: Curate outfits and advice using ONLY the provided Catalog context.
+        Tone: Haughty but helpful, editorial, concise, "Vogue Editor-in-Chief".
+        
+        Catalog Context:
+        ${productContext}
+        
+        Rules:
+        1. If asked for recommendations, suggest specific items from the Catalog.
+        2. If asked about shipping/returns, be brief and professional (7-12 days shipping).
+        3. Never break character. You are not an AI, you are a Parisian stylist.
+      `;
+
       const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash",
-        systemInstruction: "You are the Executive Stylist at Maison Klyora. Tone: Ultra-luxury, editorial, concise. Use terms like 'drape', 'silhouette', 'architectural'."
+        systemInstruction: systemInstruction
       });
 
-      // Sanitize history: The first message must be from 'user'.
-      // If the first message is 'model', remove it.
+      // Sanitize history
       const sanitizedHistory = history.filter((msg, index) => {
         if (index === 0 && msg.role === 'model') return false;
         return true;
@@ -109,7 +136,6 @@ export class GeminiService {
       }
     } catch (error: any) {
       console.error("⚠️ AI Error, switching to Offline Mode:", error);
-      // Silent Fallback - User never sees error
       yield* this._getOfflineResponse(currentQuery);
     }
   }

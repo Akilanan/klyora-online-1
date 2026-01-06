@@ -156,20 +156,30 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({ productName }) =
         ) : reviews.length === 0 ? (
           <p className="text-[11px] uppercase tracking-widest text-zinc-300 italic text-center py-10">No reflections yet recorded for this silhouette.</p>
         ) : (
-          reviews.map((rev) => (
-            <div key={rev.id} className="animate-fade-in group space-y-4">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-6">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-black">{rev.name}</span>
+          <div className="columns-1 md:columns-2 gap-8 space-y-8">
+            {reviews.map((rev) => (
+              <div key={rev.id} className="break-inside-avoid bg-zinc-50/50 p-8 border border-zinc-100 hover:border-black/10 transition-colors animate-fade-in group">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-black block">{rev.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[8px] uppercase tracking-widest text-[#8ca67a] flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
+                        Verified Client
+                      </span>
+                    </div>
+                  </div>
                   <StarRating rating={rev.rating} />
                 </div>
-                <span className="text-[8px] uppercase tracking-widest text-zinc-300 font-bold">{rev.date}</span>
+                <p className="text-[14px] leading-[1.8] text-zinc-600 font-serif italic font-light group-hover:text-black transition-colors">
+                  "{rev.comment}"
+                </p>
+                <div className="mt-6 pt-6 border-t border-black/5 flex justify-between items-center">
+                  <span className="text-[8px] uppercase tracking-widest text-zinc-300 font-bold">{rev.date}</span>
+                </div>
               </div>
-              <p className="text-[15px] leading-[1.8] text-zinc-700 font-serif italic font-light group-hover:text-black transition-colors">
-                "{rev.comment}"
-              </p>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>

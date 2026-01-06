@@ -149,6 +149,31 @@ const App: React.FC = () => {
       const newUrl = `${window.location.pathname}?product=${handle}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
       document.title = `${selectedQuickView.name} | Maison Klyora`;
+
+      // Klaviyo: Viewed Product
+      const _learnq = (window as any)._learnq || [];
+      const item = {
+        Name: selectedQuickView.name,
+        ProductID: selectedQuickView.id,
+        ImageURL: selectedQuickView.image,
+        URL: window.location.href,
+        Brand: "Maison Klyora",
+        Price: selectedQuickView.price,
+        CompareAtPrice: selectedQuickView.price // Assuming no discount for simplicity, or add logic
+      };
+      _learnq.push(['track', 'Viewed Product', item]);
+      _learnq.push(['trackViewedItem', {
+        Title: item.Name,
+        ItemId: item.ProductID,
+        Categories: [selectedQuickView.category],
+        ImageUrl: item.ImageURL,
+        Url: item.URL,
+        Metadata: {
+          Brand: item.Brand,
+          Price: item.Price,
+          CompareAtPrice: item.CompareAtPrice
+        }
+      }]);
     } else {
       const newUrl = window.location.pathname;
       window.history.pushState({ path: newUrl }, '', newUrl);
@@ -220,6 +245,17 @@ const App: React.FC = () => {
         currency: currency
       });
     }
+    // Klaviyo: Added to Cart
+    const _learnq = (window as any)._learnq || [];
+    _learnq.push(['track', 'Added to Cart', {
+      Name: product.name,
+      ProductID: product.id,
+      Price: product.price,
+      ImageURL: product.image,
+      URL: window.location.href, // Or product specific URL if available
+      Brand: "Maison Klyora",
+      Quantity: 1
+    }]);
     setCart(prev => {
       const existing = prev.find(i => i.id === product.id && i.selectedVariant.id === variant.id);
       if (existing) {
@@ -241,6 +277,20 @@ const App: React.FC = () => {
         num_items: cart.length
       });
     }
+    // Klaviyo: Initiate Checkout (Started Checkout)
+    const _learnq = (window as any)._learnq || [];
+    _learnq.push(['track', 'Started Checkout', {
+      $event_id: Date.now() + Math.random().toString(), // Unique ID
+      $value: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+      Items: cart.map(item => ({
+        ProductID: item.id,
+        Name: item.name,
+        Quantity: item.quantity,
+        Price: item.price,
+        RowTotal: item.price * item.quantity,
+        ImageURL: item.image
+      }))
+    }]);
     const items = cart.map(item => {
       const variantId = item.selectedVariant.id.toString().split('/').pop();
       return `${variantId}:${item.quantity}`;
@@ -509,34 +559,52 @@ const App: React.FC = () => {
 
           {/* Pagination Controls */}
           {filteredProducts.length > productsPerPage && (
-            <div className="mt-32 flex justify-center items-center gap-4 animate-fade-in">
-              <button
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="px-6 py-3 border border-white/10 text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-white hover:text-black transition-all"
-              >
-                Previous
-              </button>
+            <div className="mt-32 flex flex-col items-center gap-8 animate-fade-in">
 
-              <div className="flex gap-2">
-                {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }).map((_, i) => (
+              {/* Mobile "Load More" (Feed Style) */}
+              <div className="md:hidden w-full px-10">
+                {currentPage * productsPerPage < filteredProducts.length ? (
                   <button
-                    key={i}
-                    onClick={() => setCurrentPage(i + 1)}
-                    className={`w-8 h-8 flex items-center justify-center text-[10px] border transition-all ${currentPage === i + 1 ? 'bg-white text-black border-white' : 'border-white/10 hover:border-white'}`}
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                    className="w-full bg-white text-black py-4 text-[10px] uppercase font-bold tracking-[0.2em] border border-zinc-200 hover:bg-zinc-100 transition-colors"
                   >
-                    {i + 1}
+                    Discover More
                   </button>
-                ))}
+                ) : (
+                  <p className="text-center text-zinc-500 text-[9px] uppercase tracking-widest">You have reached the end of the collection.</p>
+                )}
               </div>
 
-              <button
-                onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredProducts.length / productsPerPage), p + 1))}
-                disabled={currentPage === Math.ceil(filteredProducts.length / productsPerPage)}
-                className="px-6 py-3 border border-white/10 text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-white hover:text-black transition-all"
-              >
-                Next
-              </button>
+              {/* Desktop Numeric Pagination */}
+              <div className="hidden md:flex justify-center items-center gap-4">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-6 py-3 border border-white/10 text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-white hover:text-black transition-all"
+                >
+                  Previous
+                </button>
+
+                <div className="flex gap-2">
+                  {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`w-8 h-8 flex items-center justify-center text-[10px] border transition-all ${currentPage === i + 1 ? 'bg-white text-black border-white' : 'border-white/10 hover:border-white'}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredProducts.length / productsPerPage), p + 1))}
+                  disabled={currentPage === Math.ceil(filteredProducts.length / productsPerPage)}
+                  className="px-6 py-3 border border-white/10 text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-white hover:text-black transition-all"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           )}
         </section>
@@ -928,7 +996,7 @@ const App: React.FC = () => {
         showNotification("Welcome to the Inner Circle. Exclusive access granted.");
         setActiveCategory('Atelier Exclusive');
       }} />
-      <ConciergeChat />
+      <ConciergeChat products={filteredProducts} />
       <CookieConsent />
       <NewsletterModal />
       {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}

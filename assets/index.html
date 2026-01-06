@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KLYORA | The Winter Collection</title>
-  <link rel="icon" type="image/jpeg" href="/klyora_logo.jpg" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/klyora_logo.jpg" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#000000" />
@@ -32,6 +32,22 @@
   </script>
   <!-- End Meta Pixel Code -->
 
+  <!-- Google Analytics 4 (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-PLACEHOLDER');
+  </script>
+
+  <!-- Klaviyo Tracking -->
+  <script async type="text/javascript"
+    src="//static.klaviyo.com/onsite/js/klaviyo.js?company_id=PUBLIC_API_KEY"></script>
+  <script>
+    var _learnq = _learnq || [];
+  </script>
+
   <!-- OpenGraph for Social Sharing -->
   <meta property="og:title" content="KLYORA | Official Premium Boutique">
   <meta property="og:description"
@@ -43,6 +59,14 @@
 
   <!-- Canonical Link -->
   <link rel="canonical" href="https://Klyoraofficial.com" />
+
+  <!-- Performance: Preconnect to Shopify API/CDN -->
+  <link rel="preconnect" href="https://cdn.shopify.com" />
+
+  <!-- LCP Optimization: Preload Hero Image -->
+  <link rel="preload" as="image"
+    href="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop" imagesrcset="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=800&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2070&auto=format&fit=crop 2070w"
+    imagesizes="100vw">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link
@@ -285,7 +309,7 @@
 <body>
   <noscript><img height="1" width="1" style="display:none"
       src="https://www.facebook.com/tr?id=2529689652661811&ev=PageView&noscript=1" /></noscript>
-  <div id="root"></div>
+  <div id="klyora-root"></div>
 </body>
 
 </html>
