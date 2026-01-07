@@ -1,0 +1,28 @@
+{% schema %}
+{
+  "name": "Klyora SPA Root",
+  "target": "body",
+  "settings": []
+}
+{% endschema %}
+
+<div id="root"></div>
+
+<script>
+  window.KlyoraConfig = {
+    shopDomain: "{{ shop.domain }}",
+    currency: "{{ cart.currency.iso_code }}",
+    customer: {% if customer %}
+      {
+        name: "{{ customer.first_name }}",
+        totalSpent: {{ customer.total_spent | divided_by: 100.0 }}
+      }
+    {% else %}
+      null
+    {% endif %},
+    geminiApiKey: "{{ settings.gemini_api_key }}" 
+  };
+</script>
+
+{{ 'klyora.css' | asset_url | stylesheet_tag }}
+{{ 'klyora.js' | asset_url | script_tag }}
