@@ -5,10 +5,11 @@ import { geminiService } from '../services/geminiService';
 
 interface ShopTheLookProps {
     products: Product[];
+    currency: string;
     onProductClick: (p: Product) => void;
 }
 
-export const ShopTheLook: React.FC<ShopTheLookProps> = ({ products, onProductClick }) => {
+export const ShopTheLook: React.FC<ShopTheLookProps> = ({ products, currency, onProductClick }) => {
     const [look, setLook] = useState<{ main: Product, secondary: Product, accessory: Product | null, rationale: string } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -81,14 +82,14 @@ export const ShopTheLook: React.FC<ShopTheLookProps> = ({ products, onProductCli
                         ) : (
                             <>
                                 <div className="col-span-1">
-                                    <ProductCard product={look!.main} currency="$" onClick={() => onProductClick(look!.main)} />
+                                    <ProductCard product={look!.main} currency={currency} onClick={() => onProductClick(look!.main)} />
                                 </div>
                                 <div className="col-span-1 md:mt-12">
-                                    <ProductCard product={look!.secondary} currency="$" onClick={() => onProductClick(look!.secondary)} />
+                                    <ProductCard product={look!.secondary} currency={currency} onClick={() => onProductClick(look!.secondary)} />
                                 </div>
                                 {look!.accessory && (
                                     <div className="hidden md:block col-span-1 md:mt-24">
-                                        <ProductCard product={look!.accessory} currency="$" onClick={() => onProductClick(look!.accessory)} />
+                                        <ProductCard product={look!.accessory} currency={currency} onClick={() => onProductClick(look!.accessory)} />
                                     </div>
                                 )}
                             </>

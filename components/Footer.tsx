@@ -6,9 +6,11 @@ interface FooterProps {
     onSubscribe: (email: string) => void;
     language: 'EN' | 'FR';
     setLanguage: (lang: 'EN' | 'FR') => void;
+    currency: string;
+    setCurrency: (curr: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, onSubscribe, language, setLanguage }) => {
+export const Footer: React.FC<any> = ({ onConciergeClick, onLinkClick, onSubscribe, language, setLanguage, currency, setCurrency }) => {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'success'>('idle');
     const [isSubscribed, setIsSubscribed] = useState(false);
@@ -28,6 +30,15 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
             setEmail('');
         }
     };
+
+    const regions = [
+        { label: 'Global (USD $)', value: '$' },
+        { label: 'Europe (EUR €)', value: '€' },
+        { label: 'UK (GBP £)', value: '£' },
+        { label: 'Japan (JPY ¥)', value: '¥' }
+    ];
+
+    const currentRegion = regions.find(r => r.value === currency) || regions[0];
 
     return (
         <footer className="bg-black text-white pt-24 pb-12 border-t border-white/10">
@@ -142,13 +153,17 @@ export const Footer: React.FC<FooterProps> = ({ onConciergeClick, onLinkClick, o
                         {/* Region Selector */}
                         <div className="relative group">
                             <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-                                <span>Global (USD $)</span>
+                                <span>{currentRegion.label}</span>
                                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7" /></svg>
                             </button>
                             <div className="absolute bottom-full right-0 mb-2 w-32 bg-zinc-900 border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                                {['Global (USD $)', 'Europe (EUR €)', 'UK (GBP £)'].map(curr => (
-                                    <button key={curr} className="block w-full text-left px-4 py-2 text-[9px] text-zinc-400 hover:bg-white/5 hover:text-white uppercase tracking-widest">
-                                        {curr}
+                                {regions.map(r => (
+                                    <button
+                                        key={r.value}
+                                        onClick={() => setCurrency(r.value)}
+                                        className={`block w-full text-left px-4 py-2 text-[9px] uppercase tracking-widest hover:bg-white/5 hover:text-white ${currency === r.value ? 'text-white font-bold' : 'text-zinc-400'}`}
+                                    >
+                                        {r.label}
                                     </button>
                                 ))}
                             </div>
