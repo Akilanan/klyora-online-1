@@ -553,441 +553,440 @@ const App: React.FC = () => {
 
       <main>
         {/* Editorial Hero (Cinematic Video) */}
-        <main>
-          {/* Editorial Hero (Cinematic Video) - Now Isolated for Performance */}
-          {/* @ts-ignore */}
-          <HeroBackground
-            t={t}
-            onConciergeClick={() => setIsChatOpen(true)}
-            onStyleQuizClick={() => setIsStyleQuizOpen(true)}
-          />
-
-          {/* Press / As Seen In */}
-          <PressSection />
-
-          {/* Trust Signals Bar */}
-          <div className="bg-white border-b border-black/5 py-8">
-            <div className="max-w-[1600px] mx-auto px-10 flex flex-wrap justify-center md:justify-around gap-8">
-              {[
-                { label: "Secure Transactions", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0" },
-                { label: "Global Priority Shipping", icon: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" },
-                { label: "Complimentary Returns", icon: "M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" },
-                { label: "Artisan Craftsmanship", icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" }
-              ].map(item => (
-                <div key={item.label} className="flex items-center gap-3 text-black/80">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} /></svg>
-                  <span className="text-[9px] uppercase tracking-[0.2em] font-bold">{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Brand Manifesto (SEO & Storytelling) */}
-          <section className="max-w-4xl mx-auto px-10 py-32 text-center">
-            <h2 className="text-[9px] uppercase tracking-[0.6em] font-bold text-[#8ca67a] mb-8">The Maison Philosophy</h2>
-            <p className="font-serif text-2xl md:text-3xl italic leading-relaxed text-white/90 mb-10">
-              "True luxury is found in the silence of a perfect silhouette."
-            </p>
-            <div className="text-zinc-500 text-xs md:text-sm leading-loose tracking-wide space-y-6 font-light max-w-2xl mx-auto">
-              <p>
-                Welcome to <strong className="text-zinc-600 font-normal">Maison Klyora</strong>, a digital sanctuary dedicated to the art of the
-                <em className="text-zinc-400 not-italic"> premium silhouette</em>. Our atelier curators travel the virtual globe to select only
-                the finest materials, ensuring that every view reveals a new detail of uncompromised luxury.
-              </p>
-              <p>
-                We believe that style is an architectural pursuit. From the drape of a wool coat to the structure of a tailored blazer,
-                every piece in our collection is chosen to enhance your personal narrative. We invite you to explore our bespoke inventory,
-                where each item is more than a garmentâ€”it is a promise of enduring elegance. Experience the detail, embrace the premium,
-                and define your legacy with Klyora.
-              </p>
-            </div>
-          </section>
-
-          {/* Shop The Look Editorial */}
-          <ShopTheLook
-            products={products}
-            currency={currency}
-            onProductClick={(p) => setSelectedQuickView(p)}
-          />
-
-          {/* Boutique Grid */}
-          <section id="collection-grid" className="max-w-[1600px] mx-auto px-10 py-48">
-            <div className="flex items-center gap-14 overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
-              <button
-                onClick={() => {
-                  setActiveCategory(null);
-                  setActiveAiCategory(null);
-                }}
-                className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${!activeCategory && !activeAiCategory ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
-              >
-                All
-              </button>
-
-              {/* AI Categories (Priority) */}
-              {aiCategories && Object.keys(aiCategories).map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => { setActiveAiCategory(cat); setActiveCategory(null); }}
-                  className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeAiCategory === cat ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
-                >
-                  {cat}
-                </button>
-              ))}
-
-              {/* Standard Collections (Fallback if AI fails or user wants specific sync) */}
-              {(!aiCategories) && collections.map(col => (
-                <button
-                  key={col.id}
-                  onClick={async () => {
-                    setActiveCategory(col.title);
-                    setIsSyncing(true);
-                    const colProducts = await shopifyService.fetchProductsByCollection(col.handle);
-                    setProducts(colProducts);
-                    setIsSyncing(false);
-                  }}
-                  className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeCategory === col.title ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
-                >
-                  {col.title}
-                </button>
-              ))}
-            </div>
-
-
-            <div className="flex justify-end mb-8 gap-4 px-2">
-              <button onClick={() => setViewMode('grid')} className={`text-[9px] uppercase tracking-widest ${viewMode === 'grid' ? 'text-white border-b border-white' : 'text-zinc-500'}`}>Grid View</button>
-              <button onClick={() => setViewMode('editorial')} className={`text-[9px] uppercase tracking-widest ${viewMode === 'editorial' ? 'text-white border-b border-white' : 'text-zinc-500'}`}>Editorial View</button>
-            </div>
-
-            <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40' : 'flex flex-col gap-32'} min-h-[500px]`}>
-              {(isLoading || isSyncing) ? (
-                // Skeleton Loader (Noir Theme)
-                Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="animate-pulse">
-                    <div className="aspect-[3/4.5] w-full bg-zinc-100 mb-6 relative overflow-hidden">
-                      <div className="absolute inset-0 skeleton-noir opacity-10"></div>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="h-3 bg-zinc-100 w-1/3"></div>
-                      <div className="h-4 bg-zinc-100 w-3/4"></div>
-                      <div className="h-3 bg-zinc-100 w-1/4"></div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).map((product, idx) => (
-                  viewMode === 'grid' ? (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      currency={currency}
-                      onClick={() => setSelectedQuickView(product)}
-                      isSaved={wishlist.includes(product.id)}
-                      onToggleSave={(e) => { e?.stopPropagation(); handleToggleWishlist(product.id); }}
-                    />
-                  ) : (
-                    // Editorial View Item
-                    <div key={product.id} className={`flex flex-col md:flex-row items-center gap-16 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`} onClick={() => setSelectedQuickView(product)}>
-                      <div className="flex-1 w-full aspect-[3/4.5] relative group cursor-pointer overflow-hidden">
-                        <img src={product.image} alt={product.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" />
-                      </div>
-                      <div className="flex-1 space-y-8 text-center md:text-left">
-                        <span className="text-[9px] uppercase tracking-[0.4em] text-zinc-500">Collection No. {idx + 1}</span>
-                        <h3 className="text-4xl font-serif italic">{product.name}</h3>
-                        <p className="max-w-md text-zinc-400 text-sm leading-loose md:mx-0 mx-auto">{product.description || 'A timeless piece of modern luxury, designed for the contemporary silhouette.'}</p>
-                        <button className="text-[9px] uppercase tracking-[0.3em] border text-white border-white/20 px-8 py-4 hover:bg-white hover:text-black transition-colors">View Piece</button>
-                      </div>
-                    </div>
-                  )
-                ))
-              )}
-            </div>
-
-            {/* Pagination Controls */}
-            {filteredProducts.length > productsPerPage && (
-              <div className="mt-32 flex flex-col items-center gap-8 animate-fade-in">
-
-                {/* Mobile "Load More" (Feed Style) */}
-                <div className="md:hidden w-full px-10">
-                  {currentPage * productsPerPage < filteredProducts.length ? (
-                    <button
-                      onClick={() => setCurrentPage(prev => prev + 1)}
-                      className="w-full bg-white text-black py-4 text-[10px] uppercase font-bold tracking-[0.2em] border border-zinc-200 hover:bg-zinc-100 transition-colors"
-                    >
-                      Discover More
-                    </button>
-                  ) : (
-                    <p className="text-center text-zinc-500 text-[9px] uppercase tracking-widest">You have reached the end of the collection.</p>
-                  )}
-                </div>
-
-                {/* Desktop Numeric Pagination */}
-                <div className="hidden md:flex justify-center items-center gap-4">
-                  <button
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="px-6 py-3 border border-white/10 text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-white hover:text-black transition-all"
-                  >
-                    Previous
-                  </button>
-
-                  <div className="flex gap-2">
-                    {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }).map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setCurrentPage(i + 1)}
-                        className={`w-8 h-8 flex items-center justify-center text-[10px] border transition-all ${currentPage === i + 1 ? 'bg-white text-black border-white' : 'border-white/10 hover:border-white'}`}
-                      >
-                        {i + 1}
-                      </button>
-                    ))}
-                  </div>
-
-                  <button
-                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredProducts.length / productsPerPage), p + 1))}
-                    disabled={currentPage === Math.ceil(filteredProducts.length / productsPerPage)}
-                    className="px-6 py-3 border border-white/10 text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-white hover:text-black transition-all"
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-            )}
-          </section>
-
-          <TestimonialsSection />
-          <InstagramFeed />
-          <JournalSection />
-        </main>
-
+        {/* Editorial Hero (Cinematic Video) - Now Isolated for Performance */}
         {/* @ts-ignore */}
-        <Footer
+        <HeroBackground
+          t={t}
           onConciergeClick={() => setIsChatOpen(true)}
-          onLinkClick={(title, type) => {
-            if (type === 'press') {
-              setIsPressOpen(true);
-              return;
-            }
-            if (type === 'return-refund') {
-              setIsReturnModalOpen(true);
-              return;
-            }
-            if (type === 'track-order') {
-              setIsTrackingModalOpen(true);
-              return;
-            }
-
-            let content = <p>Information unavailable.</p>;
-            if (type === 'coming-soon') {
-              content = (
-                <div className="text-center py-12">
-                  <p className="text-lg italic font-serif">This section is currently being curated.</p>
-                  <p className="mt-4 text-xs uppercase tracking-widest opacity-60">Please check back soon.</p>
-                </div>
-              );
-            }
-
-            setInfoModal({ isOpen: true, title, content });
-          }}
-          onSubscribe={(email) => showNotification(`Subscribed: ${email}`)}
-          language={language}
-          setLanguage={setLanguage}
-          currency={currency}
-          setCurrency={setCurrency}
+          onStyleQuizClick={() => setIsStyleQuizOpen(true)}
         />
 
-        <StylistChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        {/* Press / As Seen In */}
+        <PressSection />
+
+        {/* Trust Signals Bar */}
+        <div className="bg-white border-b border-black/5 py-8">
+          <div className="max-w-[1600px] mx-auto px-10 flex flex-wrap justify-center md:justify-around gap-8">
+            {[
+              { label: "Secure Transactions", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0" },
+              { label: "Global Priority Shipping", icon: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" },
+              { label: "Complimentary Returns", icon: "M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" },
+              { label: "Artisan Craftsmanship", icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" }
+            ].map(item => (
+              <div key={item.label} className="flex items-center gap-3 text-black/80">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} /></svg>
+                <span className="text-[9px] uppercase tracking-[0.2em] font-bold">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Brand Manifesto (SEO & Storytelling) */}
+        <section className="max-w-4xl mx-auto px-10 py-32 text-center">
+          <h2 className="text-[9px] uppercase tracking-[0.6em] font-bold text-[#8ca67a] mb-8">The Maison Philosophy</h2>
+          <p className="font-serif text-2xl md:text-3xl italic leading-relaxed text-white/90 mb-10">
+            "True luxury is found in the silence of a perfect silhouette."
+          </p>
+          <div className="text-zinc-500 text-xs md:text-sm leading-loose tracking-wide space-y-6 font-light max-w-2xl mx-auto">
+            <p>
+              Welcome to <strong className="text-zinc-600 font-normal">Maison Klyora</strong>, a digital sanctuary dedicated to the art of the
+              <em className="text-zinc-400 not-italic"> premium silhouette</em>. Our atelier curators travel the virtual globe to select only
+              the finest materials, ensuring that every view reveals a new detail of uncompromised luxury.
+            </p>
+            <p>
+              We believe that style is an architectural pursuit. From the drape of a wool coat to the structure of a tailored blazer,
+              every piece in our collection is chosen to enhance your personal narrative. We invite you to explore our bespoke inventory,
+              where each item is more than a garmentâ€”it is a promise of enduring elegance. Experience the detail, embrace the premium,
+              and define your legacy with Klyora.
+            </p>
+          </div>
+        </section>
+
+        {/* Shop The Look Editorial */}
+        <ShopTheLook
+          products={products}
+          currency={currency}
+          onProductClick={(p) => setSelectedQuickView(p)}
+        />
+
+        {/* Boutique Grid */}
+        <section id="collection-grid" className="max-w-[1600px] mx-auto px-10 py-48">
+          <div className="flex items-center gap-14 overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
+            <button
+              onClick={() => {
+                setActiveCategory(null);
+                setActiveAiCategory(null);
+              }}
+              className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${!activeCategory && !activeAiCategory ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+            >
+              All
+            </button>
+
+            {/* AI Categories (Priority) */}
+            {aiCategories && Object.keys(aiCategories).map(cat => (
+              <button
+                key={cat}
+                onClick={() => { setActiveAiCategory(cat); setActiveCategory(null); }}
+                className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeAiCategory === cat ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+              >
+                {cat}
+              </button>
+            ))}
+
+            {/* Standard Collections (Fallback if AI fails or user wants specific sync) */}
+            {(!aiCategories) && collections.map(col => (
+              <button
+                key={col.id}
+                onClick={async () => {
+                  setActiveCategory(col.title);
+                  setIsSyncing(true);
+                  const colProducts = await shopifyService.fetchProductsByCollection(col.handle);
+                  setProducts(colProducts);
+                  setIsSyncing(false);
+                }}
+                className={`text-[9px] uppercase tracking-[0.5em] font-bold transition-all whitespace-nowrap ${activeCategory === col.title ? 'text-white border-b border-white pb-2' : 'text-zinc-600 hover:text-white'}`}
+              >
+                {col.title}
+              </button>
+            ))}
+          </div>
+
+
+          <div className="flex justify-end mb-8 gap-4 px-2">
+            <button onClick={() => setViewMode('grid')} className={`text-[9px] uppercase tracking-widest ${viewMode === 'grid' ? 'text-white border-b border-white' : 'text-zinc-500'}`}>Grid View</button>
+            <button onClick={() => setViewMode('editorial')} className={`text-[9px] uppercase tracking-widest ${viewMode === 'editorial' ? 'text-white border-b border-white' : 'text-zinc-500'}`}>Editorial View</button>
+          </div>
+
+          <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-40' : 'flex flex-col gap-32'} min-h-[500px]`}>
+            {(isLoading || isSyncing) ? (
+              // Skeleton Loader (Noir Theme)
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-[3/4.5] w-full bg-zinc-100 mb-6 relative overflow-hidden">
+                    <div className="absolute inset-0 skeleton-noir opacity-10"></div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="h-3 bg-zinc-100 w-1/3"></div>
+                    <div className="h-4 bg-zinc-100 w-3/4"></div>
+                    <div className="h-3 bg-zinc-100 w-1/4"></div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).map((product, idx) => (
+                viewMode === 'grid' ? (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    currency={currency}
+                    onClick={() => setSelectedQuickView(product)}
+                    isSaved={wishlist.includes(product.id)}
+                    onToggleSave={(e) => { e?.stopPropagation(); handleToggleWishlist(product.id); }}
+                  />
+                ) : (
+                  // Editorial View Item
+                  <div key={product.id} className={`flex flex-col md:flex-row items-center gap-16 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`} onClick={() => setSelectedQuickView(product)}>
+                    <div className="flex-1 w-full aspect-[3/4.5] relative group cursor-pointer overflow-hidden">
+                      <img src={product.image} alt={product.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" />
+                    </div>
+                    <div className="flex-1 space-y-8 text-center md:text-left">
+                      <span className="text-[9px] uppercase tracking-[0.4em] text-zinc-500">Collection No. {idx + 1}</span>
+                      <h3 className="text-4xl font-serif italic">{product.name}</h3>
+                      <p className="max-w-md text-zinc-400 text-sm leading-loose md:mx-0 mx-auto">{product.description || 'A timeless piece of modern luxury, designed for the contemporary silhouette.'}</p>
+                      <button className="text-[9px] uppercase tracking-[0.3em] border text-white border-white/20 px-8 py-4 hover:bg-white hover:text-black transition-colors">View Piece</button>
+                    </div>
+                  </div>
+                )
+              ))
+            )}
+          </div>
+
+          {/* Pagination Controls */}
+          {filteredProducts.length > productsPerPage && (
+            <div className="mt-32 flex flex-col items-center gap-8 animate-fade-in">
+
+              {/* Mobile "Load More" (Feed Style) */}
+              <div className="md:hidden w-full px-10">
+                {currentPage * productsPerPage < filteredProducts.length ? (
+                  <button
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                    className="w-full bg-white text-black py-4 text-[10px] uppercase font-bold tracking-[0.2em] border border-zinc-200 hover:bg-zinc-100 transition-colors"
+                  >
+                    Discover More
+                  </button>
+                ) : (
+                  <p className="text-center text-zinc-500 text-[9px] uppercase tracking-widest">You have reached the end of the collection.</p>
+                )}
+              </div>
+
+              {/* Desktop Numeric Pagination */}
+              <div className="hidden md:flex justify-center items-center gap-4">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-6 py-3 border border-white/10 text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-white hover:text-black transition-all"
+                >
+                  Previous
+                </button>
+
+                <div className="flex gap-2">
+                  {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`w-8 h-8 flex items-center justify-center text-[10px] border transition-all ${currentPage === i + 1 ? 'bg-white text-black border-white' : 'border-white/10 hover:border-white'}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredProducts.length / productsPerPage), p + 1))}
+                  disabled={currentPage === Math.ceil(filteredProducts.length / productsPerPage)}
+                  className="px-6 py-3 border border-white/10 text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-white hover:text-black transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
+
+        <TestimonialsSection />
+        <InstagramFeed />
+        <JournalSection />
+      </main>
+
+      {/* @ts-ignore */}
+      <Footer
+        onConciergeClick={() => setIsChatOpen(true)}
+        onLinkClick={(title, type) => {
+          if (type === 'press') {
+            setIsPressOpen(true);
+            return;
+          }
+          if (type === 'return-refund') {
+            setIsReturnModalOpen(true);
+            return;
+          }
+          if (type === 'track-order') {
+            setIsTrackingModalOpen(true);
+            return;
+          }
+
+          let content = <p>Information unavailable.</p>;
+          if (type === 'coming-soon') {
+            content = (
+              <div className="text-center py-12">
+                <p className="text-lg italic font-serif">This section is currently being curated.</p>
+                <p className="mt-4 text-xs uppercase tracking-widest opacity-60">Please check back soon.</p>
+              </div>
+            );
+          }
+
+          setInfoModal({ isOpen: true, title, content });
+        }}
+        onSubscribe={(email) => showNotification(`Subscribed: ${email}`)}
+        language={language}
+        setLanguage={setLanguage}
+        currency={currency}
+        setCurrency={setCurrency}
+      />
+
+      <StylistChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <SearchOverlay
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+        resultsCount={filteredProducts.length}
+        catalog={products}
+        results={filteredProducts}
+        currency={currency}
+        onVisualResults={(ids) => { setVisualSearchIds(ids); setIsSearchOpen(false); }}
+        priceRange={priceRange}
+        onPriceRangeChange={setPriceRange}
+        selectedMaterial={selectedMaterial}
+        onMaterialChange={setSelectedMaterial}
+        allMaterials={allMaterials}
+        selectedColor={selectedColor}
+        onColorChange={setSelectedColor}
+        allColors={allColors}
+        inStockOnly={inStockOnly}
+        onInStockChange={setInStockOnly}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+      />
+
+      {
+        isCartOpen && (
+          <CartDrawer
+            items={cart}
+            onClose={() => setIsCartOpen(false)}
+            onRemove={(id, vId) => setCart(prev => prev.filter(i => !(i.id === id && i.selectedVariant.id === vId)))}
+            onCheckout={handleCheckout}
+            currency={currency}
+          />
+        )
+      }
+
+      {
+        isWishlistOpen && (
+          <WishlistDrawer
+            items={wishlistItems}
+            onClose={() => setIsWishlistOpen(false)}
+            onRemove={(id) => handleToggleWishlist(id)}
+            onMoveToBag={(product) => { setIsWishlistOpen(false); setSelectedQuickView(product); }}
+            currency={currency}
+          />
+        )
+      }
+
+      {
+        isArchiveOpen && (
+          <ArchiveDrawer
+            products={products}
+            onClose={() => setIsArchiveOpen(false)}
+            onSelectProduct={(product) => { setIsArchiveOpen(false); setSelectedQuickView(product); }}
+            currency={currency}
+          />
+        )
+      }
+
+      {
+        selectedQuickView && (
+          <QuickViewModal
+            product={selectedQuickView}
+            allProducts={products}
+            onClose={() => setSelectedQuickView(null)}
+            onAddToCart={handleAddToCart}
+            currency={currency}
+            isSaved={wishlist.includes(selectedQuickView.id)}
+            onToggleSave={() => handleToggleWishlist(selectedQuickView.id)}
+          />
+        )
+      }
+
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+
+      {
+        infoModal && (
+          <InfoModal
+            isOpen={infoModal.isOpen}
+            onClose={() => setInfoModal(null)}
+            title={infoModal.title}
+            content={infoModal.content}
+          />
+        )
+      }
+
+      <BackToTop />
+
+      <ReturnRequestModal isOpen={isReturnModalOpen} onClose={() => setIsReturnModalOpen(false)} />
+      <OrderTrackingModal isOpen={isTrackingModalOpen} onClose={() => setIsTrackingModalOpen(false)} />
+      <VipAccessModal isOpen={isVipModalOpen} onClose={() => setIsVipModalOpen(false)} onAccessGranted={() => {
+        showNotification("Welcome to the Inner Circle. Exclusive access granted.");
+        setActiveCategory('Atelier Exclusive');
+        setLoyaltyPoints(5000); // Instant Collector Status
+
+        // Inject Secret Product
+        const secretProduct: Product = {
+          id: 'secret-1',
+          name: 'The Membership Jacket',
+          price: 12000,
+          image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1936&auto=format&fit=crop',
+          description: "The ultimate symbol of the Klyora Inner Circle. Hand-stitched in Florence. Only available to members.",
+          category: 'Atelier Exclusive',
+          variants: [
+            { id: 's-1', title: 'Bespoke Fit / Midnight', price: 12000, available: true },
+            { id: 's-2', title: 'Bespoke Fit / Onyx', price: 12000, available: true }
+          ],
+          images: ['https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1936&auto=format&fit=crop'],
+          tags: ['exclusive', 'jacket', 'membership'],
+          reviews: 0,
+          rating: 5
+        };
+        setProducts(prev => [secretProduct, ...prev]);
+      }} />
+      <LoyaltyDashboard
+        isOpen={isLoyaltyOpen}
+        onClose={() => setIsLoyaltyOpen(false)}
+        points={loyaltyPoints}
+        customerName={customerName}
+      />
+
+      {/* Search Overlay with Admin Trigger */}
+      {isSearchOpen && (
         <SearchOverlay
           isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-          resultsCount={filteredProducts.length}
-          catalog={products}
-          results={filteredProducts}
-          currency={currency}
-          onVisualResults={(ids) => { setVisualSearchIds(ids); setIsSearchOpen(false); }}
-          priceRange={priceRange}
-          onPriceRangeChange={setPriceRange}
-          selectedMaterial={selectedMaterial}
-          onMaterialChange={setSelectedMaterial}
-          allMaterials={allMaterials}
-          selectedColor={selectedColor}
-          onColorChange={setSelectedColor}
-          allColors={allColors}
-          inStockOnly={inStockOnly}
-          onInStockChange={setInStockOnly}
-          sortBy={sortBy}
-          onSortChange={setSortBy}
-        />
-
-        {
-          isCartOpen && (
-            <CartDrawer
-              items={cart}
-              onClose={() => setIsCartOpen(false)}
-              onRemove={(id, vId) => setCart(prev => prev.filter(i => !(i.id === id && i.selectedVariant.id === vId)))}
-              onCheckout={handleCheckout}
-              currency={currency}
-            />
-          )
-        }
-
-        {
-          isWishlistOpen && (
-            <WishlistDrawer
-              items={wishlistItems}
-              onClose={() => setIsWishlistOpen(false)}
-              onRemove={(id) => handleToggleWishlist(id)}
-              onMoveToBag={(product) => { setIsWishlistOpen(false); setSelectedQuickView(product); }}
-              currency={currency}
-            />
-          )
-        }
-
-        {
-          isArchiveOpen && (
-            <ArchiveDrawer
-              products={products}
-              onClose={() => setIsArchiveOpen(false)}
-              onSelectProduct={(product) => { setIsArchiveOpen(false); setSelectedQuickView(product); }}
-              currency={currency}
-            />
-          )
-        }
-
-        {
-          selectedQuickView && (
-            <QuickViewModal
-              product={selectedQuickView}
-              allProducts={products}
-              onClose={() => setSelectedQuickView(null)}
-              onAddToCart={handleAddToCart}
-              currency={currency}
-              isSaved={wishlist.includes(selectedQuickView.id)}
-              onToggleSave={() => handleToggleWishlist(selectedQuickView.id)}
-            />
-          )
-        }
-
-        <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
-
-        {
-          infoModal && (
-            <InfoModal
-              isOpen={infoModal.isOpen}
-              onClose={() => setInfoModal(null)}
-              title={infoModal.title}
-              content={infoModal.content}
-            />
-          )
-        }
-
-        <BackToTop />
-
-        <ReturnRequestModal isOpen={isReturnModalOpen} onClose={() => setIsReturnModalOpen(false)} />
-        <OrderTrackingModal isOpen={isTrackingModalOpen} onClose={() => setIsTrackingModalOpen(false)} />
-        <VipAccessModal isOpen={isVipModalOpen} onClose={() => setIsVipModalOpen(false)} onAccessGranted={() => {
-          showNotification("Welcome to the Inner Circle. Exclusive access granted.");
-          setActiveCategory('Atelier Exclusive');
-          setLoyaltyPoints(5000); // Instant Collector Status
-
-          // Inject Secret Product
-          const secretProduct: Product = {
-            id: 'secret-1',
-            name: 'The Membership Jacket',
-            price: 12000,
-            image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1936&auto=format&fit=crop',
-            description: "The ultimate symbol of the Klyora Inner Circle. Hand-stitched in Florence. Only available to members.",
-            category: 'Atelier Exclusive',
-            variants: [
-              { id: 's-1', title: 'Bespoke Fit / Midnight', price: 12000, available: true },
-              { id: 's-2', title: 'Bespoke Fit / Onyx', price: 12000, available: true }
-            ],
-            images: ['https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1936&auto=format&fit=crop'],
-            tags: ['exclusive', 'jacket', 'membership'],
-            reviews: 0,
-            rating: 5
-          };
-          setProducts(prev => [secretProduct, ...prev]);
-        }} />
-        <LoyaltyDashboard
-          isOpen={isLoyaltyOpen}
-          onClose={() => setIsLoyaltyOpen(false)}
-          points={loyaltyPoints}
-          customerName={customerName}
-        />
-
-        {/* Search Overlay with Admin Trigger */}
-        {isSearchOpen && (
-          <SearchOverlay
-            isOpen={isSearchOpen}
-            onClose={() => setIsSearchOpen(false)}
-            onSearch={(q) => {
-              if (q.toLowerCase() === '/admin') {
-                setIsSearchOpen(false);
-                setIsAdminOpen(true);
-              } else {
-                setSearchQuery(q);
-                setActiveCategory(null);
-                setIsSearchOpen(false);
-                document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-            onVisualSearch={async (file) => {
+          onSearch={(q) => {
+            if (q.toLowerCase() === '/admin') {
               setIsSearchOpen(false);
-              const results = await geminiService.findVisualMatch(file, products);
-              setVisualSearchIds(results);
+              setIsAdminOpen(true);
+            } else {
+              setSearchQuery(q);
               setActiveCategory(null);
-              setSearchQuery('');
+              setIsSearchOpen(false);
               document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' });
-              showNotification("Visual Search Complete. Showing similar styles.");
-            }}
-          />
-        )}
-
-        {/* Admin Dashboard */}
-        {/* I need to add the import and state for this to work. */}
-        {/* Assuming I will add state in next step. */}
-        <AdminDashboardModal isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
-
-        <StyleQuizModal
-          isOpen={isStyleQuizOpen}
-          onClose={() => setIsStyleQuizOpen(false)}
-          onComplete={(persona) => {
-            setIsStyleQuizOpen(false);
-            showNotification(`Style Persona Verified: ${persona}. Curating collection...`);
-            setTimeout(() => {
-              // Mock sorting: Just reverse or shuffle to show effect
-              setProducts(prev => [...prev].reverse());
-              document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' });
-            }, 1500);
+            }
           }}
-        />
-
-        <PressPortalModal isOpen={isPressOpen} onClose={() => setIsPressOpen(false)} />
-
-        <ExitIntentModal />
-
-        <SocialProofToast />
-        <SoundController />
-
-        <ArchiveLoginModal
-          isOpen={isArchiveLoginOpen}
-          onClose={() => setIsArchiveLoginOpen(false)}
-          onUnlock={() => {
-            setIsArchiveLoginOpen(false);
-            showNotification("Archive Unlocked. Welcome to the vault.");
-            setActiveCategory('Archive'); // Assuming this filters properly or I need to handle it
+          onVisualSearch={async (file) => {
+            setIsSearchOpen(false);
+            const results = await geminiService.findVisualMatch(file, products);
+            setVisualSearchIds(results);
+            setActiveCategory(null);
+            setSearchQuery('');
             document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' });
+            showNotification("Visual Search Complete. Showing similar styles.");
           }}
         />
+      )}
 
-        <ConciergeChat products={filteredProducts} />
-        <CookieConsent />
-        <NewsletterModal />
-        {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
+      {/* Admin Dashboard */}
+      {/* I need to add the import and state for this to work. */}
+      {/* Assuming I will add state in next step. */}
+      <AdminDashboardModal isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
+
+      <StyleQuizModal
+        isOpen={isStyleQuizOpen}
+        onClose={() => setIsStyleQuizOpen(false)}
+        onComplete={(persona) => {
+          setIsStyleQuizOpen(false);
+          showNotification(`Style Persona Verified: ${persona}. Curating collection...`);
+          setTimeout(() => {
+            // Mock sorting: Just reverse or shuffle to show effect
+            setProducts(prev => [...prev].reverse());
+            document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' });
+          }, 1500);
+        }}
+      />
+
+      <PressPortalModal isOpen={isPressOpen} onClose={() => setIsPressOpen(false)} />
+
+      <ExitIntentModal />
+
+      <SocialProofToast />
+      <SoundController />
+
+      <ArchiveLoginModal
+        isOpen={isArchiveLoginOpen}
+        onClose={() => setIsArchiveLoginOpen(false)}
+        onUnlock={() => {
+          setIsArchiveLoginOpen(false);
+          showNotification("Archive Unlocked. Welcome to the vault.");
+          setActiveCategory('Archive'); // Assuming this filters properly or I need to handle it
+          document.getElementById('collection-grid')?.scrollIntoView({ behavior: 'smooth' });
+        }}
+      />
+
+      <ConciergeChat products={filteredProducts} />
+      <CookieConsent />
+      <NewsletterModal />
+      {notification && <Notification message={notification.message} onClose={() => setNotification(null)} />}
     </div >
   );
 };

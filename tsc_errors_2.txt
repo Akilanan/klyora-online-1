@@ -1,0 +1,24 @@
+﻿components/ArchiveDrawer.tsx(62,44): error TS2339: Property 'map' does not exist on type 'unknown'.
+components/ErrorBoundary.tsx(41,21): error TS2339: Property 'props' does not exist on type 'ErrorBoundary'.
+components/InstagramFeed.tsx(19,39): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+components/InstagramFeed.tsx(20,40): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+components/JournalSection.tsx(11,50): error TS2339: Property 'fetchArticles' does not exist on type 'ShopifyService'.
+components/NewsletterModal.tsx(24,13): error TS2304: Cannot find name 'handleClose'.
+components/NewsletterModal.tsx(33,101): error TS2304: Cannot find name 'handleClose'.
+components/NewsletterModal.tsx(36,34): error TS2304: Cannot find name 'handleClose'.
+components/NewsletterModal.tsx(76,148): error TS2304: Cannot find name 'handleClose'.
+components/ReturnRequestModal.tsx(21,30): error TS2345: Argument of type '"return"' is not assignable to parameter of type '"newsletter" | "press" | "waitlist" | "referral"'.
+components/SizeRecommenderModal.tsx(27,13): error TS2322: Type '"loose" | "tight" | "regular"' is not assignable to type '"Slim" | "Regular" | "Oversized"'.
+  Type '"loose"' is not assignable to type '"Slim" | "Regular" | "Oversized"'.
+constants.tsx(57,5): error TS2353: Object literal may only specify known properties, and 'rating' does not exist in type 'Product'.
+constants.tsx(74,5): error TS2353: Object literal may only specify known properties, and 'rating' does not exist in type 'Product'.
+constants.tsx(93,5): error TS2353: Object literal may only specify known properties, and 'rating' does not exist in type 'Product'.
+constants.tsx(110,5): error TS2353: Object literal may only specify known properties, and 'rating' does not exist in type 'Product'.
+constants.tsx(127,5): error TS2353: Object literal may only specify known properties, and 'rating' does not exist in type 'Product'.
+constants.tsx(146,5): error TS2353: Object literal may only specify known properties, and 'rating' does not exist in type 'Product'.
+constants.tsx(163,5): error TS2353: Object literal may only specify known properties, and 'rating' does not exist in type 'Product'.
+constants.tsx(182,5): error TS2353: Object literal may only specify known properties, and 'rating' does not exist in type 'Product'.
+constants.tsx(193,5): error TS2322: Type '"Accessories"' is not assignable to type '"Men" | "Women" | "Seasonal" | "Exclusive"'.
+constants.tsx(210,5): error TS2322: Type '"Accessories"' is not assignable to type '"Men" | "Women" | "Seasonal" | "Exclusive"'.
+services/geminiService.ts(177,9): error TS2367: This comparison appears to be unintentional because the types '"Slim" | "Regular" | "Oversized"' and '"loose"' have no overlap.
+services/geminiService.ts(183,16): error TS2367: This comparison appears to be unintentional because the types '"Slim" | "Regular" | "Oversized"' and '"tight"' have no overlap.

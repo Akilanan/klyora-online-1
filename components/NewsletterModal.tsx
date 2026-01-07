@@ -8,6 +8,9 @@ export const NewsletterModal: React.FC = () => {
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleClose = () => setIsOpen(false);
+
     // ... existing code ...
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

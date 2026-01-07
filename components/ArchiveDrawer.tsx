@@ -53,7 +53,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                     {Object.entries(groupedProducts).length === 0 ? (
                         <div className="text-center text-zinc-500 py-20">Archive Empty</div>
                     ) : (
-                        Object.entries(groupedProducts).map(([category, items]) => (
+                        Object.entries(groupedProducts).map(([category, items]: [string, Product[]]) => (
                             <div key={category} className="space-y-6">
                                 <h3 className="text-[11px] uppercase tracking-[0.4em] font-bold text-[#8ca67a] border-b border-white/5 pb-2 sticky top-0 bg-zinc-900/95 backdrop-blur py-2 z-10">
                                     {category} Collection

@@ -16,8 +16,8 @@ export const InstagramFeed: React.FC = () => {
 
     React.useEffect(() => {
         const fetchInstagramData = async () => {
-            const token = import.meta.env.VITE_IG_ACCESS_TOKEN;
-            const userId = import.meta.env.VITE_IG_USER_ID;
+            const token = (import.meta as any).env.VITE_IG_ACCESS_TOKEN;
+            const userId = (import.meta as any).env.VITE_IG_USER_ID;
             if (!token || !userId) return;
 
             try {

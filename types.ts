@@ -7,7 +7,7 @@ export interface Product {
   price: number;
   formattedPrice?: string;
   description: string;
-  category: 'Men' | 'Women' | 'Seasonal' | 'Exclusive';
+  category: 'Men' | 'Women' | 'Seasonal' | 'Exclusive' | 'Accessories' | 'Uncategorized' | 'Atelier Exclusive';
   image: string;
   relatedIds?: string[];
   composition?: string;
@@ -18,6 +18,9 @@ export interface Product {
   images: string[];
   descriptionHtml: string;
   tags?: string[]; // Added for Zendrop/Supplier logic
+  rating?: number;
+  reviews?: number;
+  lowStock?: boolean;
 }
 
 export interface ProductVariant {

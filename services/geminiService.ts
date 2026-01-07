@@ -174,13 +174,13 @@ export class GeminiService {
     else if (bmi < 28) size = 'L';
     else size = 'XL';
 
-    if (measurements.preferredFit === 'loose') {
+    if (measurements.preferredFit === 'Oversized') {
       if (size === 'XS') size = 'S';
       else if (size === 'S') size = 'M';
       else if (size === 'M') size = 'L';
       else if (size === 'L') size = 'XL';
       vibe = 'relaxed';
-    } else if (measurements.preferredFit === 'tight') {
+    } else if (measurements.preferredFit === 'Slim') {
       if (size === 'XL') size = 'L';
       else if (size === 'L') size = 'M';
       else if (size === 'M') size = 'S';

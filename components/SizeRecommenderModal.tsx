@@ -24,7 +24,8 @@ export const SizeRecommenderModal: React.FC<SizeRecommenderModalProps> = ({ isOp
             weight: parseInt(measurements.weight),
             chest: 0,
             waist: 0,
-            preferredFit: measurements.preference as 'tight' | 'regular' | 'loose'
+            hips: 0,
+            preferredFit: measurements.preference === 'tight' ? 'Slim' : measurements.preference === 'loose' ? 'Oversized' : 'Regular'
         }, { name: productName });
 
         setRecommendation(rec);

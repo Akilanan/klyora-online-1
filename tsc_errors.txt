@@ -1,0 +1,2 @@
+﻿App.tsx(554,8): error TS17008: JSX element 'main' has no corresponding closing tag.
+services/shopifyService.ts(180,5): error TS1128: Declaration or statement expected.

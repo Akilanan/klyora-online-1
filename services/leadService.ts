@@ -1,6 +1,6 @@
 export interface Lead {
     id: string;
-    type: 'newsletter' | 'waitlist' | 'press' | 'referral';
+    type: 'newsletter' | 'waitlist' | 'press' | 'referral' | 'return';
     data: any;
     timestamp: string;
 }
