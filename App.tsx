@@ -367,7 +367,11 @@ const App: React.FC = () => {
       const variantId = item.selectedVariant.id.toString().split('/').pop();
       return `${variantId}:${item.quantity}`;
     }).join(',');
-    const baseUrl = import.meta.env.DEV ? (import.meta.env.VITE_SHOPIFY_SHOP_URL || 'https://klyora-2.myshopify.com') : '';
+    // @ts-ignore
+    const baseUrl = (window.KlyoraConfig && window.KlyoraConfig.shopDomain)
+      ? `https://${window.KlyoraConfig.shopDomain}`
+      : 'https://klyora-2.myshopify.com';
+    console.log('[Checkout] Redirecting to:', `${baseUrl}/cart/${items}`);
     window.location.href = `${baseUrl}/cart/${items}`;
   };
 
@@ -565,10 +569,10 @@ const App: React.FC = () => {
           <div className="bg-white border-b border-black/5 py-8">
             <div className="max-w-[1600px] mx-auto px-10 flex flex-wrap justify-center md:justify-around gap-8">
               {[
-                { label: "Secure Checkout", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0" },
-                { label: "Fast Global Shipping", icon: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" },
-                { label: "Easy Returns", icon: "M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" },
-                { label: "Premium Quality", icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" }
+                { label: "Secure Transactions", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0" },
+                { label: "Global Priority Shipping", icon: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" },
+                { label: "Complimentary Returns", icon: "M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" },
+                { label: "Artisan Craftsmanship", icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" }
               ].map(item => (
                 <div key={item.label} className="flex items-center gap-3 text-black/80">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} /></svg>

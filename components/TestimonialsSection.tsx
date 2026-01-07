@@ -1,34 +1,6 @@
 import React from 'react';
 
-const TESTIMONIALS = [
-    {
-        id: 1,
-        name: "Elena R.",
-        location: "Milan, Italy",
-        role: "Verified Client",
-        rating: 5,
-        text: "The architectural drape of the wool coat is simply unmatched. It fits perfectly over my tailored suits without adding bulk. The fabric quality is noticeably superior to my previous investment pieces.",
-        product: "Elite Woolen Short Coat"
-    },
-    {
-        id: 2,
-        name: "James T.",
-        location: "London, UK",
-        role: "VIP Member",
-        rating: 4.8,
-        text: "Ordered the Cashmere Overcoat for my winter commute. The thermal regulation is excellent—warm without overheating. Packaging was pristine, though delivery took one extra day than estimated.",
-        product: "Heritage Cashmere Overcoat"
-    },
-    {
-        id: 3,
-        name: "Isabella Chen",
-        location: "Singapore",
-        role: "Private Client",
-        rating: 5,
-        text: "Maison Klyora has ruined other brands for me. The 'Find My Fit' AI recommended a Size S, and the silhouette is flawless. The silk lining details are what truly separate this from mass luxury.",
-        product: "Silk Evening Gown"
-    }
-];
+import { TESTIMONIALS } from '../data/testimonials';
 
 export const TestimonialsSection: React.FC = () => {
     return (

@@ -12,7 +12,21 @@ interface CartDrawerProps {
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove, onCheckout, currency: defaultCurrency }) => {
-  const [selectedCountry, setSelectedCountry] = React.useState('United States');
+  // Map currency symbols back to countries for default selection
+  const getCountryFromCurrency = (curr: string) => {
+    const map: Record<string, string> = {
+      '$': 'United States', '£': 'United Kingdom', '€': 'France', '¥': 'Japan', '₹': 'India', 'AED ': 'United Arab Emirates'
+    };
+    return map[curr] || 'United States';
+  };
+
+  const [selectedCountry, setSelectedCountry] = React.useState(getCountryFromCurrency(defaultCurrency));
+
+  // Keep synced if global currency changes
+  React.useEffect(() => {
+    setSelectedCountry(getCountryFromCurrency(defaultCurrency));
+  }, [defaultCurrency]);
+
   const [isGift, setIsGift] = React.useState(false);
   const [giftMessage, setGiftMessage] = React.useState('');
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);

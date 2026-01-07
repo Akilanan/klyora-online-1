@@ -174,26 +174,26 @@ export class ShopifyService {
     let composition = "Premium Blend"; // Default luxury fallback
 
     // keywords to strip out
-    const junkPatterns = [
-      /^fabric name/i, /^main fabric/i, /^supply category/i,
+    /^fabric name/i, /^main fabric/i, /^supply category/i,
       /^style/i, /^pattern/i, /^source/i, /^inventory/i,
-      /^weight/i, /^size/i, /^color/i, /^skirt length/i,
-      /polyester/i, /spandex/i, /nylon/i // Hide synthetic words for "Quiet Luxury" illusion
+      /^weight/i, /^size/i, /^skirt length/i
     ];
 
     for (const line of lines) {
-      // Check if line contains "polyester" or other synthetics to update composition silently
-      if (/polyester/i.test(line) || /fiber/i.test(line)) {
-        // Don't add to description, but maybe update internal composition tracking?
-        // We'll just skip adding it to the visible text.
-        continue;
-      }
-
       if (junkPatterns.some(p => p.test(line))) {
         continue;
       }
 
-      cleanLines.push(line);
+      // Soften synthetic terms to "Old Money" euphemisms
+      let processedLine = line;
+      processedLine = processedLine.replace(/polyester/gi, "Technical Weave");
+      processedLine = processedLine.replace(/spandex/gi, "Elasthane");
+      processedLine = processedLine.replace(/nylon/gi, "Polyamide");
+      processedLine = processedLine.replace(/artificial pu|pu leather|faux leather/gi, "Eco-Vegan Leather");
+      processedLine = processedLine.replace(/synthetic/gi, "Modern");
+      processedLine = processedLine.replace(/fiber/gi, "Strand");
+
+      cleanLines.push(processedLine);
     }
 
     // specific replacements for better tone
