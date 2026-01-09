@@ -156,7 +156,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                         </span>
                         {/* Live Viewer Count (FOMO) */}
                         <div className="flex items-center gap-1 ml-auto">
-                            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                            <div className="absolute top-4 left-4 flex gap-2">
+                                {product.tags?.includes('New Arrival') && (
+                                    <span className="bg-white/90 backdrop-blur px-3 py-1 text-[8px] uppercase tracking-widest font-bold">New Season</span>
+                                )}
+                                {product.availableForSale && Math.random() > 0.7 && (
+                                    <span className="bg-black/90 text-white backdrop-blur px-3 py-1 text-[8px] uppercase tracking-widest font-bold flex items-center gap-2 animate-pulse">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+                                        Low Stock
+                                    </span>
+                                )}
+                            </div><div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
                             <span className="text-[7px] uppercase tracking-widest text-red-500 font-bold">
                                 {Math.floor(Math.random() * (15 - 3) + 3)} Viewing
                             </span>

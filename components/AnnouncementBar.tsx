@@ -1,32 +1,52 @@
-
 import React, { useState, useEffect } from 'react';
 
-const MESSAGES = [
-    "Complimentary Worldwide Shipping | Limited Time",
-    "Private Sale: 24 Hours Remaining on Archive Pieces",
-    "High Demand: Order now for Priority Dispatch"
-];
-
 export const AnnouncementBar: React.FC = () => {
-    const [index, setIndex] = useState(0);
+    const [timeLeft, setTimeLeft] = useState('');
+    const [messageIndex, setMessageIndex] = useState(0);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setIndex((prev) => (prev + 1) % MESSAGES.length);
-        }, 4000);
-        return () => clearInterval(interval);
+        const calculateTime = () => {
+            const now = new Date();
+            const target = new Date();
+            // Set deadline to next midnight
+            target.setHours(24, 0, 0, 0);
+
+            const diff = target.getTime() - now.getTime();
+
+            const hrs = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+            setTimeLeft(`${hrs.toString().padStart(2, '0')}h ${mins.toString().padStart(2, '0')}m ${secs.toString().padStart(2, '0')}s`);
+        };
+
+        const timer = setInterval(calculateTime, 1000);
+        calculateTime();
+        return () => clearInterval(timer);
     }, []);
 
+    const messages = [
+        `Order within ${timeLeft} for Immediate Dispatch`,
+        "Complimentary Worldwide Shipping",
+        "Private Access: Use Code WELCOME15"
+    ];
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setMessageIndex(prev => (prev + 1) % messages.length);
+        }, 4000);
+        return () => clearInterval(timer);
+    }, [messages.length]);
+
     return (
-        <div className="bg-black text-white py-2.5 text-center border-b border-white/10 relative z-[110]">
-            <div className="max-w-none w-full overflow-hidden whitespace-nowrap">
-                <div className="inline-block animate-marquee pl-full">
-                    {[...MESSAGES, ...MESSAGES, ...MESSAGES].map((msg, idx) => (
-                        <span key={idx} className="text-[9px] uppercase tracking-[0.25em] font-medium text-zinc-300 mx-8">
-                            {msg} <span className="text-[#8ca67a] mx-4">•</span>
-                        </span>
-                    ))}
-                </div>
+        <div className="bg-black text-white py-2.5 text-center overflow-hidden relative z-[110] border-b border-white/10">
+            {/* Subtle Shimmer Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+
+            <div className="relative">
+                <p key={messageIndex} className="text-[9px] md:text-[10px] uppercase tracking-[0.25em] font-medium text-zinc-200 animate-fade-in-up">
+                    {messages[messageIndex]}
+                </p>
             </div>
         </div>
     );
