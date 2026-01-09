@@ -119,7 +119,31 @@ class AICaptionGenerator {
         return this.generateFallbackCaption(productName);
     }
 
+    // --- LUXURY SANITIZER ---
+    // Transforms cheap dropshipping names into "Quiet Luxury" titles
+    sanitizeProductName(rawName) {
+        let name = rawName;
+        // 1. Remove "Cheap" Keywords
+        const garbage = ['2024', '2025', 'New', 'Arrival', 'Women', 'Men', 'Hot', 'Sale', 'Fashion', 'Trend', 'Style', 'Summer', 'Winter'];
+        garbage.forEach(g => {
+            const regex = new RegExp(`\\b${g}\\b`, 'gi');
+            name = name.replace(regex, '');
+        });
+
+        // 2. Remove Special Chars
+        name = name.replace(/[^a-zA-Z\s]/g, '').trim();
+
+        // 3. Add Pretentious Prefix if missing
+        if (!name.startsWith('The ')) {
+            name = `The ${name}`;
+        }
+
+        return name;
+    }
+
     generateFallbackCaption(productName) {
+        const cleanName = this.sanitizeProductName(productName);
+
         // HERITAGE DICTIONARY (No "Old Money")
         const openers = [
             "The estate edit.", "Quiet Sundays.", "Inherited style.", "Private collection.",
@@ -129,9 +153,9 @@ class AICaptionGenerator {
         ];
 
         const middles = [
-            `${productName}.`, `Detailed: ${productName}.`, `Notes on the ${productName}.`,
-            `Wearing the ${productName}.`, `The texture of silence.`, `Understated ${productName}.`,
-            `Simply the ${productName}.`, `Essential ${productName}.`
+            `${cleanName}.`, `Detailed: ${cleanName}.`, `Notes on ${cleanName}.`,
+            `Wearing ${cleanName}.`, `The texture of silence.`, `Understated ${cleanName}.`,
+            `Simply ${cleanName}.`, `Essential ${cleanName}.`
         ];
 
         const closers = [
@@ -230,9 +254,10 @@ async function runAutoPoster() {
     console.log("⚡ Starting Klyora Social Auto-Poster...");
 
     // SAFETY: Random start delay (2 to 15 minutes) to avoid "Bot" patterns at exact :00 times
-    if (CONFIG.IS_LIVE_MODE) {
+    const args = process.argv.slice(2);
+    if (CONFIG.IS_LIVE_MODE && !args.includes('--force')) {
         const delay = Math.floor(Math.random() * (900000 - 120000) + 120000); // 2-15 mins
-        console.log(`🛡️ SAFETY PROTOCOL: Sleeping for ${Math.floor(delay / 1000)}s to mimic human behavior...`);
+        console.log(`🛡️ SAFETY PROTOCOL: Sleeping for ${Math.floor(delay / 1000)}s to mimic human behavior... (Use --force to skip)`);
         await new Promise(resolve => setTimeout(resolve, delay));
     }
 
