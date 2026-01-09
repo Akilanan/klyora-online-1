@@ -50,7 +50,7 @@ export const WelcomeOfferModal: React.FC = () => {
                             The Private <br /> Invitation
                         </h2>
                         <p className="text-sm font-light text-zinc-600 leading-relaxed max-w-xs mx-auto">
-                            Join our inner circle and receive a <span className="font-bold text-black">$25 Gift Card</span> towards your first acquisition.
+                            Join our inner circle and receive a <span className="font-bold text-black">15% Privilege</span> on your first acquisition.
                         </p>
 
                         <form onSubmit={handleUnlock} className="space-y-4 pt-4">
@@ -63,11 +63,11 @@ export const WelcomeOfferModal: React.FC = () => {
                                 className="w-full text-center bg-transparent border-b border-black/10 py-3 text-xs uppercase tracking-widest outline-none focus:border-black transition-colors placeholder:text-zinc-400"
                             />
                             <button type="submit" className="w-full bg-black text-white py-4 text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all shadow-lg hover:shadow-xl">
-                                Unlock $25 Gift
+                                Unlock 15% Benefit
                             </button>
                         </form>
                         <button onClick={handleClose} className="text-[8px] uppercase tracking-widest text-zinc-400 hover:text-black underline underline-offset-4">
-                            No thanks, I prefer full price
+                            No thanks, I prefer paying full price
                         </button>
                     </div>
                 ) : (
@@ -75,12 +75,12 @@ export const WelcomeOfferModal: React.FC = () => {
                         <div className="w-16 h-16 bg-[#8ca67a]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                             <svg className="w-8 h-8 text-[#8ca67a]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5 13l4 4L19 7" /></svg>
                         </div>
-                        <h2 className="text-2xl font-serif italic">Your Gift is Active</h2>
+                        <h2 className="text-2xl font-serif italic">Your Access is Active</h2>
                         <div className="bg-black text-white py-4 px-6 inline-block tracking-[0.3em] font-bold text-lg border border-dashed border-white/30">
-                            WELCOME25
+                            WELCOME15
                         </div>
                         <p className="text-xs text-zinc-500 uppercase tracking-widest mt-4">
-                            Applied at checkout
+                            Automatic 15% applied at checkout
                         </p>
                         <button onClick={handleClose} className="w-full bg-black text-white py-4 text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all mt-4">
                             Shop The Collection
