@@ -191,10 +191,10 @@ const gemini = new AICaptionGenerator();
 
 // --- Social Media Service ---
 class SocialMediaService {
-    async postToInstagram(caption, imageUrl) {
+    async postToInstagram(caption, feedImageUrl, storyImageUrl) {
         if (!CONFIG.IS_LIVE_MODE) {
             console.log(`[MOCK] Instagram Post Skipped (No Keys). Mocking success.`);
-            return "mock_id_123";
+            return { feedId: "mock_feed_123", storyId: "mock_story_123" };
         }
 
         console.log(`[LIVE] Posting to Instagram Account: ${CONFIG.IG_USER_ID}...`);
@@ -202,7 +202,7 @@ class SocialMediaService {
         try {
             // 1. Post to FEED
             // Step A: Create Container
-            const containerUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?image_url=${encodeURIComponent(imageUrl)}&caption=${encodeURIComponent(caption)}&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
+            const containerUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?image_url=${encodeURIComponent(feedImageUrl)}&caption=${encodeURIComponent(caption)}&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
             const containerRes = await fetch(containerUrl, { method: 'POST' });
             const containerData = await containerRes.json();
             if (containerData.error) throw new Error(`Feed Container Error: ${containerData.error.message}`);
@@ -220,7 +220,7 @@ class SocialMediaService {
             // 2. Post to STORY (Bonus)
             // Stories do NOT take captions, just the image.
             console.log("   --> Attempting Story Post...");
-            const storyContainerUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?image_url=${encodeURIComponent(imageUrl)}&media_type=STORIES&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
+            const storyContainerUrl = `https://graph.facebook.com/v18.0/${CONFIG.IG_USER_ID}/media?image_url=${encodeURIComponent(storyImageUrl)}&media_type=STORIES&access_token=${CONFIG.IG_ACCESS_TOKEN}`;
             const storyContainerRes = await fetch(storyContainerUrl, { method: 'POST' });
             const storyContainerData = await storyContainerRes.json();
 
@@ -288,33 +288,39 @@ async function runAutoPoster() {
         availableProducts = products;
     }
 
-    // 4. Select Random
-    const product = availableProducts[Math.floor(Math.random() * availableProducts.length)];
+    // 5. Smart Image Selection (Visual Variety)
+    let feedImage = null;
+    let storyImage = null;
 
-    // Pick a random image from the product's "Top 3" (Hero Shots)
-    // This avoids picking size charts, care tags, or boring detail shots that are usually at the end.
-    let image = null;
     if (product.images && product.images.length > 0) {
-        // Only pick from the first 3 images (0, 1, 2)
-        const maxIndex = Math.min(product.images.length, 3);
-        const randomImageIndex = Math.floor(Math.random() * maxIndex);
-        image = product.images[randomImageIndex].src;
+        // Feed: Prefer Image 1 (Hero)
+        feedImage = product.images[0].src;
+
+        // Story: Prefer Image 2 (Detail/Lifestyle) if available, otherwise use Image 1
+        if (product.images.length > 1) {
+            storyImage = product.images[1].src;
+        } else {
+            storyImage = feedImage;
+        }
     }
 
-    if (!image) {
+    if (!feedImage) {
         console.log("Skipping product with no image");
         return;
     }
 
     console.log(`🤖 Selected: ${product.title}`);
+    console.log(`   📸 Feed Image: ${feedImage.split('?')[0].slice(-20)}...`);
+    console.log(`   📸 Story Image: ${storyImage !== feedImage ? 'Distinct (Image 2)' : 'Same (Single Image)'}`);
 
-    // 5. Generate & Post
+    // 6. Generate & Post
     try {
         const caption = await gemini.generateCaption(product.title);
         const timestamp = new Date().toISOString();
 
         // Attempt Post (Feed + Story)
-        const result = await socialService.postToInstagram(caption, image);
+        // Note: modify postToInstagram to accept distinct story image
+        const result = await socialService.postToInstagram(caption, feedImage, storyImage);
 
         // Log to file
         const status = CONFIG.IS_LIVE_MODE ? "LIVE_POSTED" : "MOCK_POSTED";
