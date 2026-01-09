@@ -42,10 +42,10 @@ import { useUi } from './contexts/UiContext';
 import { useCart } from './contexts/CartContext';
 
 const BACKGROUND_IMAGES = [
-  'https://images.unsplash.com/photo-1490481651871-ab253a670147?q=80&w=2600&auto=format&fit=crop', // Minimalist Beige Coat/Runway
-  'https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2600&auto=format&fit=crop', // Texture/Fur Detail
-  'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=2600&auto=format&fit=crop', // Jewelry/Marble/Hand
-  'https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?q=80&w=2600&auto=format&fit=crop'  // Editorial Pose
+  'https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=2600&auto=format&fit=crop', // Architecture/Minimalist (Safe)
+  'https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2600&auto=format&fit=crop', // Texture/Fur Detail (Safe)
+  'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=2600&auto=format&fit=crop', // Jewelry/Marble/Hand (Safe)
+  'https://images.unsplash.com/photo-1507473885765-e6ed05e53335?q=80&w=2600&auto=format&fit=crop'  // Silk/Fabric Texture (Safe)
 ];
 
 const App: React.FC = () => {

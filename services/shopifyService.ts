@@ -324,7 +324,7 @@ export class ShopifyService {
           title: 'Fall Collection Preview',
           handle: 'fall-preview',
           publishedAt: new Date().toISOString(),
-          image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop',
+          image: 'https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=2070&auto=format&fit=crop',
           excerpt: 'A first look at the textures defining the upcoming season.',
           author: 'Klyora Team',
           category: 'News',
