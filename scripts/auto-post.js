@@ -178,11 +178,11 @@ class AICaptionGenerator {
         const template = Math.floor(Math.random() * 3);
 
         if (template === 0) {
-            return `${open} ${mid}\n\n${emoji}\n\n${hashtags}\n\nShop at: ${CONFIG.DISPLAY_SHOP_URL}`;
+            return `${open} ${mid}\n\n${emoji}\n\n${hashtags}\n\nLink in Bio.`;
         } else if (template === 1) {
-            return `${mid} ${emoji}\n${close}\n\n${hashtags}\n\nShop at: ${CONFIG.DISPLAY_SHOP_URL}`;
+            return `${mid} ${emoji}\n${close}\n\n${hashtags}\n\nLink in Bio to shop.`;
         } else {
-            return `${open}\n${mid}\n\n${emoji}\n\n${hashtags}\n\nShop at: ${CONFIG.DISPLAY_SHOP_URL}`;
+            return `${open}\n${mid}\n\n${emoji}\n\n${hashtags}\n\nTap Link in Bio.`;
         }
     }
 }
