@@ -31,7 +31,7 @@ export const JournalSection: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {articles.map(article => (
-                        <article key={article.id} className="group cursor-pointer" onClick={() => window.open(article.url, '_blank')}>
+                        <article key={article.id} className="group cursor-default relative">
                             <div className="overflow-hidden aspect-[4/5] mb-6 relative">
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors z-10" />
                                 <img

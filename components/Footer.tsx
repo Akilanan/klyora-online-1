@@ -148,6 +148,10 @@ export const Footer: React.FC<any> = ({ onConciergeClick, onLinkClick, onSubscri
                             </a>
                         </div>
 
+                        <a href="mailto:concierge@klyoraofficial.com" className="text-[9px] uppercase tracking-[0.3em] font-bold text-zinc-500 hover:text-white transition-colors">
+                            concierge@klyoraofficial.com
+                        </a>
+
                         {/* Region Selector */}
                         <div className="relative group">
                             <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
