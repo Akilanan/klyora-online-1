@@ -65,7 +65,7 @@ export const ExitIntentModal: React.FC = () => {
                         onClick={() => setIsVisible(false)}
                         className="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-zinc-600 underline underline-offset-4"
                     >
-                        No thanks, I'll pay full price
+                        Continue without credit
                     </button>
                 </div>
             </div>
