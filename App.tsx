@@ -39,6 +39,7 @@ import { TestimonialsSection } from './components/TestimonialsSection';
 import { HeroBackground } from './components/HeroBackground';
 import { TrustBar } from './components/TrustBar';
 import { geminiService } from './services/geminiService';
+import { WelcomeOfferModal } from './components/WelcomeOfferModal';
 import { useUi } from './contexts/UiContext';
 import { useCart } from './contexts/CartContext';
 
@@ -462,6 +463,7 @@ const App: React.FC = () => {
       <CookieConsent />
       <NewsletterModal />
       {notification && <Notification message={notification.message} type={notification.type || 'info'} onClose={() => showNotification('', 'info')} />}
+      <WelcomeOfferModal />
       <LoyaltyDashboard isOpen={isLoyaltyOpen} onClose={() => setIsLoyaltyOpen(false)} points={loyaltyPoints} customerName={customerName} />
     </div>
   );
