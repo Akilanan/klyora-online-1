@@ -1,8 +1,8 @@
 name: Daily Luxury Marketing
 on:
   schedule:
-    # Runs at 10:00 AM UTC (London/Paris Morning) every day
-    - cron: '0 10 * * *'
+    # Runs at 8:00 AM, 2:00 PM, and 8:00 PM UTC (3x Daily)
+    - cron: '0 8,14,20 * * *'
   workflow_dispatch: # Allows manual click in GitHub UI
 
 permissions:
