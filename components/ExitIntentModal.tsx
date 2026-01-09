@@ -44,21 +44,28 @@ export const ExitIntentModal: React.FC = () => {
                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
 
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#8ca67a] mb-4">Maison Klyora</p>
-                    <h2 className="text-3xl font-serif italic mb-6">Before You Depart...</h2>
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#8ca67a] mb-4">Wait! A Private Gift</p>
+                    <h2 className="text-3xl font-serif italic mb-6">Take $20 Off Your Order</h2>
                     <p className="text-sm text-zinc-600 mb-8 leading-relaxed">
-                        Become a member of our Inner Circle and receive priority access to the next Atelier release.
+                        Join our Inner Circle now and we'll immediately apply a <strong>$20.00 credit</strong> to your current cart.
                     </p>
 
-                    <button className="w-full bg-black text-white py-4 text-[10px] uppercase font-bold tracking-[0.3em] hover:bg-zinc-800 transition-colors mb-4">
-                        Unlock Priority Access
+                    <button
+                        onClick={() => {
+                            sessionStorage.setItem('klyora_discount', 'WELCOME20');
+                            setIsVisible(false);
+                            alert('Credit Applied! Code WELCOME20 will be auto-filled at checkout.');
+                        }}
+                        className="w-full bg-black text-white py-4 text-[10px] uppercase font-bold tracking-[0.3em] hover:bg-zinc-800 transition-colors mb-4"
+                    >
+                        Redeem My $20 Credit
                     </button>
 
                     <button
                         onClick={() => setIsVisible(false)}
                         className="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-zinc-600 underline underline-offset-4"
                     >
-                        No, I prefer standard access
+                        No thanks, I'll pay full price
                     </button>
                 </div>
             </div>
