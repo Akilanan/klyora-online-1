@@ -163,6 +163,28 @@ class AICaptionGenerator {
             "Maison Klyora.", "Exclusively online.", "Personal shopper link in bio."
         ];
 
+        // --- VIRAL OVERRIDE (30% Chance) ---
+        // Uses specific, high-performance hooks designed for "Old Money" trends
+        if (Math.random() > 0.7) {
+            const viralOptions = [
+                // Trend: Silence / Confidence
+                `The art of silence. 🦢\n.\nLink in Bio to acquire.\n#MaisonKlyora #QuietLuxury`,
+
+                // Trend: Gatekeeping / Reverse Psychology
+                `Sorry, it's a secret. 🤫\n(Link in Bio if you must know).\n#Klyora #Gatekeeping`,
+
+                // Trend: Urgency / Scarcity
+                `Few remain. The archive is closing.\nSecure your piece before it's gone.\n.\nTap Link in Bio.\n#LimitedEdition #SilkDress`,
+
+                // Trend: Lifestyle / Routine
+                `Sunday morning essentials.\nWearing ${cleanName}.\n.\nShop the look via Link in Bio.\n#SundayMorning #ParisianStyle`,
+
+                // Trend: Investment Brief
+                `Quality > Quantity. Always.\nInvest in your legacy.\n.\nLink in Bio.\n#SustainableFashion #WardrobeEssentials`
+            ];
+            return viralOptions[Math.floor(Math.random() * viralOptions.length)];
+        }
+
         // Monochrome & Classy Emojis
         const emojis = ["🦢", "🕰️", "🕯️", "♟️", "🎞️", "🥃", "🗝️", "🎻", "🌲", "🐎"];
 
