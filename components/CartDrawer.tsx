@@ -64,7 +64,26 @@ export const CartDrawer: React.FC = () => {
     'India', 'United Arab Emirates', 'Japan', 'Singapore'
   ];
 
-  const isShippingRestricted = selectedCountry === 'India';
+  /* Recommendation Logic */
+  // Mock "AI" - pick 3 random items NOT in cart
+  const [recommendations, setRecommendations] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    import('../constants').then(({ MOCK_PRODUCTS }) => {
+      const cartIds = items.map(i => i.id);
+      const candidates = MOCK_PRODUCTS.filter(p => !cartIds.includes(p.id));
+      // Shuffle and slice
+      setRecommendations(candidates.sort(() => 0.5 - Math.random()).slice(0, 3));
+    });
+  }, [items]);
+
+  const { addToCart } = useCart();
+  const handleQuickAdd = (product: any) => {
+    // Auto-select first available variant
+    const variant = product.variants?.[0] || { id: 'default', title: 'Default', available: true };
+    if (variant) addToCart(product, variant);
+  };
+
 
   return (
     <div className="fixed inset-0 z-[400] flex justify-end font-sans">
@@ -182,8 +201,31 @@ export const CartDrawer: React.FC = () => {
           </div>
         )}
 
+        <div className="pt-4 px-8 border-t border-black/5 bg-white pb-4">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500">Complete The Look</span>
+          </div>
+          <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2 -mx-2 px-2">
+            {recommendations.map(rec => (
+              <div key={rec.id} className="w-[120px] shrink-0 group cursor-pointer relative">
+                <div className="aspect-[3/4] bg-zinc-50 relative overflow-hidden mb-2">
+                  <img src={rec.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <button
+                    onClick={() => handleQuickAdd(rec)}
+                    className="absolute bottom-2 right-2 w-6 h-6 bg-white text-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-black hover:text-white"
+                  >
+                    <span className="text-lg leading-none mb-0.5">+</span>
+                  </button>
+                </div>
+                <h4 className="text-[9px] uppercase font-bold truncate">{rec.name}</h4>
+                <p className="text-[9px] font-serif italic text-zinc-500">{currencySymbol}{convertPrice(rec.price).toLocaleString()}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Unboxing Preview */}
-        <div className="pt-4 border-t border-black/5">
+        <div className="pt-4 border-t border-black/5 px-8">
           <details className="group cursor-pointer">
             <summary className="flex items-center justify-between list-none text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500 hover:text-black transition-colors mb-2">
               <span>The Unboxing Experience</span>
