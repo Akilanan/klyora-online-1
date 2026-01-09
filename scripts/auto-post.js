@@ -99,14 +99,14 @@ class AICaptionGenerator {
                 - Emojis: Use strictly 1 or 2 monochrome/neutral emojis (e.g., 🦢, 🕯️, 🕰️, 🎞️, 🥃).
                 - NO hashtags in the sentence.
                 - FORBIDDEN WORDS: Do NOT use the words "Old Money", "Wealth", or "Rich".
-                - End strictly with: "Shop at: ${CONFIG.DISPLAY_SHOP_URL}"
+                - End strictly with: "Link in Bio."
                 `;
 
                 const result = await model.generateContent(prompt);
                 const text = result.response.text();
 
-                if (!text.includes("http")) {
-                    return `${text}\n\nShop at: ${CONFIG.DISPLAY_SHOP_URL}`;
+                if (!text.toLowerCase().includes("bio")) {
+                    return `${text}\n\nLink in Bio.`;
                 }
                 return text;
             } catch (error) {
