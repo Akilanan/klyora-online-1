@@ -302,7 +302,7 @@ export class ShopifyService {
           title: 'The Art of Silence',
           handle: 'art-of-silence',
           publishedAt: new Date().toISOString(),
-          image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop',
+          image: 'https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?q=80&w=2070&auto=format&fit=crop',
           excerpt: 'Exploring the quiet power of minimalism in modern fashion.',
           author: 'Kyla V.',
           category: 'Editorial',
