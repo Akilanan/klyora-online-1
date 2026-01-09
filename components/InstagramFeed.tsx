@@ -13,12 +13,12 @@ export const InstagramFeed: React.FC = () => {
 
     // Mock Posts with Engagement
     const mockPosts = [
-        { id: '1', handle: '@klyora_official', likes: '2.4k', img: 'https://images.unsplash.com/photo-1511556820780-d912e42b4980?q=80&w=800', permalink: '#' },
-        { id: '2', handle: '@klyora_official', likes: '1.8k', img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800', permalink: '#' },
-        { id: '3', handle: '@klyora_official', likes: '4.1k', img: 'https://images.unsplash.com/photo-1618221823713-9806373b88b7?q=80&w=800', permalink: '#' },
-        { id: '4', handle: '@klyora_official', likes: '956', img: 'https://images.unsplash.com/photo-1507473885765-e6ed05e53335?q=80&w=800', permalink: '#' },
-        { id: '5', handle: '@klyora_official', likes: '3.2k', img: 'https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=800', permalink: '#' },
-        { id: '6', handle: '@klyora_official', likes: '1.5k', img: 'https://images.unsplash.com/photo-1490481651871-ab253a670147?q=80&w=800', permalink: '#' }
+        { id: '1', handle: '@klyora_official', likes: '2.4k', img: 'https://images.unsplash.com/photo-1511556820780-d912e42b4980?q=80&w=800', permalink: 'https://klyora-2.myshopify.com/products/silk-dress' },
+        { id: '2', handle: '@klyora_official', likes: '1.8k', img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800', permalink: 'https://klyora-2.myshopify.com/collections/new-arrivals' },
+        { id: '3', handle: '@klyora_official', likes: '4.1k', img: 'https://images.unsplash.com/photo-1618221823713-9806373b88b7?q=80&w=800', permalink: 'https://klyora-2.myshopify.com/products/archive-coat' },
+        { id: '4', handle: '@klyora_official', likes: '956', img: 'https://images.unsplash.com/photo-1507473885765-e6ed05e53335?q=80&w=800', permalink: 'https://klyora-2.myshopify.com/collections/accessories' },
+        { id: '5', handle: '@klyora_official', likes: '3.2k', img: 'https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=800', permalink: 'https://klyora-2.myshopify.com/products/signature-bag' },
+        { id: '6', handle: '@klyora_official', likes: '1.5k', img: 'https://images.unsplash.com/photo-1490481651871-ab253a670147?q=80&w=800', permalink: 'https://klyora-2.myshopify.com/collections/all' }
     ];
 
     const [posts, setPosts] = React.useState(mockPosts);
@@ -39,7 +39,7 @@ export const InstagramFeed: React.FC = () => {
                         handle: `@${item.username || 'klyoraofficial'}`,
                         likes: item.like_count ? `${(item.like_count / 1000).toFixed(1)}k` : '1.2k',
                         img: item.media_type === 'VIDEO' ? item.thumbnail_url : item.media_url,
-                        permalink: item.permalink
+                        permalink: 'https://klyora-2.myshopify.com/collections/all'
                     }));
                     setPosts(realPosts);
                 }

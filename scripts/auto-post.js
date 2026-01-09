@@ -106,9 +106,9 @@ class AICaptionGenerator {
                 const text = result.response.text();
 
                 if (!text.toLowerCase().includes("bio")) {
-                    return `${text}\n\nLink in Bio.`;
+                    return `${text}\n\nShop: ${CONFIG.DISPLAY_SHOP_URL}\nLink in Bio.`;
                 }
-                return text;
+                return `${text}\n${CONFIG.DISPLAY_SHOP_URL}`;
             } catch (error) {
                 console.warn("⚠️ AI Generation Failed (using fallback):", error.message);
             }

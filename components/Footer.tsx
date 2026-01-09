@@ -138,90 +138,92 @@ export const Footer: React.FC<any> = ({ onConciergeClick, onLinkClick, onSubscri
                     </div>
 
                     <div className="flex flex-col items-end gap-4">
-                        <div className="flex gap-8">
-                            <a href="https://instagram.com/klyoraofficial" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
-                                Instagram
-                            </a>
+                        {/* 
+            <div className="flex gap-6 mt-8 md:mt-0">
+               <a href="#" className="text-zinc-500 hover:text-white transition-colors">Instagram</a>
+               <a href="#" className="text-zinc-500 hover:text-white transition-colors">TikTok</a>
+               <a href="#" className="text-zinc-500 hover:text-white transition-colors">Pinterest</a>
+            </div> 
+            */}
 
-                            <a href="https://tiktok.com/@klyoraofficial" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
-                                TikTok
-                            </a>
-                        </div>
-
-                        <a href="mailto:concierge@klyoraofficial.com" className="text-[9px] uppercase tracking-[0.3em] font-bold text-zinc-500 hover:text-white transition-colors">
-                            concierge@klyoraofficial.com
+                        <a href="https://tiktok.com/@klyoraofficial" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
+                            TikTok
                         </a>
+                    </div>
 
-                        {/* Region Selector */}
-                        <div className="relative group">
-                            <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-                                <span>{currentRegion.label}</span>
-                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7" /></svg>
-                            </button>
-                            <div className="absolute bottom-full right-0 mb-2 w-32 bg-zinc-900 border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                                {regions.map(r => (
-                                    <button
-                                        key={r.value}
-                                        onClick={() => setCurrency(r.value)}
-                                        className={`block w-full text-left px-4 py-2 text-[9px] uppercase tracking-widest hover:bg-white/5 hover:text-white ${currency === r.value ? 'text-white font-bold' : 'text-zinc-400'}`}
-                                    >
-                                        {r.label}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                    <a href="mailto:concierge@klyoraofficial.com" className="text-[9px] uppercase tracking-[0.3em] font-bold text-zinc-500 hover:text-white transition-colors">
+                        concierge@klyoraofficial.com
+                    </a>
 
-                        {/* Language Toggle */}
-                        <div className="flex gap-2 text-[10px] uppercase tracking-widest border-l border-white/20 pl-4 ml-4">
-                            <button
-                                onClick={() => setLanguage('EN')}
-                                className={`transition-colors ${language === 'EN' ? 'text-white font-bold' : 'text-zinc-500 hover:text-white'}`}
-                            >
-                                EN
-                            </button>
-                            <span className="text-zinc-600">/</span>
-                            <button
-                                onClick={() => setLanguage('FR')}
-                                className={`transition-colors ${language === 'FR' ? 'text-white font-bold' : 'text-zinc-500 hover:text-white'}`}
-                            >
-                                FR
-                            </button>
+                    {/* Region Selector */}
+                    <div className="relative group">
+                        <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+                            <span>{currentRegion.label}</span>
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div className="absolute bottom-full right-0 mb-2 w-32 bg-zinc-900 border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                            {regions.map(r => (
+                                <button
+                                    key={r.value}
+                                    onClick={() => setCurrency(r.value)}
+                                    className={`block w-full text-left px-4 py-2 text-[9px] uppercase tracking-widest hover:bg-white/5 hover:text-white ${currency === r.value ? 'text-white font-bold' : 'text-zinc-400'}`}
+                                >
+                                    {r.label}
+                                </button>
+                            ))}
                         </div>
                     </div>
 
-                    <p className="text-[9px] uppercase tracking-widest text-zinc-600">
-                        © 2025 Maison Klyora. All Rights Reserved.
-                    </p>
-                </div >
-
-                {/* Atmospheric Sound Toggle (Fixed) */}
-                <div className="fixed bottom-6 left-6 z-[49] animate-fade-in hidden md:block">
-                    <button
-                        onClick={() => {
-                            const audio = document.getElementById('bg-audio') as HTMLAudioElement;
-                            if (audio) {
-                                if (audio.paused) {
-                                    audio.play().catch(() => { });
-                                    audio.volume = 0.2;
-                                } else {
-                                    audio.pause();
-                                }
-                                setIsSubscribed(prev => !prev); // HACK: reusing state to force re-render or just toggle button visual
-                            }
-                        }}
-                        className="group flex items-center gap-3 bg-white/5 backdrop-blur px-4 py-2 rounded-full border border-white/5 hover:bg-white/10 transition-all cursor-pointer"
-                    >
-                        <div className="flex gap-0.5 items-end h-3">
-                            <div className="w-0.5 bg-white h-2 animate-pulse" style={{ animationDuration: '1s' }}></div>
-                            <div className="w-0.5 bg-white h-3 animate-pulse" style={{ animationDuration: '1.2s' }}></div>
-                            <div className="w-0.5 bg-white h-1 animate-pulse" style={{ animationDuration: '0.8s' }}></div>
-                        </div>
-                        <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-300 group-hover:text-white transition-colors">Soundscape</span>
-                    </button>
-                    <audio id="bg-audio" loop src="https://cdn.shopify.com/s/files/1/0663/7921/9195/files/rain-ambience-loop.mp3?v=123" />
+                    {/* Language Toggle */}
+                    <div className="flex gap-2 text-[10px] uppercase tracking-widest border-l border-white/20 pl-4 ml-4">
+                        <button
+                            onClick={() => setLanguage('EN')}
+                            className={`transition-colors ${language === 'EN' ? 'text-white font-bold' : 'text-zinc-500 hover:text-white'}`}
+                        >
+                            EN
+                        </button>
+                        <span className="text-zinc-600">/</span>
+                        <button
+                            onClick={() => setLanguage('FR')}
+                            className={`transition-colors ${language === 'FR' ? 'text-white font-bold' : 'text-zinc-500 hover:text-white'}`}
+                        >
+                            FR
+                        </button>
+                    </div>
                 </div>
 
+                <p className="text-[9px] uppercase tracking-widest text-zinc-600">
+                    © 2025 Maison Klyora. All Rights Reserved.
+                </p>
             </div >
-        </footer >
+
+            {/* Atmospheric Sound Toggle (Fixed) */}
+            <div className="fixed bottom-6 left-6 z-[49] animate-fade-in hidden md:block">
+                <button
+                    onClick={() => {
+                        const audio = document.getElementById('bg-audio') as HTMLAudioElement;
+                        if (audio) {
+                            if (audio.paused) {
+                                audio.play().catch(() => { });
+                                audio.volume = 0.2;
+                            } else {
+                                audio.pause();
+                            }
+                            setIsSubscribed(prev => !prev); // HACK: reusing state to force re-render or just toggle button visual
+                        }
+                    }}
+                    className="group flex items-center gap-3 bg-white/5 backdrop-blur px-4 py-2 rounded-full border border-white/5 hover:bg-white/10 transition-all cursor-pointer"
+                >
+                    <div className="flex gap-0.5 items-end h-3">
+                        <div className="w-0.5 bg-white h-2 animate-pulse" style={{ animationDuration: '1s' }}></div>
+                        <div className="w-0.5 bg-white h-3 animate-pulse" style={{ animationDuration: '1.2s' }}></div>
+                        <div className="w-0.5 bg-white h-1 animate-pulse" style={{ animationDuration: '0.8s' }}></div>
+                    </div>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-300 group-hover:text-white transition-colors">Soundscape</span>
+                </button>
+                <audio id="bg-audio" loop src="https://cdn.shopify.com/s/files/1/0663/7921/9195/files/rain-ambience-loop.mp3?v=123" />
+            </div>
+
+        </footer>
     );
 };
