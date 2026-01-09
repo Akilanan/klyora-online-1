@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 
 const MESSAGES = [
-    "Complimentary Worldwide Shipping",
-    "The Winter Collection | Available Now",
-    "Welcome to Maison Klyora"
+    "Complimentary Worldwide Shipping | Limited Time",
+    "Private Sale: 24 Hours Remaining on Archive Pieces",
+    "High Demand: Order now for Priority Dispatch"
 ];
 
 export const AnnouncementBar: React.FC = () => {

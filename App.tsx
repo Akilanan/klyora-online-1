@@ -37,6 +37,7 @@ import { InstagramFeed } from './components/InstagramFeed';
 import { CookieConsent } from './components/CookieConsent';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { HeroBackground } from './components/HeroBackground';
+import { TrustBar } from './components/TrustBar';
 import { geminiService } from './services/geminiService';
 import { useUi } from './contexts/UiContext';
 import { useCart } from './contexts/CartContext';
@@ -380,6 +381,7 @@ const App: React.FC = () => {
       <main>
         {/* @ts-ignore */}
         <HeroBackground t={t} onConciergeClick={() => setIsChatOpen(true)} onStyleQuizClick={() => setIsStyleQuizOpen(true)} />
+        <TrustBar />
         <PressSection />
 
         {/* Collection Grid */}

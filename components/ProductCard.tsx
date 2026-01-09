@@ -154,6 +154,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onC
                         <span className="text-[8px] uppercase tracking-widest text-zinc-500">
                             ({((product as any).reviews || 0) + (localStorage.getItem(`klyora_reviews_${product.name}`) ? JSON.parse(localStorage.getItem(`klyora_reviews_${product.name}`)!).length : 0)})
                         </span>
+                        {/* Live Viewer Count (FOMO) */}
+                        <div className="flex items-center gap-1 ml-auto">
+                            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                            <span className="text-[7px] uppercase tracking-widest text-red-500 font-bold">
+                                {Math.floor(Math.random() * (15 - 3) + 3)} Viewing
+                            </span>
+                        </div>
                     </div>
                     <p className="text-[8px] text-zinc-600 uppercase tracking-widest mt-3 flex items-center justify-between">
                         <span>{product.composition || 'Premium Silhouette'}</span>

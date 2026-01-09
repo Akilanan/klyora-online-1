@@ -251,10 +251,24 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   <p className="text-[9px] uppercase tracking-widest text-[#8ca67a] font-bold">Member Price</p>
                 </div>
                 {(product.lowStock || (product.reviews && product.reviews > 10)) && (
-                  <p className="text-[10px] text-red-800 uppercase tracking-widest font-bold animate-pulse">
-                    {product.lowStock ? 'Low Stock: Only 3 Left' : 'High Demand: Selling Fast'}
-                  </p>
+                  <div className="flex flex-col items-end">
+                    <p className="text-[10px] text-red-800 uppercase tracking-widest font-bold animate-pulse">
+                      {product.lowStock ? 'Low Stock: Only 3 Left' : 'High Demand: Selling Fast'}
+                    </p>
+                    <p className="text-[9px] text-zinc-500 uppercase tracking-widest mt-1">
+                      {Math.floor(Math.random() * (45 - 12) + 12)} Sold in last 24h
+                    </p>
+                  </div>
                 )}
+
+                {/* Live Viewers */}
+                <div className="flex items-center gap-1 mt-1 justify-end">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                  <span className="text-[9px] uppercase tracking-widest text-red-500 font-bold">
+                    {Math.floor(Math.random() * (25 - 8) + 8)} People Viewing This
+                  </span>
+                </div>
+
 
                 {/* [TRUST] Visible Shipping & Security - CRO ENHANCED */}
                 <div className="flex flex-col items-end gap-2 mt-4">
