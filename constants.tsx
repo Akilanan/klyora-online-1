@@ -47,7 +47,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 89,
     description: 'A structurally relaxed blazer crafted from breathable linen blend. The definition of timeless elegance, perfect for the Riviera summer or city layering.',
     category: 'Women',
-    image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000&auto=format&fit=crop', // Beige tones
+    image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000&auto=format&fit=crop', // KEEP - Fabric Texture Close up
     relatedIds: ['om3', 'om4', 'om6'],
     composition: 'Premium Linen Blend',
     origin: 'Imported',
@@ -61,15 +61,15 @@ export const MOCK_PRODUCTS: Product[] = [
     shopifyId: 'gid://shopify/Product/om2',
     handle: 'classic-wool-coat-camel',
     name: 'The Estate Wool Coat',
-    price: 320, // Adjusted for luxury perception
+    price: 320,
     description: 'An investment piece featuring a notched lapel and waist-cinching belt. The camel hue speaks to understated luxury.',
     category: 'Women',
-    image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1000&auto=format&fit=crop', // Camel Coat
+    image: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?q=80&w=1000&auto=format&fit=crop', // NEW - Safe Coat Texture/Hanger
     relatedIds: ['om1', 'om7'],
     composition: 'Wool Blend',
     origin: 'Imported',
     shippingTier: 'Priority (5-8 Days)',
-    images: ['https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1000&auto=format&fit=crop'],
+    images: ['https://images.unsplash.com/photo-1544022613-e87ca75a784a?q=80&w=1000&auto=format&fit=crop'],
     descriptionHtml: '<p>An investment piece...</p>',
     rating: 4.9, reviews: 89, lowStock: true
   },
@@ -83,12 +83,12 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 155,
     description: 'A slim-fit knitted polo in deep midnight navy. Features a buttonless open placket for a refined, retro-sport aesthetic.',
     category: 'Men',
-    image: 'https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?q=80&w=1000', // Polo/Shirt vibe
+    image: 'https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=1000', // NEW - Folded Shirt Texture
     relatedIds: ['om4', 'om6'],
     composition: 'Cotton Silk Blend',
     origin: 'Imported',
     shippingTier: 'Standard (7-12 Days)',
-    images: ['https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?q=80&w=1000'],
+    images: ['https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=1000'],
     descriptionHtml: '<p>A slim-fit knitted polo...</p>',
     rating: 4.7, reviews: 210, lowStock: false
   },
@@ -100,12 +100,12 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 165,
     description: 'Heritage cable stitching meets soft-touch cotton blend. The essential "Old Money" layering piece for cool evenings.',
     category: 'Women',
-    image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000', // Cable knit
+    image: 'https://images.unsplash.com/photo-1620799140408-ed5341cdb48d?q=80&w=1000', // NEW - Knit Texture Detail
     relatedIds: ['om1', 'om8'],
     composition: 'Soft Cotton Blend',
     origin: 'Imported',
     shippingTier: 'Priority (5-8 Days)',
-    images: ['https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000'],
+    images: ['https://images.unsplash.com/photo-1620799140408-ed5341cdb48d?q=80&w=1000'],
     descriptionHtml: '<p>Heritage cable stitching...</p>',
     rating: 4.9, reviews: 342, lowStock: false
   },
@@ -117,12 +117,12 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 138,
     description: 'Crisp, structured, and effortlessly polished. The definitive blue button-down for the modern gentleman.',
     category: 'Men',
-    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1000', // Shirt
+    image: 'https://images.unsplash.com/photo-1589310243389-96a5483213a8?q=80&w=1000', // NEW - Blue Shirt Texture
     relatedIds: ['om3', 'om9'],
     composition: '100% Cotton',
     origin: 'Imported',
     shippingTier: 'Standard (7-12 Days)',
-    images: ['https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1000'],
+    images: ['https://images.unsplash.com/photo-1589310243389-96a5483213a8?q=80&w=1000'],
     descriptionHtml: '<p>Crisp, structured...</p>',
     rating: 4.6, reviews: 56, lowStock: false
   },
@@ -136,7 +136,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 175,
     description: 'High-waisted, wide-leg trousers that elongate the silhouette. Tailored front pleats add architectural depth.',
     category: 'Women',
-    image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=1000', // White trousers
+    image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=1000', // KEEP - Good detail shot
     relatedIds: ['om1', 'om4'],
     composition: 'Viscose Blend',
     origin: 'Imported',
@@ -153,12 +153,12 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 112,
     description: 'Inspired by the courts of Wimbledon. A sharp, pleated mini skirt that pairs perfectly with our Cable Knit.',
     category: 'Women',
-    image: 'https://images.unsplash.com/photo-1577900232427-18219b9115a3?q=80&w=1000', // Tennis vibe
+    image: 'https://images.unsplash.com/photo-1582142407894-ec85f1260a46?q=80&w=1000', // NEW - Safe Skirt/White Texture
     relatedIds: ['om4', 'om3'],
     composition: 'Polyester Blend',
     origin: 'Imported',
     shippingTier: 'Standard (7-12 Days)',
-    images: ['https://images.unsplash.com/photo-1577900232427-18219b9115a3?q=80&w=1000'],
+    images: ['https://images.unsplash.com/photo-1582142407894-ec85f1260a46?q=80&w=1000'],
     descriptionHtml: '<p>Inspired by the courts...</p>',
     rating: 4.5, reviews: 45, lowStock: true
   },
@@ -172,12 +172,12 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 195,
     description: 'Bias-cut styling that drapes fluidly over the body. Minimalist 90s elegance for the modern evening.',
     category: 'Women',
-    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000', // Black dress
+    image: 'https://images.unsplash.com/photo-1618221823713-9806373b88b7?q=80&w=1000', // NEW - Black Silk Texture
     relatedIds: ['om2', 'om7'],
     composition: 'Satin Finish',
     origin: 'Imported',
     shippingTier: 'Priority (5-8 Days)',
-    images: ['https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000'],
+    images: ['https://images.unsplash.com/photo-1618221823713-9806373b88b7?q=80&w=1000'],
     descriptionHtml: '<p>Bias-cut styling...</p>',
     rating: 4.9, reviews: 201, lowStock: false
   },
@@ -191,12 +191,12 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 85,
     description: 'A versatile accent piece featuring an equestrain-inspired print. Wear it around the neck or tied to your handbag.',
     category: 'Accessories',
-    image: 'https://images.unsplash.com/photo-1584060622421-50e588db68a3?q=80&w=1000', // Scarf
+    image: 'https://images.unsplash.com/photo-1623930811252-47ac6f7904e5?q=80&w=1000', // NEW - Scarf Detail
     relatedIds: ['om1', 'om2'],
     composition: '100% Silk Feel',
     origin: 'Imported',
     shippingTier: 'Standard (7-12 Days)',
-    images: ['https://images.unsplash.com/photo-1584060622421-50e588db68a3?q=80&w=1000'],
+    images: ['https://images.unsplash.com/photo-1623930811252-47ac6f7904e5?q=80&w=1000'],
     descriptionHtml: '<p>A versatile accent piece...</p>',
     rating: 4.7, reviews: 78, lowStock: false
   },
@@ -208,7 +208,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 98,
     description: 'Full-grain leather with a gold-tone buckle. The finishing touch that elevates denim or trousers.',
     category: 'Accessories',
-    image: 'https://images.unsplash.com/photo-1624223204368-8a883a45391d?q=80&w=1000', // Belt
+    image: 'https://images.unsplash.com/photo-1624223204368-8a883a45391d?q=80&w=1000', // KEEP - Good detail
     relatedIds: ['om6', 'om5'],
     composition: 'Genuine Leather',
     origin: 'Imported',
