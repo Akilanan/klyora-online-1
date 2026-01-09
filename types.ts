@@ -21,6 +21,7 @@ export interface Product {
   rating?: number;
   reviews?: number;
   lowStock?: boolean;
+  availableForSale?: boolean;
 }
 
 
