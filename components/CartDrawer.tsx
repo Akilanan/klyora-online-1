@@ -40,7 +40,12 @@ export const CartDrawer: React.FC = () => {
     setTimeout(() => setCheckoutStep('Reserving Stock'), 1000);
     setTimeout(() => setCheckoutStep('Structuring Parcel'), 2500);
     setTimeout(() => setCheckoutStep('Redirecting to Secure Checkout'), 4000);
-    setTimeout(() => onCheckout(), 5000);
+    setTimeout(() => {
+      onCheckout({
+        note: isGift ? giftMessage : undefined,
+        attributes: isGift ? { 'Gift-Wrapped': 'true' } : undefined
+      });
+    }, 5000);
   };
 
   // Currency Logic

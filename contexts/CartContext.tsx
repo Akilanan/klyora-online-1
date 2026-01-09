@@ -10,7 +10,7 @@ interface CartContextType {
     updateQuantity: (productId: string, variantId: string, quantity: number) => void;
     cartTotal: number;
     itemCount: number;
-    checkout: () => void;
+    checkout: (options?: { note?: string, attributes?: Record<string, string> }) => void;
     currency: string;
     setCurrency: (c: string) => void;
 }
@@ -66,11 +66,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-    const checkout = () => {
+    const checkout = (options?: { note?: string, attributes?: Record<string, string> }) => {
         if (cart.length === 0) return;
 
         const checkoutUrl = shopifyService.getCheckoutUrl(
-            cart.map(i => ({ variantId: i.selectedVariant.id, quantity: i.quantity }))
+            cart.map(i => ({ variantId: i.selectedVariant.id, quantity: i.quantity })),
+            options?.note,
+            options?.attributes
         );
         window.location.href = checkoutUrl;
     };

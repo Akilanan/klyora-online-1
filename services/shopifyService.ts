@@ -213,13 +213,29 @@ export class ShopifyService {
    * Secure handoff to the real Shopify checkout if needed,
    * though we use our custom branded CheckoutFlow for the experience.
    */
-  getCheckoutUrl(items: { variantId: string, quantity: number }[]): string {
+  getCheckoutUrl(items: { variantId: string, quantity: number }[], note?: string, attributes?: Record<string, string>): string {
     const cartString = items.map(item => {
       const id = item.variantId.includes('/') ? item.variantId.split('/').pop() : item.variantId;
       return `${id}:${item.quantity}`;
     }).join(',');
 
-    return `https://${this.shopDomain}/cart/${cartString}`;
+    let url = `https://${this.shopDomain}/cart/${cartString}`;
+
+    // Append Query Params
+    const params = new URLSearchParams();
+    if (note) params.append('note', note);
+    if (attributes) {
+      Object.entries(attributes).forEach(([key, value]) => {
+        params.append(`attributes[${key}]`, value);
+      });
+    }
+
+    const queryString = params.toString();
+    if (queryString) {
+      url += `?${queryString}`;
+    }
+
+    return url;
   }
   /**
    * Subscribes email to the newsletter.
