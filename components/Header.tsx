@@ -1,14 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
+import { useUi } from '../contexts/UiContext';
+import { useCart } from '../contexts/CartContext';
 
 interface HeaderProps {
-  cartCount: number;
   wishlistCount: number;
   loyaltyPoints: number;
-  onCartClick: () => void;
-  onSearchClick: () => void;
-  onWishlistClick: () => void;
-  onArchiveClick: () => void;
+  // onCartClick removed
+  // onSearchClick removed
+  // onWishlistClick removed (will use Context)
+  onArchiveClick: () => void; // Could be context?
   onConciergeClick: () => void;
   isSynced?: boolean;
   customerName?: string | null;
@@ -16,7 +17,6 @@ interface HeaderProps {
   onPriveClick?: () => void;
   onShopClick: () => void;
   onLoyaltyClick: () => void;
-  // Translations
   t?: {
     bag: string;
     collection: string;
@@ -30,12 +30,12 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  cartCount,
+  // cartCount removed
   wishlistCount,
   loyaltyPoints,
-  onCartClick,
-  onSearchClick,
-  onWishlistClick,
+  // onCartClick removed
+  // onSearchClick removed
+  // onWishlistClick removed
   onArchiveClick,
   isSynced,
   customerName,
@@ -46,6 +46,14 @@ export const Header: React.FC<HeaderProps> = ({
   onLoyaltyClick,
   t
 }) => {
+  const {
+    setIsSearchOpen,
+    setIsCartOpen,
+    setIsWishlistOpen,
+    setIsMenuOpen: setGlobalMenuOpen // Assuming context has this
+  } = useUi();
+  const { itemCount: cartCount } = useCart();
+
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -91,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Desktop Nav - Right */}
         <div className="hidden md:flex items-center gap-8">
           <button
-            onClick={onSearchClick}
+            onClick={() => setIsSearchOpen(true)}
             className="text-xs uppercase tracking-widest hover:text-zinc-400 transition-colors"
             aria-label="Search"
           >
@@ -105,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({
             {t?.concierge || 'Concierge'}
           </button>
           <button
-            onClick={onWishlistClick}
+            onClick={() => setIsWishlistOpen(true)}
             className="text-xs uppercase tracking-widest hover:text-zinc-400 transition-colors relative"
             aria-label="View Wishlist"
           >
@@ -117,7 +125,7 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </button>
           <button
-            onClick={onCartClick}
+            onClick={() => setIsCartOpen(true)}
             className="text-xs uppercase tracking-widest hover:text-zinc-400 transition-colors relative"
             aria-label="View Cart"
           >
@@ -149,13 +157,13 @@ export const Header: React.FC<HeaderProps> = ({
             Concierge
           </button>
           <button
-            onClick={() => { setIsMobileMenuOpen(false); onWishlistClick(); }}
+            onClick={() => { setIsMobileMenuOpen(false); setIsWishlistOpen(true); }}
             className="text-4xl font-serif italic text-black text-left"
           >
             Saved Looks ({wishlistCount})
           </button>
           <button
-            onClick={() => { setIsMobileMenuOpen(false); onCartClick(); }}
+            onClick={() => { setIsMobileMenuOpen(false); setIsCartOpen(true); }}
             className="text-4xl font-serif italic text-black text-left"
           >
             Cart ({cartCount})

@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Base styles for Maison Klyora */
 /* Note: Main styling uses Tailwind CDN in theme.liquid */
 body {

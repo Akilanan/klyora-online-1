@@ -23,6 +23,8 @@ export interface Product {
   lowStock?: boolean;
 }
 
+
+
 export interface ProductVariant {
   id: string;
   title: string;

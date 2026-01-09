@@ -1,17 +1,16 @@
 import React, { useMemo } from 'react';
-import { CartItem } from '../types';
+import { useUi } from '../contexts/UiContext';
+import { useCart } from '../contexts/CartContext';
 import { BoutiqueImage } from './BoutiqueImage';
 import { EXCHANGE_RATES, CURRENCY_SYMBOLS } from '../constants';
 
-interface CartDrawerProps {
-  items: CartItem[];
-  onClose: () => void;
-  onRemove: (id: string, variantId: string) => void;
-  onCheckout: () => void;
-  currency: string;
-}
+export const CartDrawer: React.FC = () => {
+  const { isCartOpen, setIsCartOpen } = useUi();
+  const { cart: items, removeFromCart: onRemove, checkout: onCheckout, currency: defaultCurrency } = useCart();
 
-export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove, onCheckout, currency: defaultCurrency }) => {
+  // Close handler alias
+  const onClose = () => setIsCartOpen(false);
+
   // Map currency symbols back to countries for default selection
   const getCountryFromCurrency = (curr: string) => {
     const map: Record<string, string> = {
@@ -26,6 +25,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ items, onClose, onRemove
   React.useEffect(() => {
     setSelectedCountry(getCountryFromCurrency(defaultCurrency));
   }, [defaultCurrency]);
+
+  if (!isCartOpen) return null;
 
   const [isGift, setIsGift] = React.useState(false);
   const [giftMessage, setGiftMessage] = React.useState('');

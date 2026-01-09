@@ -1,9 +1,10 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-
 import { ErrorBoundary } from './components/ErrorBoundary';
+import './src/index.css';
+import { UiProvider } from './contexts/UiContext';
+import { CartProvider } from './contexts/CartContext';
 
 const rootElement = document.getElementById('klyora-root');
 
@@ -15,7 +16,11 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <ErrorBoundary>
-      <App />
+      <UiProvider>
+        <CartProvider>
+          <App />
+        </CartProvider>
+      </UiProvider>
     </ErrorBoundary>
   </React.StrictMode>
 );

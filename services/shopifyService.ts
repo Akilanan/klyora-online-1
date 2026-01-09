@@ -174,10 +174,13 @@ export class ShopifyService {
     let composition = "Premium Blend"; // Default luxury fallback
 
     // keywords to strip out
+    // Optimization: Using a static list would be better, but for now we keep it simple.
+    // Actually, let's keep it here for readability unless we refactor the whole class.
     const junkPatterns = [
       /^fabric name/i, /^main fabric/i, /^supply category/i,
       /^style/i, /^pattern/i, /^source/i, /^inventory/i,
-      /^weight/i, /^size/i, /^skirt length/i
+      /^weight/i, /^size/i, /^skirt length/i,
+      /^tolerance/i, /^revision/i, /^origin/i // Added more "industrial" terms
     ];
 
     for (const line of lines) {
@@ -251,43 +254,68 @@ export class ShopifyService {
   /**
    * Fetches blog articles (mock or real)
    */
+  /**
+   * Fetches blog articles from Shopify 'news' blog.
+   * Falls back to high-quality mocks if no real articles exist.
+   */
   async fetchArticles(): Promise<Article[]> {
-    // Return mock articles for now to satisfy the interface and UI
-    return [
-      {
-        id: '1',
-        title: 'The Art of Silence',
-        handle: 'art-of-silence',
-        publishedAt: new Date().toISOString(),
-        image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop',
-        excerpt: 'Exploring the quiet power of minimalism in modern fashion.',
-        author: 'Kyla V.',
-        category: 'Editorial',
-        url: '#'
-      },
-      {
-        id: '2',
-        title: 'Sustainable Luxury',
-        handle: 'sustainable-luxury',
-        publishedAt: new Date().toISOString(),
-        image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2071&auto=format&fit=crop',
-        excerpt: 'How we source our premium eco-vegan leathers.',
-        author: 'Elena R.',
-        category: 'Sustainability',
-        url: '#'
-      },
-      {
-        id: '3',
-        title: 'Fall Collection Preview',
-        handle: 'fall-preview',
-        publishedAt: new Date().toISOString(),
-        image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop',
-        excerpt: 'A first look at the textures defining the upcoming season.',
-        author: 'Klyora Team',
-        category: 'News',
-        url: '#'
-      }
-    ];
+    try {
+      const response = await fetch(`https://${this.shopDomain}/blogs/news/articles.json?limit=3`);
+      if (!response.ok) throw new Error('Blog not found');
+
+      const data = await response.json();
+      if (!data.articles || data.articles.length === 0) throw new Error('No articles found');
+
+      return data.articles.map((a: any) => ({
+        id: a.id.toString(),
+        title: a.title,
+        handle: a.handle,
+        publishedAt: a.published_at,
+        image: a.image ? a.image.src : '',
+        excerpt: a.summary_html ? a.summary_html.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...' : '',
+        author: a.author,
+        category: 'Editorial', // Shopify posts don't strictly have categories in the same way, using default
+        url: `https://${this.shopDomain}/blogs/news/${a.handle}`
+      }));
+
+    } catch (e) {
+      console.warn("Klyora: Failed to fetch real articles, using editorial mocks.", e);
+      return [
+        {
+          id: '1',
+          title: 'The Art of Silence',
+          handle: 'art-of-silence',
+          publishedAt: new Date().toISOString(),
+          image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop',
+          excerpt: 'Exploring the quiet power of minimalism in modern fashion.',
+          author: 'Kyla V.',
+          category: 'Editorial',
+          url: '#'
+        },
+        {
+          id: '2',
+          title: 'Sustainable Luxury',
+          handle: 'sustainable-luxury',
+          publishedAt: new Date().toISOString(),
+          image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2071&auto=format&fit=crop',
+          excerpt: 'How we source our premium eco-vegan leathers.',
+          author: 'Elena R.',
+          category: 'Sustainability',
+          url: '#'
+        },
+        {
+          id: '3',
+          title: 'Fall Collection Preview',
+          handle: 'fall-preview',
+          publishedAt: new Date().toISOString(),
+          image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop',
+          excerpt: 'A first look at the textures defining the upcoming season.',
+          author: 'Klyora Team',
+          category: 'News',
+          url: '#'
+        }
+      ];
+    }
   }
 }
 

@@ -8,6 +8,7 @@ interface SearchOverlayProps {
   onClose: () => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onSearch?: (query: string) => void; // New prop for "Enter" action
   activeCategory: string | null;
   onCategoryChange: (cat: string | null) => void;
   priceRange: [number, number] | null;
@@ -37,6 +38,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
   onClose,
   searchQuery,
   onSearchChange,
+  onSearch,
   activeCategory,
   onCategoryChange,
   priceRange,
@@ -106,6 +108,9 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
                     const history = JSON.parse(localStorage.getItem('klyora_search_history') || '[]');
                     if (!history.includes(searchQuery)) {
                       localStorage.setItem('klyora_search_history', JSON.stringify([searchQuery, ...history].slice(0, 5)));
+                    }
+                    if (onSearch) {
+                      onSearch(searchQuery);
                     }
                   }
                 }}
