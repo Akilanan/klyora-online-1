@@ -142,9 +142,7 @@ export const Footer: React.FC<any> = ({ onConciergeClick, onLinkClick, onSubscri
                             <a href="https://instagram.com/klyoraofficial" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
                                 Instagram
                             </a>
-                            <a href="https://pinterest.com/klyoraofficial" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
-                                Pinterest
-                            </a>
+
                             <a href="https://tiktok.com/@klyoraofficial" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.3em] font-bold hover:opacity-50 transition-opacity">
                                 TikTok
                             </a>
