@@ -1,0 +1,101 @@
+{% capture email_title %}Your curation is being prepared{% endcapture %}
+{% capture email_body %}
+  <p style="font-family: 'Times New Roman', Times, serif; font-size: 16px; line-height: 1.6; color: #333;">
+    Dear {{ customer.first_name }},
+  </p>
+  <p style="font-family: 'Times New Roman', Times, serif; font-size: 16px; line-height: 1.6; color: #333;">
+    Thank you for choosing Klyora. We are honored to assist you in building your wardrobe.
+  </p>
+  <p style="font-family: 'Times New Roman', Times, serif; font-size: 16px; line-height: 1.6; color: #333;">
+    Your selection has been received and is currently being processed by our team. We ensure every piece meets our exacting standards before it begins its journey to you.
+  </p>
+{% endcapture %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <title>{{ email_title }}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width">
+  <style>
+    body { margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    img { height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; }
+    p { margin: 1em 0; }
+  </style>
+</head>
+<body style="background-color: #ffffff; padding: 40px 0;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; border-collapse: collapse;">
+    
+    <!-- HEADER -->
+    <tr>
+      <td align="center" style="padding: 40px 0 20px 0;">
+        <span style="font-family: 'Times New Roman', Times, serif; font-size: 32px; letter-spacing: 0.1em; font-weight: bold; font-style: italic; color: #000;">K LY O R A</span>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding-bottom: 40px; border-bottom: 1px solid #eee;">
+        <span style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #666;">Member of the Inner Circle</span>
+      </td>
+    </tr>
+
+    <!-- BODY -->
+    <tr>
+      <td style="padding: 40px 20px;">
+        {{ email_body }}
+        
+        <!-- BUTTON -->
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 30px 0;">
+            <tr>
+              <td align="center">
+                <a href="{{ order_status_url }}" style="background-color: #000000; color: #ffffff; padding: 15px 30px; text-decoration: none; font-family: Helvetica, Arial, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; border: 1px solid #000;">View Your Order</a>
+              </td>
+            </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ORDER DETAILS -->
+    <tr>
+      <td style="padding: 20px; background-color: #f9f9f9;">
+        <p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: #666; margin-bottom: 20px; text-align: center;">Order {{ name }}</p>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+          {% for line in line_items %}
+          <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee;" width="60">
+              {% if line.image %}
+                <img src="{{ line | img_url: 'compact_cropped' }}" align="left" width="50" height="50" style="width:50px; height:50px; object-fit: cover;" />
+              {% endif %}
+            </td>
+            <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">
+              <span style="font-family: 'Times New Roman', Times, serif; font-size: 14px; font-style: italic; color: #000; display: block;">{{ line.title }}</span>
+              <span style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; color: #666;">Size: {{ line.variant.title }}</span>
+            </td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee; text-align: right;">
+              <span style="font-family: 'Times New Roman', Times, serif; font-size: 14px; color: #000;">{{ line.final_price | money }}</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+        
+        <!-- TOTALS -->
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 20px;">
+           <tr>
+            <td style="font-family: Helvetica, Arial, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #666; padding: 5px 0;">Total</td>
+            <td style="font-family: 'Times New Roman', Times, serif; font-size: 16px; font-weight: bold; color: #000; text-align: right; padding: 5px 0;">{{ total_price | money_with_currency }}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- FOOTER -->
+    <tr>
+      <td align="center" style="padding-top: 40px; border-top: 1px solid #eee; margin-top: 40px;">
+        <p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; color: #999; line-height: 1.5;">
+          Thank you for choosing Klyora.<br>
+          <a href="{{ shop.url }}" style="color: #000; text-decoration: none;">klyora.com</a>
+        </p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
