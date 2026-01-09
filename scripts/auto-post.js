@@ -14,7 +14,7 @@ const CONFIG = {
     IG_ACCESS_TOKEN: process.env.IG_ACCESS_TOKEN || process.env.VITE_IG_ACCESS_TOKEN,
     IG_USER_ID: process.env.IG_USER_ID || process.env.VITE_IG_USER_ID,
     SHOPIFY_SHOP_URL: process.env.VITE_SHOPIFY_SHOP_URL || 'https://klyora-2.myshopify.com',
-    DISPLAY_SHOP_URL: 'https://Klyoraofficial.com',
+    DISPLAY_SHOP_URL: 'https://klyora-2.myshopify.com',
     GEMINI_API_KEY: process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY,
     get IS_LIVE_MODE() {
         return !!(this.IG_ACCESS_TOKEN && this.IG_USER_ID);
@@ -141,7 +141,7 @@ class AICaptionGenerator {
         return name;
     }
 
-    generateFallbackCaption(productName) {
+    generateFallbackCaption(productName, productType = 'Fashion') {
         const cleanName = this.sanitizeProductName(productName);
 
         // HERITAGE DICTIONARY (No "Old Money")
@@ -166,8 +166,17 @@ class AICaptionGenerator {
         // Monochrome & Classy Emojis
         const emojis = ["🦢", "🕰️", "🕯️", "♟️", "🎞️", "🥃", "🗝️", "🎻", "🌲", "🐎"];
 
-        // Niche Hashtags (REMOVED #OldMoney)
-        const hashtags = "#QuietLuxury #LoroPianaInspired #HeritageStyle #MaisonKlyora #PrivateClient #Timeless #Atelier";
+        // DYNAMIC LUXURY TAGS
+        let nicheTags = "";
+        const type = productType.toLowerCase();
+        if (type.includes('dress') || type.includes('gown')) nicheTags = "#EveningWear #GalaReady #SilkDress";
+        else if (type.includes('shirt') || type.includes('blouse') || type.includes('top')) nicheTags = "#Tailoring #CrispWhite #AtelierWork";
+        else if (type.includes('pant') || type.includes('trouser') || type.includes('skirt')) nicheTags = "#Pleated #Silhouette #Trousers";
+        else if (type.includes('bag') || type.includes('purse')) nicheTags = "#LeatherGoods #ItBag #HandbagAddict";
+        else if (type.includes('jewel') || type.includes('ring') || type.includes('necklace')) nicheTags = "#Heirloom #GoldDetails #FineJewelry";
+        else nicheTags = "#CuratedStyle #WardrobeEssentials";
+
+        const hashtags = `#QuietLuxury #MaisonKlyora ${nicheTags} #Timeless`;
 
         const open = openers[Math.floor(Math.random() * openers.length)];
         const mid = middles[Math.floor(Math.random() * middles.length)];
