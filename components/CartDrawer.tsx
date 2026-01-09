@@ -40,12 +40,7 @@ export const CartDrawer: React.FC = () => {
     setTimeout(() => setCheckoutStep('Reserving Stock'), 1000);
     setTimeout(() => setCheckoutStep('Structuring Parcel'), 2500);
     setTimeout(() => setCheckoutStep('Redirecting to Secure Checkout'), 4000);
-    setTimeout(() => {
-      onCheckout({
-        note: isGift ? giftMessage : undefined,
-        attributes: isGift ? { 'Gift-Wrapped': 'true' } : undefined
-      });
-    }, 5000);
+    setTimeout(() => onCheckout(), 5000);
   };
 
   // Currency Logic
@@ -210,29 +205,7 @@ export const CartDrawer: React.FC = () => {
           </details>
         </div>
 
-        {/* Gift Option */}
-        <div className="pt-4 border-t border-black/5">
-          <label className="flex items-center gap-3 cursor-pointer group">
-            <div className={`w-4 h-4 border transition-colors flex items-center justify-center ${isGift ? 'bg-black border-black' : 'border-zinc-300 group-hover:border-black'}`}>
-              {isGift && <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>}
-            </div>
-            <input type="checkbox" className="hidden" checked={isGift} onChange={(e) => setIsGift(e.target.checked)} />
-            <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-600 group-hover:text-black transition-colors">This is a gift</span>
-          </label>
 
-          {isGift && (
-            <div className="mt-3 animate-fade-in space-y-2">
-              <textarea
-                className="w-full bg-white border border-black/10 p-3 text-xs font-serif italic focus:outline-none focus:border-black transition-colors resize-none placeholder:text-zinc-300"
-                placeholder="Add a personal note for the recipient..."
-                rows={3}
-                value={giftMessage}
-                onChange={(e) => setGiftMessage(e.target.value)}
-              />
-              <p className="text-[8px] uppercase tracking-widest text-zinc-400 text-right">Complimentary Gift Wrapping Included</p>
-            </div>
-          )}
-        </div>
 
         {/* Checkout Ritual Overlay */}
         {isCheckingOut && (
