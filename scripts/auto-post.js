@@ -131,7 +131,7 @@ class AICaptionGenerator {
         });
 
         // 2. Remove Special Chars
-        name = name.replace(/[^a-zA-Z\s]/g, '').trim();
+        name = name.replace(/[^a-zA-Z\\s]/g, '').trim();
 
         // 3. Add Pretentious Prefix if missing
         if (!name.startsWith('The ')) {
@@ -301,13 +301,23 @@ async function runAutoPoster() {
     try {
         const url = `${CONFIG.SHOPIFY_SHOP_URL}/products.json`;
         console.log(`🔍 Fetching products from: ${url}`);
-        const response = await fetch(url);
+
+        // Add User-Agent to bypass Shopify bot protection
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'application/json'
+            }
+        });
+
         if (!response.ok) throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
         const data = await response.json();
         products = data.products || [];
+        console.log(`✅ Successfully fetched ${products.length} products.`);
+
     } catch (e) {
-        console.error("❌ Failed to fetch products:", e.message);
-        return;
+        console.error("❌ Failed to fetch products (Network Issue):", e.message);
+        return; // Fail loudly rather than posting fake data
     }
 
     if (products.length === 0) return;
@@ -321,6 +331,9 @@ async function runAutoPoster() {
         historyService.clear();
         availableProducts = products;
     }
+
+    // 4. Select Random Product
+    const product = availableProducts[Math.floor(Math.random() * availableProducts.length)];
 
     // 5. Smart Image Selection (Visual Variety)
     let feedImage = null;
@@ -353,7 +366,6 @@ async function runAutoPoster() {
         const timestamp = new Date().toISOString();
 
         // Attempt Post (Feed + Story)
-        // Note: modify postToInstagram to accept distinct story image
         const result = await socialService.postToInstagram(caption, feedImage, storyImage);
 
         // Log to file
