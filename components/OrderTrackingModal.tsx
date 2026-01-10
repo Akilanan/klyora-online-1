@@ -25,6 +25,19 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({ isOpen, 
                 </div>
 
                 <OrderTrackingSimulation />
+
+                <div className="mt-8 pt-8 border-t border-white/5 text-center">
+                    <p className="text-[9px] uppercase tracking-widest text-zinc-500 mb-4">Official Courier Partner</p>
+                    <a
+                        href="https://klyora-2.myshopify.com/apps/shiprocket"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-[10px] uppercase font-bold tracking-[0.2em] text-white hover:text-[#8ca67a] transition-colors"
+                    >
+                        Track via Shiprocket Service
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    </a>
+                </div>
             </div>
         </div>
     );
