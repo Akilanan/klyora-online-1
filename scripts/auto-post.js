@@ -299,7 +299,10 @@ async function runAutoPoster() {
     // 1. Fetch Products
     let products = [];
     try {
-        const response = await fetch(`${CONFIG.SHOPIFY_SHOP_URL}/products.json`);
+        const url = `${CONFIG.SHOPIFY_SHOP_URL}/products.json`;
+        console.log(`🔍 Fetching products from: ${url}`);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
         const data = await response.json();
         products = data.products || [];
     } catch (e) {
