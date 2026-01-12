@@ -33,13 +33,12 @@ export const ReturnRequestModal: React.FC<ReturnRequestModalProps> = ({ isOpen, 
                         </div>
                     </div>
 
+
                     <a
-                        href={SHIPROCKET_RETURN_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="mailto:concierge@klyora.com?subject=Return%20Request%20-%20Order%20%23"
                         className="block w-full bg-white text-black py-4 text-[10px] uppercase font-bold tracking-[0.3em] hover:bg-zinc-200 transition-colors"
                     >
-                        Access Return Portal
+                        Email Concierge to Return
                     </a>
 
                     <p className="text-[9px] text-zinc-600 mt-4">

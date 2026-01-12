@@ -332,33 +332,73 @@ async function runAutoPoster() {
         availableProducts = products;
     }
 
+
     // 4. Select Random Product
     const product = availableProducts[Math.floor(Math.random() * availableProducts.length)];
 
-    // 5. Smart Image Selection (Visual Variety)
-    let feedImage = null;
-    let storyImage = null;
 
-    if (product.images && product.images.length > 0) {
-        // Feed: Prefer Image 1 (Hero)
-        feedImage = product.images[0].src;
+    // 5. Smart Image Selection (The "Vogue" Swap)
+    // PROBLEM: User's web photos are low quality.
+    // SOLUTION: Use curated "Stock" photography that matches the Vibe, not the exact pixel.
 
-        // Story: Prefer Image 2 (Detail/Lifestyle) if available, otherwise use Image 1
-        if (product.images.length > 1) {
-            storyImage = product.images[1].src;
-        } else {
-            storyImage = feedImage;
-        }
+    let bestImage = null;
+
+    const STOCK_LIBRARY = {
+        dresses: [
+            "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1080&auto=format&fit=crop", // Elegant Silk Back
+            "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1080&auto=format&fit=crop", // Blue Gown (The one we liked)
+            "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1080&auto=format&fit=crop"  // White Dress Editorial
+        ],
+        tops: [
+            "https://images.unsplash.com/photo-1534126511673-b6899657816a?q=80&w=1080&auto=format&fit=crop", // White Shirt
+            "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?q=80&w=1080&auto=format&fit=crop"  // Texture Detail
+        ],
+        outerwear: [
+            "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1080&auto=format&fit=crop", // Beige Coat
+            "https://images.unsplash.com/photo-1544923246-77307dd65c74?q=80&w=1080&auto=format&fit=crop"  // Black Coat
+        ],
+        jewelry: [
+            "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1080&auto=format&fit=crop", // Gold Detail
+            "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?q=80&w=1080&auto=format&fit=crop"  // Pearl/Silver
+        ],
+        bags: [
+            "https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1080&auto=format&fit=crop", // Luxury Bag
+            "https://images.unsplash.com/photo-1591561954557-26941169b49e?q=80&w=1080&auto=format&fit=crop"  // Detail Texture
+        ]
+    };
+
+    const title = product.title.toLowerCase();
+    const type = product.product_type ? product.product_type.toLowerCase() : "";
+
+    if (title.includes('dress') || title.includes('gown') || type.includes('dress')) {
+        bestImage = STOCK_LIBRARY.dresses[Math.floor(Math.random() * STOCK_LIBRARY.dresses.length)];
+    } else if (title.includes('coat') || title.includes('jacket') || title.includes('blazer') || type.includes('outer')) {
+        bestImage = STOCK_LIBRARY.outerwear[Math.floor(Math.random() * STOCK_LIBRARY.outerwear.length)];
+    } else if (title.includes('shirt') || title.includes('top') || title.includes('blouse')) {
+        bestImage = STOCK_LIBRARY.tops[Math.floor(Math.random() * STOCK_LIBRARY.tops.length)];
+    } else if (title.includes('ring') || title.includes('necklace') || title.includes('earring') || title.includes('watch')) {
+        bestImage = STOCK_LIBRARY.jewelry[Math.floor(Math.random() * STOCK_LIBRARY.jewelry.length)];
+    } else if (title.includes('bag') || title.includes('tote') || title.includes('purse')) {
+        bestImage = STOCK_LIBRARY.bags[Math.floor(Math.random() * STOCK_LIBRARY.bags.length)];
+    } else {
+        // Generic Luxury Fallback
+        bestImage = STOCK_LIBRARY.outerwear[0];
     }
 
-    if (!feedImage) {
-        console.log("Skipping product with no image");
+
+    if (!bestImage) {
+        console.log("Skipping product with no meaningful images");
         return;
     }
 
-    console.log(`🤖 Selected: ${product.title}`);
-    console.log(`   📸 Feed Image: ${feedImage.split('?')[0].slice(-20)}...`);
-    console.log(`   📸 Story Image: ${storyImage !== feedImage ? 'Distinct (Image 2)' : 'Same (Single Image)'}`);
+    // SCAM FILTER: Check for bad titles
+    if (product.title.toLowerCase().includes("generic") || product.title.toLowerCase().includes("sample")) {
+        console.log("Skipping 'Generic/Sample' product.");
+        return;
+    }
+
+    console.log(`🤖 Selected Luxury Item: ${product.title}`);
+    console.log(`   📸 Selected Lifestyle Shot: ${bestImage.split('?')[0].slice(-20)}...`);
 
     // 6. Generate & Post
     try {
@@ -366,11 +406,11 @@ async function runAutoPoster() {
         const timestamp = new Date().toISOString();
 
         // Attempt Post (Feed + Story)
-        const result = await socialService.postToInstagram(caption, feedImage, storyImage);
+        const result = await socialService.postToInstagram(caption, bestImage, bestImage);
 
         // Log to file
         const status = CONFIG.IS_LIVE_MODE ? "LIVE_POSTED" : "MOCK_POSTED";
-        fs.appendFileSync(logFile, `[${timestamp}] [${status}] FEED:${result.feedId} STORY:${result.storyId} CAPTION: "${caption}"\n`);
+        fs.appendFileSync(logFile, `[${timestamp}] [${status}] FEED:${result.feedId} CAPTION: "${caption}"\n`);
 
         // 6. Update History
         if (CONFIG.IS_LIVE_MODE) {
