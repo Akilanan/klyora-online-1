@@ -345,25 +345,40 @@ async function runAutoPoster() {
 
     const STOCK_LIBRARY = {
         dresses: [
-            "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1080&auto=format&fit=crop", // Elegant Silk Back
-            "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1080&auto=format&fit=crop", // Blue Gown (The one we liked)
-            "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1080&auto=format&fit=crop"  // White Dress Editorial
+            "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1080&auto=format&fit=crop", // Silk Back
+            "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1080&auto=format&fit=crop", // Blue Gown
+            "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1080&auto=format&fit=crop",  // White Editorial
+            "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=1080&auto=format&fit=crop",  // Black Evening
+            "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=1080&auto=format&fit=crop",  // Velvet
+            "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=1080&auto=format&fit=crop",  // Linen Texture
+            "https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1080&auto=format&fit=crop"   // Floral High End
         ],
         tops: [
             "https://images.unsplash.com/photo-1534126511673-b6899657816a?q=80&w=1080&auto=format&fit=crop", // White Shirt
-            "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?q=80&w=1080&auto=format&fit=crop"  // Texture Detail
+            "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?q=80&w=1080&auto=format&fit=crop",  // Texture Detail
+            "https://images.unsplash.com/photo-1551163943-3f6a29e39454?q=80&w=1080&auto=format&fit=crop",  // Beige Knit
+            "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=1080&auto=format&fit=crop",  // White Cloth
+            "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1080&auto=format&fit=crop"   // Linen Shirt
         ],
         outerwear: [
             "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1080&auto=format&fit=crop", // Beige Coat
-            "https://images.unsplash.com/photo-1544923246-77307dd65c74?q=80&w=1080&auto=format&fit=crop"  // Black Coat
+            "https://images.unsplash.com/photo-1544923246-77307dd65c74?q=80&w=1080&auto=format&fit=crop",  // Black Coat
+            "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1080&auto=format&fit=crop", // Jacket Detail
+            "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1080&auto=format&fit=crop",  // Trench
+            "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?q=80&w=1080&auto=format&fit=crop"   // Grey Wool
         ],
         jewelry: [
             "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1080&auto=format&fit=crop", // Gold Detail
-            "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?q=80&w=1080&auto=format&fit=crop"  // Pearl/Silver
+            "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?q=80&w=1080&auto=format&fit=crop",  // Pearl/Silver
+            "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=1080&auto=format&fit=crop",  // Ring Detail
+            "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=1080&auto=format&fit=crop",  // Diamond Light
+            "https://images.unsplash.com/photo-1651160604965-986bdf6a2977?q=80&w=1080&auto=format&fit=crop"   // Gold Watch
         ],
         bags: [
             "https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1080&auto=format&fit=crop", // Luxury Bag
-            "https://images.unsplash.com/photo-1591561954557-26941169b49e?q=80&w=1080&auto=format&fit=crop"  // Detail Texture
+            "https://images.unsplash.com/photo-1591561954557-26941169b49e?q=80&w=1080&auto=format&fit=crop",  // Detail Texture
+            "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?q=80&w=1080&auto=format&fit=crop",  // Leather Clutch
+            "https://images.unsplash.com/photo-1598532163257-ae3cde09909c?q=80&w=1080&auto=format&fit=crop"   // Minimalist Tote
         ]
     };
 
@@ -396,6 +411,32 @@ async function runAutoPoster() {
         console.log("Skipping 'Generic/Sample' product.");
         return;
     }
+
+    // IMAGE DEDUPLICATION LOGIC
+    const lastImageFile = path.join(__dirname, 'last_image.txt');
+    let lastPostedImage = "";
+    try {
+        if (fs.existsSync(lastImageFile)) {
+            lastPostedImage = fs.readFileSync(lastImageFile, 'utf8').trim();
+        }
+    } catch (e) { }
+
+    // Retry selection if it matches the last one
+    if (bestImage === lastPostedImage) {
+        console.log("⚠️ Image used recently. Selecting another...");
+        const categoryKey = Object.keys(STOCK_LIBRARY).find(k => STOCK_LIBRARY[k].includes(bestImage)) || 'outerwear';
+        const collection = STOCK_LIBRARY[categoryKey];
+        // Pick a random index that is NOT the same image
+        const safeCollection = collection.filter(img => img !== lastPostedImage);
+        if (safeCollection.length > 0) {
+            bestImage = safeCollection[Math.floor(Math.random() * safeCollection.length)];
+        }
+    }
+
+    // Save this image as "Last Used" for next time
+    try {
+        fs.writeFileSync(lastImageFile, bestImage);
+    } catch (e) { }
 
     console.log(`🤖 Selected Luxury Item: ${product.title}`);
     console.log(`   📸 Selected Lifestyle Shot: ${bestImage.split('?')[0].slice(-20)}...`);
