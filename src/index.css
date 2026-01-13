@@ -6,6 +6,23 @@
 /* Note: Main styling uses Tailwind CDN in theme.liquid */
 body {
     margin: 0;
+    overflow-x: hidden;
+    /* Prevent horizontal scroll */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+/* Chrome/Safari */
+body::-webkit-scrollbar {
+    display: none;
+}
+
+html {
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
 }
 
 @keyframes slideRightInfinite {
