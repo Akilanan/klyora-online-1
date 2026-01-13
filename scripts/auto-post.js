@@ -337,67 +337,83 @@ async function runAutoPoster() {
     const product = availableProducts[Math.floor(Math.random() * availableProducts.length)];
 
 
-    // 5. Smart Image Selection (The "Vogue" Swap)
-    // PROBLEM: User's web photos are low quality.
-    // SOLUTION: Use curated "Stock" photography that matches the Vibe, not the exact pixel.
+    // 5. Smart Image Selection (Hybrid Engine)
+    // STRATEGY: 
+    // A. Try Dynamic Unsplash API (Infinite Variety)
+    // B. Fallback to Curated Static List (Safety Net)
 
     let bestImage = null;
+    const unsplashKey = process.env.UNSPLASH_ACCESS_KEY || process.env.VITE_UNSPLASH_ACCESS_KEY;
 
-    const STOCK_LIBRARY = {
-        dresses: [
-            "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1080&auto=format&fit=crop", // Silk Back
-            "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1080&auto=format&fit=crop", // Blue Gown
-            "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1080&auto=format&fit=crop",  // White Editorial
-            "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=1080&auto=format&fit=crop",  // Black Evening
-            "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=1080&auto=format&fit=crop",  // Velvet
-            "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=1080&auto=format&fit=crop",  // Linen Texture
-            "https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1080&auto=format&fit=crop"   // Floral High End
-        ],
-        tops: [
-            "https://images.unsplash.com/photo-1534126511673-b6899657816a?q=80&w=1080&auto=format&fit=crop", // White Shirt
-            "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?q=80&w=1080&auto=format&fit=crop",  // Texture Detail
-            "https://images.unsplash.com/photo-1551163943-3f6a29e39454?q=80&w=1080&auto=format&fit=crop",  // Beige Knit
-            "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=1080&auto=format&fit=crop",  // White Cloth
-            "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1080&auto=format&fit=crop"   // Linen Shirt
-        ],
-        outerwear: [
-            "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1080&auto=format&fit=crop", // Beige Coat
-            "https://images.unsplash.com/photo-1544923246-77307dd65c74?q=80&w=1080&auto=format&fit=crop",  // Black Coat
-            "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1080&auto=format&fit=crop", // Jacket Detail
-            "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1080&auto=format&fit=crop",  // Trench
-            "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?q=80&w=1080&auto=format&fit=crop"   // Grey Wool
-        ],
-        jewelry: [
-            "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1080&auto=format&fit=crop", // Gold Detail
-            "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?q=80&w=1080&auto=format&fit=crop",  // Pearl/Silver
-            "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=1080&auto=format&fit=crop",  // Ring Detail
-            "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=1080&auto=format&fit=crop",  // Diamond Light
-            "https://images.unsplash.com/photo-1651160604965-986bdf6a2977?q=80&w=1080&auto=format&fit=crop"   // Gold Watch
-        ],
-        bags: [
-            "https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1080&auto=format&fit=crop", // Luxury Bag
-            "https://images.unsplash.com/photo-1591561954557-26941169b49e?q=80&w=1080&auto=format&fit=crop",  // Detail Texture
-            "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?q=80&w=1080&auto=format&fit=crop",  // Leather Clutch
-            "https://images.unsplash.com/photo-1598532163257-ae3cde09909c?q=80&w=1080&auto=format&fit=crop"   // Minimalist Tote
-        ]
-    };
+    if (unsplashKey) {
+        try {
+            console.log("🌍 Connecting to Unsplash Global Network...");
+            // Map product type to sophisticated search terms
+            let searchTerm = "luxury fashion";
+            const t = product.title.toLowerCase();
+            if (t.includes('dress') || t.includes('gown')) searchTerm = "high fashion silk dress editorial";
+            else if (t.includes('coat') || t.includes('jacket')) searchTerm = "luxury wool coat street style";
+            else if (t.includes('jewelry') || t.includes('ring')) searchTerm = "diamond jewelry macro luxury";
+            else if (t.includes('bag')) searchTerm = "designer leather bag fashion";
+            else if (t.includes('shoe')) searchTerm = "luxury heels aesthetic";
 
-    const title = product.title.toLowerCase();
-    const type = product.product_type ? product.product_type.toLowerCase() : "";
+            const unsplashUrl = `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=portrait&client_id=${unsplashKey}`;
+            const uRes = await fetch(unsplashUrl);
+            if (uRes.ok) {
+                const uData = await uRes.json();
+                bestImage = uData.urls.regular;
+                console.log(`✨ Unsplash API Success: Found unique image for "${searchTerm}"`);
+            } else {
+                console.warn(`⚠️ Unsplash API Error: ${uRes.status} (Using Fallback Library)`);
+            }
+        } catch (e) {
+            console.warn("⚠️ Unsplash Network Fail (Using Fallback Library)");
+        }
+    }
 
-    if (title.includes('dress') || title.includes('gown') || type.includes('dress')) {
-        bestImage = STOCK_LIBRARY.dresses[Math.floor(Math.random() * STOCK_LIBRARY.dresses.length)];
-    } else if (title.includes('coat') || title.includes('jacket') || title.includes('blazer') || type.includes('outer')) {
-        bestImage = STOCK_LIBRARY.outerwear[Math.floor(Math.random() * STOCK_LIBRARY.outerwear.length)];
-    } else if (title.includes('shirt') || title.includes('top') || title.includes('blouse')) {
-        bestImage = STOCK_LIBRARY.tops[Math.floor(Math.random() * STOCK_LIBRARY.tops.length)];
-    } else if (title.includes('ring') || title.includes('necklace') || title.includes('earring') || title.includes('watch')) {
-        bestImage = STOCK_LIBRARY.jewelry[Math.floor(Math.random() * STOCK_LIBRARY.jewelry.length)];
-    } else if (title.includes('bag') || title.includes('tote') || title.includes('purse')) {
-        bestImage = STOCK_LIBRARY.bags[Math.floor(Math.random() * STOCK_LIBRARY.bags.length)];
-    } else {
-        // Generic Luxury Fallback
-        bestImage = STOCK_LIBRARY.outerwear[0];
+    // FALLBACK: If API failed or No Key, use Static Library
+    if (!bestImage) {
+        console.log("📂 ACQUIRING FROM LOCAL ARCHIVE (Static Mode)...");
+        const STOCK_LIBRARY = {
+            dresses: [
+                "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=1080&auto=format&fit=crop",
+            ],
+            tops: [
+                "https://images.unsplash.com/photo-1534126511673-b6899657816a?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1551163943-3f6a29e39454?q=80&w=1080&auto=format&fit=crop"
+            ],
+            outerwear: [
+                "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1544923246-77307dd65c74?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1080&auto=format&fit=crop"
+            ],
+            jewelry: [
+                "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=1080&auto=format&fit=crop"
+            ],
+            bags: [
+                "https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1080&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1591561954557-26941169b49e?q=80&w=1080&auto=format&fit=crop"
+            ]
+        };
+
+        const title = product.title.toLowerCase();
+        const type = product.product_type ? product.product_type.toLowerCase() : "";
+
+        let category = STOCK_LIBRARY.outerwear;
+        if (title.includes('dress') || title.includes('gown')) category = STOCK_LIBRARY.dresses;
+        else if (title.includes('top') || title.includes('shirt')) category = STOCK_LIBRARY.tops;
+        else if (title.includes('jewel') || title.includes('ring')) category = STOCK_LIBRARY.jewelry;
+        else if (title.includes('bag')) category = STOCK_LIBRARY.bags;
+
+        bestImage = category[Math.floor(Math.random() * category.length)];
     }
 
 
